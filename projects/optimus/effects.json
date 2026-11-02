@@ -1,0 +1,129 @@
+{
+  "project": "Optimus",
+  "version": "0.12.31",
+  "evidence": "static source; original reference media separately preserved",
+  "source_base": "source/src/optimus/",
+  "effects": [
+    {
+      "id": "window-open",
+      "source": "widgets/header_controls.py",
+      "line": 881,
+      "mechanism": "QPropertyAnimation on revealProgress, QRegion mask on real content, painted accent frame",
+      "duration_ms": 240,
+      "easing": "OutCubic",
+      "api": "PanelRevealOverlay.reveal(source, action, color)"
+    },
+    {
+      "id": "window-close",
+      "source": "widgets/header_controls.py",
+      "line": 911,
+      "mechanism": "Reverse reveal mask, then continue the original close handler; restore on close veto",
+      "duration": "max(80, round(180 * currentProgress)) ms",
+      "easing": "InCubic"
+    },
+    {
+      "id": "motion-policy",
+      "source": "widgets/header_controls.py",
+      "line": 375,
+      "inputs": [
+        "OPTIMUS_REDUCE_MOTION",
+        "config.ui_motion_enabled",
+        "Windows SPI_GETCLIENTAREAANIMATION"
+      ]
+    },
+    {
+      "id": "spiral-starfield",
+      "source": "ui.py",
+      "line": 1697,
+      "mechanism": "190 deterministic stars, three rotating spiral strands, radial gradient glow, sinusoidal twinkle",
+      "timer_ms": 33,
+      "pauses": [
+        "hidden",
+        "minimized",
+        "busy",
+        "owned content dialog visible"
+      ]
+    },
+    {
+      "id": "run-spinner",
+      "source": "widgets/loading.py",
+      "line": 90,
+      "mechanism": "105-degree arc; red/amber/green progress color",
+      "timer_ms": 33,
+      "rotation_degrees_per_tick": 11,
+      "estimated_curve": "95 * (1 - (1-e)^2)",
+      "completion": "green 100%, 1500 ms hold, then hide; source comments mention fade but no opacity tween exists"
+    },
+    {
+      "id": "local-loading-gif",
+      "source": "widgets/local_loading.py",
+      "line": 38,
+      "asset": "assets/raccoon-cane-dance.gif",
+      "poster": "assets/raccoon-cane-dance.png",
+      "mechanism": "QMovie bounded local playback, paused when hidden or minimized; static reduced-motion poster",
+      "frame_count": 54,
+      "loop_ms": 3420,
+      "asset_terms": "Separate third-party rights; retain assets/RACCOON-NOTICE.txt"
+    },
+    {
+      "id": "worker-activity-ring",
+      "source": "widgets/live_activity.py",
+      "line": 15,
+      "mechanism": "Determinate arc or rotating indeterminate arc with semantic health color and phase caption",
+      "timer_ms": 65,
+      "rotation_degrees_per_tick": 9
+    },
+    {
+      "id": "compact-worker-ring",
+      "source": "widgets/compact_worker_ring.py",
+      "line": 41,
+      "mechanism": "Smaller inherited activity ring with presentation scale 1.0–1.6"
+    },
+    {
+      "id": "vector-navigation",
+      "source": "widgets/header_controls.py",
+      "line": 72,
+      "mechanism": "Qt-painted high-DPI icons, cached QIcon, accessible hover definition cards, standard pointing-hand cursor"
+    },
+    {
+      "id": "button-push",
+      "source": "widgets/theme.py",
+      "line": 107,
+      "mechanism": "QSS pressed padding shifts content down about 2px and removes raised bottom border"
+    },
+    {
+      "id": "theme-surfaces",
+      "source": "widgets/theme.py",
+      "line": 107,
+      "mechanism": "Gradient panels, accent left borders, hover/selected/focus colors, zebra tables; no compositor blur"
+    },
+    {
+      "id": "legacy-holographic-orb",
+      "version": "0.4.0",
+      "source": "variants/objects/67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497/holographic_orb.py",
+      "line": 258,
+      "mechanism": "Frameless translucent floating globe with pulse, latitude/longitude grid, scanning gradient, orbital dot and expandable service nodes",
+      "timer_ms": 50,
+      "menu_duration_ms": 260,
+      "menu_easing": "OutCubic",
+      "status": "Historical source preserved; not present in latest widgets package"
+    },
+    {
+      "id": "legacy-collapse-restore-trail",
+      "version": "0.4.0",
+      "source": "variants/objects/67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497/holographic_orb.py",
+      "line": 117,
+      "mechanism": "Click-through holographic outline collapses a window toward the floating orb anchor and expands it on restore",
+      "duration_ms": 440,
+      "easing": "InOutCubic",
+      "completion_grace_ms": 750,
+      "status": "Historical source; compositor and multi-monitor behavior needs target-platform runtime verification"
+    }
+  ],
+  "not_identified": [
+    "Dedicated splash-screen animation",
+    "Custom cursor artwork"
+  ],
+  "runtime_status": "See bundle validation; source analysis does not establish platform-identical native window behavior.",
+  "publicationOmissions": "Third-party raccoon art and embedded historical captures omitted. Local GIF player source and optional custom asset slot retained; new captures use original Qt rings."
+}

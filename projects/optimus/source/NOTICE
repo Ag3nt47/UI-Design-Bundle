@@ -1,0 +1,28 @@
+Optimus contains independently authored maintenance implementations.
+
+UI theme and header transition components are adapted from
+AngeronaSuite (https://github.com/Ag3nt47/AngeronaSuite), copyright 2026
+Angerona contributors, under the MIT license reproduced in LICENSE.
+Only presentation components are used; Angerona security/AI services are not included.
+
+PySide6 and Qt are distributed under their respective LGPL/GPL/commercial
+licenses. The portable build uses dynamically loaded Qt libraries. License
+texts accompany the bundled packages; see https://doc.qt.io/qtforpython-6/licenses.html
+and https://code.qt.io/pyside/pyside-setup for corresponding source.
+psutil uses the BSD 3-Clause license: https://github.com/giampaolo/psutil .
+Send2Trash uses the BSD 3-Clause license: https://github.com/arsenetar/send2trash .
+Cryptography uses the Apache-2.0 OR BSD-3-Clause licenses. Its binary wheels
+include cryptographic dependencies; see https://cryptography.io/en/latest/faq/
+and the accompanying cryptography license texts. CFFI and pycparser retain
+their MIT/BSD notices in docs/licenses.
+Certifi and its unmodified Mozilla CA bundle use MPL-2.0; see docs/licenses/certifi-LICENSE.txt and https://github.com/certifi/python-certifi .
+PyInstaller has its GPL license with its bootloader distribution exception:
+https://pyinstaller.org/en/stable/license.html .
+
+CCleaner is a third-party product. Optimus does not include CCleaner executable
+code, icons, rule databases, license keys, subscription checks or service access.
+Feature comparisons document observed interfaces, not a claim of affiliation.
+
+The decorative raccoon GIF and poster are separate third-party assets, outside
+the MIT license for Optimus code. Attribution, source and preparation details
+are in src/optimus/assets/RACCOON-NOTICE.txt; retain that notice with the assets.

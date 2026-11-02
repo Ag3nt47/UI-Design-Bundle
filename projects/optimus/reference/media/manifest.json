@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "version": "0.12.24",
+  "source_commit": "83517299ff323f3ee492d5f2a52ea0595b70208e",
+  "capture": "Actual QWidget.grab() renders with labelled surrounding title/footer",
+  "fixture_scope": "In-memory backend, navigation and mock Sandbox; all metrics and outcomes are simulated. No measured cleanup, performance or native-operation proof.",
+  "primary_button": "Connected only to fixture progress-window handoff",
+  "source_excerpt": "Sandbox shows an excerpt of public src/optimus/ui.py, never saved or executed",
+  "raccoon": "Bundled decorative GIF is visible in the production bottom analysis panel during sample work and remains a stopped poster after completion; see src/optimus/assets/RACCOON-NOTICE.txt.",
+  "safety": {
+    "real_backend_constructed": false,
+    "host_maintenance_applied": false,
+    "live_metrics_sampler_constructed": false,
+    "sandbox_writes_or_restart": false,
+    "fixture_navigation_skip_requests": 1,
+    "sandbox_workspace_mocked": true,
+    "worker_layout": {
+      "all_visible": true,
+      "body_scroll": true,
+      "all_reachable": true,
+      "essentials": true,
+      "labels": true,
+      "navigation_hitboxes": true,
+      "no_internal_overlap": true,
+      "equal_cards": true,
+      "no_overlap": true,
+      "two_by_two": true,
+      "footer_clear": true,
+      "no_horizontal_scroll": true,
+      "cards": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 530,
+          "height": 186
+        },
+        {
+          "x": 537,
+          "y": 0,
+          "width": 529,
+          "height": 186
+        },
+        {
+          "x": 0,
+          "y": 193,
+          "width": 530,
+          "height": 185
+        },
+        {
+          "x": 537,
+          "y": 193,
+          "width": 529,
+          "height": 185
+        }
+      ]
+    },
+    "bottom_analysis_visible": {
+      "panel": true,
+      "decorative_gif": true,
+      "computer": true,
+      "network": true,
+      "drive_buffer": true
+    },
+    "fullscreen_escape_restored_geometry": true
+  },
+  "assets": [
+    {
+      "file": "optimus-completed.png",
+      "bytes": 116290,
+      "sha256": "8922423e6970406836c29176b52cd4de6f30f403b2c2c97a5e999c8767586324",
+      "width": 1120,
+      "height": 900,
+      "codec": "PNG"
+    },
+    {
+      "file": "optimus-demo.gif",
+      "bytes": 1266221,
+      "sha256": "1a2a10af4f73cfdcdad698b857aba2da91575582e26bfcf21ec6a319570b3582",
+      "width": 1120,
+      "height": 900,
+      "codec": "GIF89a",
+      "pixel_format": "pal8",
+      "fps": 8,
+      "duration_seconds": 10.01,
+      "frames": 80,
+      "audio": false
+    },
+    {
+      "file": "optimus-main.png",
+      "bytes": 134632,
+      "sha256": "c4fa9a331d2c73082c0806e4ae4597f690e6d870bb76e59abbf477150e5dda27",
+      "width": 1120,
+      "height": 900,
+      "codec": "PNG"
+    },
+    {
+      "file": "optimus-sandbox.png",
+      "bytes": 167185,
+      "sha256": "fdbfdaa848ea0b4965e2ba913bdec8aedcc460e3b9ed6eddd7da86d7d0437067",
+      "width": 1120,
+      "height": 900,
+      "codec": "PNG"
+    },
+    {
+      "file": "optimus-walkthrough.mp4",
+      "bytes": 778099,
+      "sha256": "07ee2f5a3efea995ef76402c276786d17296a80465afff62a5e92754b25f357b",
+      "width": 1120,
+      "height": 900,
+      "codec": "H.264 / AVC",
+      "pixel_format": "yuv420p",
+      "fps": 12,
+      "duration_seconds": 20.0,
+      "frames": 240,
+      "audio": false
+    },
+    {
+      "file": "optimus-workers.png",
+      "bytes": 121426,
+      "sha256": "d86e80c985631eee37adb74b331c4caef46cc5330c7ea06c92df408061e4a762",
+      "width": 1120,
+      "height": 900,
+      "codec": "PNG"
+    }
+  ],
+  "encoder": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+  "decoder_verification": {
+    "optimus-walkthrough.mp4": {
+      "decoded_frames": 240,
+      "duration_seconds": 20.0,
+      "codec": "h264",
+      "audio_stream": false
+    },
+    "optimus-demo.gif": {
+      "decoded_frames": 80,
+      "duration_seconds": 10.01,
+      "codec": "gif",
+      "audio_stream": false
+    }
+  },
+  "validation": "All PNGs decoded through Qt; both animations fully decoded through FFmpeg; human inspection of screenshots and both decoded contact sheets required."
+}

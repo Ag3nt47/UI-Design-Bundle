@@ -1,0 +1,148 @@
+"""Qt worker lifecycle helpers.
+
+Qt aborts the entire process when a running ``QThread`` is destroyed. That is
+easy to trigger when a ``WA_DeleteOnClose`` tool window owns (or is the last
+Python owner of) a worker blocked in a bounded network/native call.
+
+``defer_close_until_threads`` makes closing such a window non-blocking and
+safe: the window disappears immediately, remains alive until every worker has
+finished, and then completes the original close without replaying the UI close
+animation.
+"""
+from __future__ import annotations
+
+from collections.abc import Iterable
+from typing import Any
+
+from PySide6.QtCore import QTimer
+from shiboken6 import isValid
+
+
+_RETRY_INTERVAL_MS = 100
+# Callback cycles are collectable; active native threads need an external root.
+_DEFERRED_OWNERS: dict[int, Any] = {}
+
+
+def _is_running(worker: Any) -> bool:
+    if worker is None or not isValid(worker):
+        return False
+    try:
+        return bool(worker.isRunning())
+    except Exception:
+        # A valid wrapper with unreadable state still owns possible live work.
+        # Recheck validity in case it was deleted during the failed query.
+        return isValid(worker)
+
+
+def _running_workers(owner: Any) -> list[Any]:
+    workers = getattr(owner, "_angerona_close_workers", ())
+    return [worker for worker in workers if _is_running(worker)]
+
+
+def _schedule_deferred_close_retry(owner: Any) -> None:
+    """Retain one timer while a worker is still unwinding after its signal."""
+    if getattr(owner, "_angerona_close_retry_pending", False):
+        return
+    owner._angerona_close_retry_pending = True
+
+    def retry() -> None:
+        try:
+            owner._angerona_close_retry_pending = False
+            if getattr(owner, "_angerona_deferred_close", False):
+                _retry_deferred_close(owner)
+        except RuntimeError:
+            pass  # Qt already destroyed the window.
+
+    QTimer.singleShot(_RETRY_INTERVAL_MS, retry)
+
+
+def _retry_deferred_close(owner: Any) -> None:
+    """Finish a deferred close once its last worker leaves ``run()``."""
+    generation = None
+    try:
+        if not isValid(owner):
+            _DEFERRED_OWNERS.pop(id(owner), None)
+            return
+        # Several worker signals or an already queued retry may arrive after
+        # one callback queued the terminal close. Each deferral owns one close.
+        if not getattr(owner, "_angerona_deferred_close", False):
+            return
+        generation = getattr(owner, "_angerona_close_deferral_generation", None)
+        if _running_workers(owner):
+            # finished() can be emitted before isRunning() becomes false. A
+            # result-bearing shadow signal can even fire inside run(). Keep a
+            # bounded-rate timer and strong owner reference until native exit.
+            _schedule_deferred_close_retry(owner)
+            return
+        owner._angerona_deferred_close = False
+        owner._angerona_close_wait_connected = False
+        owner._angerona_close_workers = ()
+        owner._angerona_close_bypass = True
+        def finish_close() -> None:
+            try:
+                if (not isValid(owner)
+                        or getattr(owner, "_angerona_close_deferral_generation", None) is not generation):
+                    return  # A newer deferral owns this reused window.
+                owner.close()
+            except RuntimeError:
+                pass  # Another queued completion may already have closed it.
+            finally:
+                # closeEvent can defer again for a newly started worker. An
+                # older finalizer must never release that newer live owner.
+                if (not isValid(owner)
+                        or (getattr(owner, "_angerona_close_deferral_generation", None) is generation
+                            and not getattr(owner, "_angerona_deferred_close", False))):
+                    _DEFERRED_OWNERS.pop(id(owner), None)
+
+        QTimer.singleShot(0, finish_close)
+    except RuntimeError:
+        if (not isValid(owner)
+                or (getattr(owner, "_angerona_close_deferral_generation", None) is generation
+                    and not getattr(owner, "_angerona_deferred_close", False))):
+            _DEFERRED_OWNERS.pop(id(owner), None)
+        return
+
+
+def defer_close_until_threads(owner: Any, event: Any, workers: Iterable[Any]) -> bool:
+    """Hide *owner* and defer destruction while any supplied QThread runs."""
+    running = [worker for worker in workers if _is_running(worker)]
+    if not running:
+        owner._angerona_deferred_close = False
+        owner._angerona_close_wait_connected = False
+        owner._angerona_close_workers = ()
+        owner._angerona_close_deferral_generation = None  # Consume pending terminal callbacks.
+        # A real close can arrive after native retirement but before queued
+        # finished/retry callbacks. That close now owns final disposition.
+        _DEFERRED_OWNERS.pop(id(owner), None)
+        return False
+
+    event.ignore()
+    if not getattr(owner, "_angerona_deferred_close", False):
+        owner._angerona_close_deferral_generation = object()
+    _DEFERRED_OWNERS[id(owner)] = owner
+    owner._angerona_deferred_close = True
+    owner._angerona_close_workers = tuple(running)
+    owner.hide()
+    # Destroying a parent bypasses a child's closeEvent, even when Python keeps
+    # its wrapper alive. The hidden window is now owned by this close operation.
+    if owner.parent() is not None:
+        owner.setParent(None, owner.windowFlags())
+
+    if not getattr(owner, "_angerona_close_wait_connected", False):
+        owner._angerona_close_wait_connected = True
+        for worker in running:
+            try:
+                worker.requestInterruption()
+                # Some Angerona workers intentionally shadow QThread.finished
+                # with a result-bearing signal (for example AnalysisWorker's
+                # ``finished(dict)``). Swallow every payload so it can never
+                # replace the captured owner and strand a hidden dialog.
+                worker.finished.connect(
+                    lambda *_args, _owner=owner: _retry_deferred_close(_owner)
+                )
+            except RuntimeError:
+                continue
+        # Close the tiny race where a worker can finish between ``isRunning``
+        # above and connecting its ``finished`` signal.
+        QTimer.singleShot(0, lambda _owner=owner: _retry_deferred_close(_owner))
+    return True

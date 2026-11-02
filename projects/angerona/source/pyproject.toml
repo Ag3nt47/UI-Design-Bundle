@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools==83.0.0", "wheel==0.47.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "angerona"
+version = "1.15.0"
+description = "Local-first endpoint security suite for Windows, macOS, and Linux."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Angerona contributors" }]
+keywords = [
+    "endpoint-security",
+    "edr",
+    "ndr",
+    "soar",
+    "dfir",
+    "threat-hunting",
+    "incident-response",
+    "mitre-attack",
+    "purple-team",
+    "local-ai",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+]
+dependencies = [
+    # Match the validated, hash-locked runtime; 6.12.0 reproduces native faults.
+    "PySide6==6.11.1",
+    "psutil>=5.9",
+    "requests>=2.31",
+    "certifi>=2026.10.19",
+    "urllib3>=2.8.0",
+    "python-dotenv>=1.0",
+    "cryptography>=50.0.0",
+    "PyYAML>=6.0.2",
+    "defusedxml>=0.7.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/AngeronaSuite"
+Repository = "https://github.com/example/AngeronaSuite.git"
+Documentation = "https://github.com/example/AngeronaSuite#readme"
+Issues = "https://github.com/example/AngeronaSuite/issues"
+Releases = "https://github.com/example/AngeronaSuite/releases"
+
+[project.optional-dependencies]
+windows = [
+    "pycdlib==1.20.0",
+    "pywin32>=306",
+    "WMI>=1.5",
+    "scapy>=2.5",
+    "yara-x>=1.15",
+    "PyJWT[crypto]>=2.15.0",
+    "pywintrace>=0.2",
+]
+macos = [
+    "yara-x>=1.15",
+]
+linux = [
+    "yara-x>=1.15",
+]
+voice = [
+    "sounddevice>=0.5",
+    "pyttsx3>=2.90",
+    "tqdm>=4.68",
+    "websockets>=16",
+]
+hand-controls = [
+    "opencv-python>=4.10",
+    "mediapipe>=0.10.20",
+]
+cloud = ["google-genai", "groq", "openai"]
+ugcap = [
+    "blake3==1.0.11; python_version >= '3.11'",
+    "blake3==1.0.8; python_version < '3.11'",
+]
+dev = [
+    "hypothesis==6.163.0",
+    "ruff==0.16.0",
+    "pytest-xdist==3.8.0",
+    "pip-audit==2.10.1",
+]
+
+[project.gui-scripts]
+angerona = "angerona.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["angerona*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+extend-exclude = ["frz", "hermetic", "runtime-data", "LibreOffice_*"]
+
+[tool.ruff.lint]
+# Start with correctness-critical rules. Broader style adoption is intentionally
+# staged so a fast safety check does not force a noisy whole-repository rewrite.
+select = ["E9", "F63", "F7", "F82"]

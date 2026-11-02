@@ -1,0 +1,390 @@
+"""gui/aria_hud.py — the ARIA HUD: a pulsing orb tied to the Angerona Score.
+
+A small, self-contained JARVIS-style heads-up display: one glowing orb whose
+colour and pulse cadence track the live Angerona Score, a one-line live status,
+a posture sparkline (from ``core.posture_history``), and a chat box wired to the
+ARIA assistant (``core.assistant``). Reads are live; every action the chat box
+can trigger stays behind the assistant's confirm-then-execute gate.
+
+The file is split so the *logic* is testable without a display:
+
+    • :class:`OrbState` / :func:`orb_state` — pure score→visual mapping, self_test'd.
+    • :class:`AriaHud` — the PySide6 widget, import-guarded so this module is
+      importable (and testable) even where PySide6 isn't installed.
+
+Additive and off by default: nothing constructs the widget until the main window
+opts in. Local-first; no network here.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Callable, Optional
+
+
+# ── Pure visual core (no Qt — fully testable) ─────────────────────────────────
+# Tiers mirror core.posture_history._band_for so the HUD and the trend agree.
+_TIERS = (
+    # min_score, label,      color (hex), pulse_ms (smaller = faster = worse)
+    (90, "STRONG",   "#2fe38a", 2200),
+    (70, "GUARDED",  "#39b6ff", 1600),
+    (50, "ELEVATED", "#ffb020", 1000),
+    (0,  "CRITICAL", "#ff4d4d",  560),
+)
+
+
+@dataclass(frozen=True)
+class OrbState:
+    score: int
+    label: str
+    color: str
+    pulse_ms: int     # full pulse period; faster (smaller) as posture worsens
+    status_line: str
+
+
+def orb_state(score: int, *, active_alerts: int = 0, band_hint: str = "",
+              trend_delta: Optional[int] = None) -> OrbState:
+    """Map a 0–100 Angerona Score to the orb's colour, pulse and status line.
+
+    Worse posture → warmer colour and a faster pulse (the orb "beats harder"
+    when the host is under pressure). Pure and deterministic."""
+    s = max(0, min(100, int(score)))
+    label, color, pulse = "CRITICAL", _TIERS[-1][2], _TIERS[-1][3]
+    for min_score, lbl, col, pms in _TIERS:
+        if s >= min_score:
+            label, color, pulse = lbl, col, pms
+            break
+    arrow = ""
+    if trend_delta is not None and trend_delta != 0:
+        arrow = f"  {'▲' if trend_delta > 0 else '▼'}{abs(trend_delta)}"
+    alert_txt = "no active alerts" if active_alerts == 0 else \
+        f"{active_alerts} active alert{'s' if active_alerts != 1 else ''}"
+    status = f"Angerona Score {s} · {band_hint or label} · {alert_txt}{arrow}"
+    return OrbState(s, label, color, pulse, status)
+
+
+def self_test() -> tuple[bool, str]:
+    """Prove the score→visual mapping: correct tiers/colours, a strictly faster
+    pulse as posture worsens, clamping, and a sensible status line."""
+    try:
+        assert orb_state(95).label == "STRONG"
+        assert orb_state(75).label == "GUARDED"
+        assert orb_state(55).label == "ELEVATED"
+        assert orb_state(30).label == "CRITICAL"
+        assert orb_state(90).label == "STRONG" and orb_state(89).label == "GUARDED", "tier boundary"
+
+        # pulse strictly speeds up (period decreases) as score drops across tiers
+        pulses = [orb_state(s).pulse_ms for s in (95, 75, 55, 30)]
+        assert pulses == sorted(pulses, reverse=True) and len(set(pulses)) == 4, \
+            "pulse must strictly quicken as posture worsens"
+
+        # colours are distinct per tier
+        assert len({orb_state(s).color for s in (95, 75, 55, 30)}) == 4, "distinct tier colours"
+
+        # clamping
+        assert orb_state(150).score == 100 and orb_state(-5).score == 0, "score clamped 0..100"
+
+        # status line reflects alerts + trend
+        st = orb_state(82, active_alerts=3, trend_delta=+5)
+        assert "82" in st.status_line and "3 active alerts" in st.status_line and "▲5" in st.status_line
+        assert "no active alerts" in orb_state(88, active_alerts=0).status_line
+
+        return True, ("OK — tiers STRONG/GUARDED/ELEVATED/CRITICAL at 90/70/50 "
+                      "boundaries; pulse strictly quickens 2200→560ms as score "
+                      "falls; 4 distinct colours; score clamped; status line shows "
+                      "score + alerts + trend arrow.")
+    except AssertionError as exc:
+        return False, f"FAIL — {exc}"
+    except Exception as exc:  # pragma: no cover
+        return False, f"ERROR — {type(exc).__name__}: {exc}"
+
+
+# ── Qt widget (import-guarded; optional) ──────────────────────────────────────
+try:
+    from PySide6.QtCore import Qt, QTimer, Signal
+    from PySide6.QtGui import QColor, QPainter, QRadialGradient, QTextCursor
+    from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+                                   QLineEdit, QPushButton, QTextEdit)
+    _HAVE_QT = True
+except Exception:  # pragma: no cover - environment dependent
+    _HAVE_QT = False
+
+
+if _HAVE_QT:
+
+    class _Orb(QWidget):
+        """The pulsing orb. Colour/period come from an :class:`OrbState`."""
+
+        clicked = Signal()
+
+        def __init__(self, parent: Optional["QWidget"] = None) -> None:
+            super().__init__(parent)
+            # Small floor (was 160×160) so the whole ARIA column can be squeezed
+            # right down beside the prompt bar. The orb and its score number are
+            # drawn from the live widget size, so they stay crisp at any size.
+            self.setMinimumSize(64, 64)
+            self.setCursor(Qt.PointingHandCursor)
+            self.setToolTip("Open ARIA's expanded local-intelligence detail view.")
+            self._state = orb_state(100)
+            self._phase = 0.0
+            self._idle_mode = False
+            self._timer = QTimer(self)
+            self._timer.timeout.connect(self._tick)
+            # Start only once the widget is visible in an active window.  The
+            # previous unconditional 10-FPS timer repainted forever while the
+            # dashboard was minimized or sitting in all-day Chill mode.
+            self._timer.setInterval(100)
+
+        def set_state(self, state: OrbState) -> None:
+            self._state = state
+            self.update()
+
+        def _tick(self) -> None:
+            # advance phase using the state's pulse period
+            self._phase = (self._phase + 100.0 / max(1, self._state.pulse_ms)) % 1.0
+            self.update()
+
+        def set_idle_mode(self, enabled: bool) -> None:
+            self._idle_mode = bool(enabled)
+            self._sync_animation_timer()
+
+        def _animation_allowed(self) -> bool:
+            if self._idle_mode or not self.isVisible():
+                return False
+            window = self.window()
+            return bool(
+                window is not None
+                and window.isVisible()
+                and not window.isMinimized()
+                and window.isActiveWindow()
+            )
+
+        def _sync_animation_timer(self) -> None:
+            if self._animation_allowed():
+                if not self._timer.isActive():
+                    self._timer.start()
+            else:
+                self._timer.stop()
+                self.update()  # one stable frame; no continuous repaint
+
+        def showEvent(self, event) -> None:  # noqa: N802 (Qt signature)
+            super().showEvent(event)
+            QTimer.singleShot(0, self._sync_animation_timer)
+
+        def hideEvent(self, event) -> None:  # noqa: N802 (Qt signature)
+            super().hideEvent(event)
+            self._sync_animation_timer()
+
+        def paintEvent(self, _evt) -> None:  # noqa: N802 (Qt signature)
+            import math
+            p = QPainter(self)
+            p.setRenderHint(QPainter.Antialiasing)
+            w, h = self.width(), self.height()
+            cx, cy = w / 2, h / 2
+            base = min(w, h) * 0.34
+            glow = 1.0 + 0.14 * math.sin(self._phase * 2 * math.pi)  # breathe
+            r = base * glow
+            col = QColor(self._state.color)
+            grad = QRadialGradient(cx, cy, r)
+            bright = QColor(col); bright.setAlpha(255)
+            faint = QColor(col); faint.setAlpha(0)
+            grad.setColorAt(0.0, bright)
+            grad.setColorAt(0.55, col)
+            grad.setColorAt(1.0, faint)
+            p.setBrush(grad)
+            p.setPen(Qt.NoPen)
+            p.drawEllipse(int(cx - r), int(cy - r), int(2 * r), int(2 * r))
+            p.setPen(QColor("#e8f4ff"))
+            # Score font scales with the orb so the number stays readable whether
+            # the HUD is squeezed tiny beside the prompt or opened up wide.
+            f = p.font()
+            f.setPixelSize(max(9, int(min(w, h) * 0.22)))
+            f.setBold(True); p.setFont(f)
+            p.drawText(self.rect(), Qt.AlignCenter, str(self._state.score))
+            p.end()
+
+        def mousePressEvent(self, event) -> None:  # noqa: N802 - Qt signature
+            if event.button() == Qt.LeftButton:
+                self.clicked.emit()
+            super().mousePressEvent(event)
+
+    class AriaHud(QWidget):
+        """The full HUD panel: orb + status line + sparkline + chat box.
+
+        Wire it with callables so it stays decoupled from the rest of the app::
+
+            hud = AriaHud(
+                score_fn=lambda: score_engine.current(),
+                alerts_fn=lambda: len(active_alerts),
+                sparkline_fn=lambda: history.sparkline(32),
+                trend_fn=lambda: history.trend()["delta"],
+                ask_fn=lambda text: assistant_handle(text),   # returns str
+            )
+            hud.refresh()   # call from the main window's slow tick
+        """
+
+        submitted = Signal(str)
+        response_ready = Signal(str)   # full answer posted back from the ask thread
+        token_ready = Signal(str)      # one streamed chunk (live typing effect)
+        # Carries the actual button so the main window can originate the shared
+        # destination reveal from the point the operator clicked.
+        microphone_requested = Signal(object)
+        details_requested = Signal()   # expand the compact orb into a detail deck
+
+        def __init__(self, *, score_fn: Callable[[], int],
+                     alerts_fn: Optional[Callable[[], int]] = None,
+                     sparkline_fn: Optional[Callable[[], str]] = None,
+                     trend_fn: Optional[Callable[[], int]] = None,
+                     ask_fn: Optional[Callable[[str], str]] = None,
+                     stream_fn: Optional[Callable[[str, Callable[[str], None]], str]] = None,
+                     compact: bool = False,
+                     parent: Optional["QWidget"] = None) -> None:
+            super().__init__(parent)
+            self._score_fn = score_fn
+            self._alerts_fn = alerts_fn or (lambda: 0)
+            self._sparkline_fn = sparkline_fn or (lambda: "")
+            self._trend_fn = trend_fn or (lambda: 0)
+            self._ask_fn = ask_fn
+            self._stream_fn = stream_fn
+            # Compact = orb + status + sparkline ONLY (no chat log / input). Used
+            # when ARIA lives beside the Console: the Console is the single prompt
+            # bar, so a second chat box here would be redundant. The orb stays as
+            # the live posture HUD next to the prompt.
+            self._compact = compact
+
+            self._orb = _Orb(self)
+            self._orb.clicked.connect(self.details_requested.emit)
+            self._status = QLabel("ARIA online.")
+            self._status.setWordWrap(True)
+            self._spark = QLabel("")
+            self._spark.setStyleSheet("font-family: 'Fira Code', monospace; color:#7fd0ff;")
+            self.mic_button = QPushButton("🎙  VOICE & MIC")
+            self.mic_button.setToolTip(
+                "Open ARIA's microphone, offline model, and conversation settings.")
+            self.mic_button.clicked.connect(
+                lambda _checked=False: self.microphone_requested.emit(
+                    self.mic_button
+                )
+            )
+
+            # Live mic-level meter ("ARIA can hear you"). Only visible once voice
+            # listening is active; the main window feeds it from the audio thread.
+            self.mic_meter = None
+            try:
+                from angerona.gui.animations import MicMeter
+                self.mic_meter = MicMeter()
+            except Exception:
+                self.mic_meter = None
+
+            if compact:
+                self._log = None
+                self._input = None
+                root = QVBoxLayout(self)
+                root.setContentsMargins(8, 6, 8, 6)
+                root.addWidget(self._orb, 0, Qt.AlignHCenter)
+                root.addWidget(self._status)
+                root.addWidget(self._spark)
+                root.addWidget(self.mic_button)
+                if self.mic_meter is not None:
+                    root.addWidget(self.mic_meter)
+                root.addStretch(1)
+                self.refresh()
+                return
+
+            self._log = QTextEdit(); self._log.setReadOnly(True)
+            self._log.document().setMaximumBlockCount(2000)
+            self._input = QLineEdit(); self._input.setPlaceholderText("Ask ARIA…")
+            self._input.returnPressed.connect(self._on_submit)
+            # Answers come back from a worker thread — render on the GUI thread.
+            self.response_ready.connect(self._log.append)
+            self.token_ready.connect(self._on_token)
+
+            top = QHBoxLayout()
+            top.addWidget(self._orb)
+            col = QVBoxLayout()
+            col.addWidget(self._status)
+            col.addWidget(self._spark)
+            col.addWidget(self.mic_button)
+            top.addLayout(col)
+            root = QVBoxLayout(self)
+            root.addLayout(top)
+            root.addWidget(self._log)
+            root.addWidget(self._input)
+
+            self.refresh()
+
+        def set_microphone_state(self, enabled: bool, listening: bool = False) -> None:
+            if listening:
+                self.mic_button.setText("🎙  LISTENING · SETTINGS")
+            elif enabled:
+                self.mic_button.setText("🎙  VOICE ON · SETTINGS")
+            else:
+                self.mic_button.setText("🎙  VOICE OFF · SET UP")
+
+        def set_idle_mode(self, enabled: bool) -> None:
+            """Freeze cosmetic orb motion while keeping score/chat fully live."""
+            self._orb.set_idle_mode(enabled)
+
+        def sync_animation(self) -> None:
+            self._orb._sync_animation_timer()
+
+        def refresh(self) -> None:
+            """Pull live values and repaint. Safe to call every slow tick."""
+            try:
+                st = orb_state(self._score_fn(), active_alerts=self._alerts_fn(),
+                               trend_delta=self._trend_fn())
+                self._orb.set_state(st)
+                self._status.setText(st.status_line)
+                self._spark.setText(self._sparkline_fn())
+            except Exception as exc:
+                self._status.setText(f"HUD read error: {exc}")
+
+        def _on_token(self, chunk: str) -> None:
+            """Append one streamed chunk to the end of the log (GUI thread)."""
+            cur = self._log.textCursor()
+            cur.movePosition(QTextCursor.End)
+            self._log.setTextCursor(cur)
+            self._log.insertPlainText(chunk)
+            self._log.ensureCursorVisible()
+
+        def _on_submit(self) -> None:
+            text = self._input.text().strip()
+            if not text:
+                return
+            self._input.clear()
+            self._log.append(f"> {text}")
+            self.submitted.emit(text)
+            if self._stream_fn is None and self._ask_fn is None:
+                return
+            # The handler may call the local LLM (blocking) — never on the Qt
+            # thread. Run it on a worker; stream tokens (or post the full answer)
+            # back via signals so the UI updates on the GUI thread.
+            import threading
+            stream = self._stream_fn is not None
+            self._log.append("ARIA: " if stream else "ARIA is thinking…")
+
+            def _run(_t: str = text) -> None:
+                emitted = {"n": 0}
+
+                def _tok(chunk: str) -> None:
+                    emitted["n"] += 1
+                    self.token_ready.emit(chunk)
+
+                try:
+                    if stream:
+                        ans = str(self._stream_fn(_t, _tok))
+                        if emitted["n"] == 0:      # instant answer (no tokens)
+                            self.token_ready.emit(ans)
+                        self.response_ready.emit("")   # blank line separates turns
+                    else:
+                        ans = str(self._ask_fn(_t)) if self._ask_fn else ""
+                        self.response_ready.emit(ans)
+                except Exception as exc:
+                    self.response_ready.emit(f"[error] {exc}")
+            threading.Thread(target=_run, name="AriaAsk", daemon=True).start()
+
+
+if __name__ == "__main__":
+    ok, detail = self_test()
+    print(f"[aria_hud] self_test: {'PASS' if ok else 'FAIL'} — {detail}")
+    print(f"[aria_hud] PySide6 available: {_HAVE_QT}")
+    raise SystemExit(0 if ok else 1)

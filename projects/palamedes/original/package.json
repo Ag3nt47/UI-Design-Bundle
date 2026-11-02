@@ -1,0 +1,85 @@
+{
+  "name": "palamedes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An extensible local-first scientific, graphing, and symbolic math workspace.",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/*.test.js",
+    "test:e2e": "playwright test",
+    "desktop": "electron .",
+    "desktop:dev": "npm run build && electron .",
+    "package:win": "npm run build && electron-builder --win nsis --x64 --publish never"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11",
+    "jstat": "^1.9.6",
+    "katex": "^0.16.25",
+    "lucide-react": "^0.468.0",
+    "mathjs": "^15.0.0",
+    "nerdamer": "^1.1.13",
+    "plotly.js-dist-min": "^3.3.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tesseract.js": "^6.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "electron": "^39.8.10",
+    "electron-builder": "^26.18.0",
+    "vite": "^7.2.0"
+  },
+  "main": "desktop/main.cjs",
+  "author": "example",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/Palamedes.git"
+  },
+  "homepage": "https://example.github.io/Palamedes/",
+  "build": {
+    "appId": "io.github.example.palamedes",
+    "productName": "Palamedes",
+    "copyright": "Copyright © 2026 Ag3nt47",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/**/*",
+      "package.json",
+      "LICENSE"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/icon.ico",
+      "artifactName": "Palamedes-Setup-${version}-${arch}.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Palamedes"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "example",
+      "repo": "Palamedes",
+      "releaseType": "release"
+    }
+  }
+}

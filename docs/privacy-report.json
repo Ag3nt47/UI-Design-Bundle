@@ -1,0 +1,53 @@
+{
+  "applied": true,
+  "changedFiles": [
+    "projects/angerona/source/pyproject.toml",
+    "projects/angerona/source/src/angerona/gui/pages.py",
+    "projects/angerona/source/src/angerona/gui/setup_wizard.py",
+    "projects/optimus/source/README.md",
+    "projects/optimus/source/src/optimus/app.py",
+    "projects/optimus/source/src/optimus/native_operations.py",
+    "projects/optimus/source/src/optimus/native_startup_registration.py",
+    "projects/optimus/source/src/optimus/performance.py",
+    "projects/optimus/source/src/optimus/retention_cleanup.py",
+    "projects/optimus/source/src/optimus/self_update.py",
+    "projects/optimus/source/src/optimus/self_update_launchers.py",
+    "projects/optimus/source/src/optimus/self_update_ui.py",
+    "projects/optimus/source/src/optimus/widgets/header_controls.py",
+    "projects/optimus/source/src/optimus/widgets/loading.py",
+    "projects/optimus/source/src/optimus/widgets/theme.py",
+    "projects/optimus/variants/objects/15360e6b04065c5c8609682172a52a54c5f0b45db0dac5e23a949a8198f70b1c/header_controls.py",
+    "projects/optimus/variants/objects/1a59ad7cea97dc5730c3efe5e4db7721d10eb3fa024426cef505f5287baaf0b7/header_controls.py",
+    "projects/optimus/variants/objects/341d5f3f94748d0fc930fa03b00258e83b6df53707348ef2d9f5d43bfac64a75/header_controls.py",
+    "projects/optimus/variants/objects/54e3077b261ba7f0597179211d7dbe2729ce8a32258c86f2b3b47e348fa93f3b/loading.py",
+    "projects/optimus/variants/objects/5cd509e3193b8611464dfa2a5b7414b7203713cc19f0798330a8d2edd9e9996c/loading.py",
+    "projects/optimus/variants/objects/67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497/holographic_orb.py",
+    "projects/optimus/variants/objects/71e103a2b5b8eb4d4ccf65d83d064b378515ca012a0029e1739c80a6182ee883/loading.py",
+    "projects/optimus/variants/objects/81a3958664c9e97fcbfafdd87f0ba307c869072d05d44233f99165ed6bf80e94/header_controls.py",
+    "projects/optimus/variants/objects/9325ba96e24794a1a2c75901be43738a322ee9fe9b68f491a84bb79f6dfe77ba/theme.py",
+    "projects/optimus/variants/objects/9832373f718dc12644e9118f5c35b28cf528c134793bcc1ebcc82c266fe09f83/theme.py",
+    "projects/optimus/variants/objects/9c82a16228a808542a3e6b0e7549c894d3315ce541d46cf5c0a432ffb3623fb5/header_controls.py",
+    "projects/optimus/variants/objects/a75f17e9984361b897b37566b71f324097913c553e390d0cbe3e3ebcdc499846/loading.py",
+    "projects/optimus/variants/objects/c3989c8452c0c0ca8686914b3ae304f6b07554288c24095696bd6a99f4c560f7/theme.py",
+    "projects/optimus/variants/objects/d06eb2aeffe21f8862b591926efd3b72abd08364c41e1d9ce51787fb0c858fc3/self_update_ui.py",
+    "projects/optimus/variants/objects/dc98a85445598c02951eadc7c9850526cd984b86049555220cbcf6d96b1c573b/header_controls.py",
+    "projects/optimus/variants/objects/ebd9347a5fdc4f263d34b092190343b168bc2189a252418b632a609fad911eb6/self_update_ui.py",
+    "projects/palamedes/original/desktop/main.cjs",
+    "projects/palamedes/original/package-lock.json",
+    "projects/palamedes/original/package.json",
+    "projects/palamedes/original/src/App.jsx",
+    "projects/palamedes/original/tests/updater.test.js"
+  ],
+  "retained": [
+    "required copyright and license notices",
+    "repository hosting account"
+  ],
+  "policy": "Remove collection-machine paths, personal names/emails and owner-specific non-legal links. Synthetic/demo screenshots only. No credentials or live data.",
+  "audit": {
+    "localAccountAndMachinePaths": "no actual identifiers found outside retained legal attribution",
+    "imageAncillaryMetadata": "no identifying PNG text/EXIF or GIF comment/plain-text metadata",
+    "dependencyContactMetadata": "redacted",
+    "secretShapeScan": "passed",
+    "privateRedactionMap": "kept outside the bundle"
+  }
+}

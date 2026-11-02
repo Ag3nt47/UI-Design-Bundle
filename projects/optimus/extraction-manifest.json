@@ -1,0 +1,2481 @@
+{
+  "schema": 1,
+  "project": "Optimus",
+  "primary_source": "source://optimus/Releases/0.12.31/source",
+  "primary_version": "0.12.31",
+  "entries": [
+    {
+      "path": "reference/DEMOS.md",
+      "source": "source://optimus/Releases/0.12.31/source/docs/DEMOS.md",
+      "sha256": "aa325a5107d73ab78ccd972b3a598fac2476f472c19ff6e97f3e3814a4e04993",
+      "bytes": 4674,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/media/manifest.json",
+      "source": "source://optimus/Releases/0.12.31/source/docs/media/manifest.json",
+      "sha256": "0ef8b1bfd63af845db396e31cdcbea27b393fe376636f419b03000eb62cf51b2",
+      "bytes": 4382,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/media/optimus-efficiency-setup.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/media/optimus-efficiency-setup.png",
+      "sha256": "30683c16c5ed6ece6c720312c062b0c054e0a314b87df7d4452bf7ca0dfc873f",
+      "bytes": 49656,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/media/optimus-main.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/media/optimus-main.png",
+      "sha256": "c4fa9a331d2c73082c0806e4ae4597f690e6d870bb76e59abbf477150e5dda27",
+      "bytes": 134632,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/media/optimus-sandbox.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/media/optimus-sandbox.png",
+      "sha256": "fdbfdaa848ea0b4965e2ba913bdec8aedcc460e3b9ed6eddd7da86d7d0437067",
+      "bytes": 167185,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/optimus-app-rules.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/optimus-app-rules.png",
+      "sha256": "2708b2e960f8e50b9696487069611bc7f0cb3858af1ca57f57878e1af8b0a6f9",
+      "bytes": 39463,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/optimus-revert.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/optimus-revert.png",
+      "sha256": "e84f083c9902cf946700388f29c0a753ec261514fcbb2c02a8737695be4ad2a2",
+      "bytes": 40678,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/optimus-security-review.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/optimus-security-review.png",
+      "sha256": "a5cb7e0740e78c0164d19a30513cb248150ec5a17060bfb6927dd21728ab013e",
+      "bytes": 38535,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/optimus-setup.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/optimus-setup.png",
+      "sha256": "8602116e6430133dc5c0291be5becc8534ff62f7650da3f4f5e85754baaa050d",
+      "bytes": 39893,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/optimus.png",
+      "source": "source://optimus/Releases/0.12.31/source/docs/optimus.png",
+      "sha256": "d873875d9aad7f8df90b9d41332a05d6f5103803c6e952cb609830911157c331",
+      "bytes": 97361,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/responsive-layout.md",
+      "source": "source://optimus/Releases/0.12.31/source/docs/responsive-layout.md",
+      "sha256": "057ca5ac92dd4c4595c26d037bde43aef8a4d64c83400f35b50afea481dd6628",
+      "bytes": 1640,
+      "kind": "original-reference"
+    },
+    {
+      "path": "reference/worker-layout-and-skip.md",
+      "source": "source://optimus/Releases/0.12.31/source/docs/worker-layout-and-skip.md",
+      "sha256": "bd067dba2b9b5ba57cf02ee293846b3ff4f530cc7a895b31354ca70fbbce95c1",
+      "bytes": 3672,
+      "kind": "original-reference"
+    },
+    {
+      "path": "source/LICENSE",
+      "source": "source://optimus/Releases/0.12.31/source/LICENSE",
+      "sha256": "2eb7b5dd9285b67f670ae681a349b0c50676f1d14e87bab7eada4a25d04ba3a1",
+      "bytes": 1143,
+      "kind": "source-metadata"
+    },
+    {
+      "path": "source/NOTICE",
+      "source": "source://optimus/Releases/0.12.31/source/NOTICE",
+      "sha256": "c0fcb3fcd4e24e2aed0e45f31454e523e9f43d4b758d8cceb24e55ed46911cbc",
+      "bytes": 1846,
+      "kind": "source-metadata"
+    },
+    {
+      "path": "source/pyproject.toml",
+      "source": "source://optimus/Releases/0.12.31/source/pyproject.toml",
+      "sha256": "7fa06c5d875c043c9654199cab28b26ce2d22c5895930db023e0552b1cf0f293",
+      "bytes": 840,
+      "kind": "source-metadata"
+    },
+    {
+      "path": "source/README.md",
+      "source": "source://optimus/Releases/0.12.31/source/README.md",
+      "sha256": "e8fd5b9674f99bcd8b85994df5f6dc1c422e23347a692df50d33ef8b7d0e47f7",
+      "bytes": 39103,
+      "kind": "source-metadata",
+      "original_sha256": "a7ceae16b1768fde3e7bc56ae65ef1a80c41b2092fa39f2ec6722f43e238b142",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/__init__.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/__init__.py",
+      "sha256": "e0847cfa953bdb7ec85d7ea2fc546c9ed86c5980ff179837fb72b1593589e7ef",
+      "bytes": 73,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/__main__.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/__main__.py",
+      "sha256": "cacc984d9ab5cf48d325e8d2e7bbf4b72f2eaf39f1e1250d9438d072c076d02d",
+      "bytes": 48,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/adaptive_maintenance.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/adaptive_maintenance.py",
+      "sha256": "f31696181b99463ee640ba4f17a46824f7a45313f7ab0d489670c6cd714e0190",
+      "bytes": 9215,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/additional_packages.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/additional_packages.py",
+      "sha256": "15fe86dc59a2e3e769603f7476fffaf0061577dbca5b08b2ddb3b3489d24a9cb",
+      "bytes": 22997,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/app_presence.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/app_presence.py",
+      "sha256": "3d97a04a05e2a59768c3f602cc319b3e919f917bf662d54067ea0d7e9881b310",
+      "bytes": 35033,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/app_update_verification.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/app_update_verification.py",
+      "sha256": "7bca8a35aec019bf68c54138a185e1bbfff2256c19e95f19f3656f196ffc21b4",
+      "bytes": 23273,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/app.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/app.py",
+      "sha256": "aaefc9da0dce0091d2c297a85ed136a1b01ecad15fab2bfaec79698292fa1d27",
+      "bytes": 33043,
+      "kind": "support-source",
+      "original_sha256": "f61f57ee71cd171156e2c924166ab8d6524b3b4a2368cc9a704c8293b8a6a3b8",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/application_caches.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/application_caches.py",
+      "sha256": "8b757d5eae7c890f0a5043c6bf34c4a93e2d63b0a562960892a6842cf89bdf1e",
+      "bytes": 23591,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/approval_policy.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/approval_policy.py",
+      "sha256": "5091960d62cd4438eea00bf3791e90dd447be10855969eddd697f72d74c287d7",
+      "bytes": 4903,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/assets/checkbox-check.svg",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/assets/checkbox-check.svg",
+      "sha256": "7402f8b5ee3136a2e05cef4a308bdee7cd0fc9ba554a1e68c737581f5ba758e8",
+      "bytes": 187,
+      "kind": "asset"
+    },
+    {
+      "path": "source/src/optimus/assets/optimus.ico",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/assets/optimus.ico",
+      "sha256": "dfc57725c65f071e3290bfa328bf3bd7e3ebb0669fa7b40add67a5d456513c46",
+      "bytes": 41086,
+      "kind": "asset"
+    },
+    {
+      "path": "source/src/optimus/assets/optimus.svg",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/assets/optimus.svg",
+      "sha256": "725a897f450cd936d0d9498232fbe60775f97d686786c699bc3869f76ab9ca0b",
+      "bytes": 377,
+      "kind": "asset"
+    },
+    {
+      "path": "source/src/optimus/assets/RACCOON-NOTICE.txt",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/assets/RACCOON-NOTICE.txt",
+      "sha256": "aedebc0c2975b5464ab937083e9c1bfde9221370ec74630cdd55e0b53f72696f",
+      "bytes": 1802,
+      "kind": "asset"
+    },
+    {
+      "path": "source/src/optimus/automated_files.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/automated_files.py",
+      "sha256": "e33c261f4f8d280338d02e4e129e7dcd025c3575f023f400647559d70efd631c",
+      "bytes": 14546,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/automated_software.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/automated_software.py",
+      "sha256": "2fa47b751ec7e1b7989b948fd68051c243ed4ff8d2c647ee7c4088900b1677b8",
+      "bytes": 43144,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/automated_system.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/automated_system.py",
+      "sha256": "6f9fa8d0c924c1c3aaddfb53b517024ba311c9ef074710866bd321c084126f74",
+      "bytes": 35142,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/automatic_update_recovery.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/automatic_update_recovery.py",
+      "sha256": "e5b976e13118e69a654e03b0efc2750d956cb00ec3ab850caf6783b82f3d3e6b",
+      "bytes": 25389,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/automation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/automation.py",
+      "sha256": "9279d6cb37f67bfa7dfe1f7d94b6a8ade027dcc6249e727e38598ff4ecbd3221",
+      "bytes": 12108,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/backend.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/backend.py",
+      "sha256": "015c91dc68594507c19010a9754f25ec39ca21098610bc64d1e07064f9e74417",
+      "bytes": 46188,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/bridge.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/bridge.py",
+      "sha256": "97e465195e60f941bc79302708e97b72f3f915088aa549884e0c79b0a792cf90",
+      "bytes": 18705,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/browser_cleanup.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/browser_cleanup.py",
+      "sha256": "7d21cd78b61cdbf3e56288a4a30a6ea91ea2c2cf51a1afbb25c8a7786611646b",
+      "bytes": 39811,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/browser_paths.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/browser_paths.py",
+      "sha256": "8539015f271a0714f7635a3d52f8509a57475fe809da56cb2af48c20e6e4cdea",
+      "bytes": 7893,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/browser_privacy.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/browser_privacy.py",
+      "sha256": "3802c1f27678d988b6b99c7cbf6a8b45eae86068de80e27b578b8f4f0f97d253",
+      "bytes": 29738,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/browser_prompts.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/browser_prompts.py",
+      "sha256": "72359e7dc58cce41d44f24fb35ee7d7b7d658c7ea4ac9a39f514d55bab9eeb9e",
+      "bytes": 5900,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/calendar_cadence.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/calendar_cadence.py",
+      "sha256": "3b25b058f358723dd1f9cf82825d28525c55493438343717fa6be6d2d9faa666",
+      "bytes": 1546,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/change_history.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/change_history.py",
+      "sha256": "5062abb8aeabd22b22d429970e289a7b1572e76034531f1efaea0dddf8c0fb62",
+      "bytes": 28256,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/cleaner.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/cleaner.py",
+      "sha256": "99d7f71ca22ec8b263c51505db6db651125f360ada59db87b483b2a1abc6d813",
+      "bytes": 41926,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/cloud_drive.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/cloud_drive.py",
+      "sha256": "3d3654f54f187c64377f64e839f64696b9146963a58559607bcdc37d5c22d7f1",
+      "bytes": 37374,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/codex_archives.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/codex_archives.py",
+      "sha256": "af2a5ca39681a8a0045f9893f73e4663d01b6f06fc1f21745c46850306a22d00",
+      "bytes": 19745,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/continue_updates.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/continue_updates.py",
+      "sha256": "699b5ce07d6b32bd4c262cef8b55c6b2eebb3b341356a32130a0687ff5a41b1d",
+      "bytes": 12004,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/defender_scan.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/defender_scan.py",
+      "sha256": "cb344f790e63f4b217103b0761a5a510c9b98f8647a9b206a3290e7f8514c5af",
+      "bytes": 12134,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/drive_optimization.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/drive_optimization.py",
+      "sha256": "8567368230b513c58a760e6565e8a249efa8fb2d88837df74b5cdbbb7215d72d",
+      "bytes": 30171,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/driver_backups.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/driver_backups.py",
+      "sha256": "543a44c694e2a1ddd6191b54848e8bfec4725b30b793baac369a246777b0e2d6",
+      "bytes": 36205,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/driver_coverage.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/driver_coverage.py",
+      "sha256": "1c0229ec81d232d58519181fa4d809f2b1ab2f596cd02b5ae6447ac4aedbe0b9",
+      "bytes": 16772,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/driver_update_backup.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/driver_update_backup.py",
+      "sha256": "2091e7e341b0e1e8085ff92c90a6f766f9ef619dcb92e8e5404473dc5cf5c5c2",
+      "bytes": 24202,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/elevation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/elevation.py",
+      "sha256": "2fb0800a7f2e80cb99a0b307603f019f7eece7e5ae4cdc9cb04ad043fe8d8123",
+      "bytes": 4176,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/emergency_stop.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/emergency_stop.py",
+      "sha256": "e30c59ad0351e709d737301d3609af60bb36600ac79ffd15e6cc839ee5f5817e",
+      "bytes": 10788,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/extended_backend.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/extended_backend.py",
+      "sha256": "8e8da83e0ce4dfb752755bc06c34dd0602ea39b8ebe25640851170f8c8b1b94e",
+      "bytes": 14109,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/file_utilities.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/file_utilities.py",
+      "sha256": "2a174478078dac0703d58d50855a916e2625ae80e58b7d5d72ed940ee067183d",
+      "bytes": 41166,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/filesystem.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/filesystem.py",
+      "sha256": "e296d8ac0eedcf6369c40f74fa9a08ce71fc818544f8cc58cbc2d9159570535c",
+      "bytes": 8626,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/gui_instance.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/gui_instance.py",
+      "sha256": "c1ab9f22c314a6d282cc97ce87c96a84457a3869c84b6992195a9e95ac848044",
+      "bytes": 8683,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/gui_startup.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/gui_startup.py",
+      "sha256": "427a72be4bd4b10c855eeed5f3886d9cb0c576e877dde3f73e0790c88ca1b669",
+      "bytes": 3413,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/inbox_driver_backup.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/inbox_driver_backup.py",
+      "sha256": "5b6be99d2f74347ea850556bc7c02ed85e5c260c3c3c3c38964a17063143463a",
+      "bytes": 17420,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/item_progress.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/item_progress.py",
+      "sha256": "bff35a4f44206b865a67325027e4cd82110847df15a1bee1d110cced63845e3d",
+      "bytes": 4740,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/launch_review.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/launch_review.py",
+      "sha256": "7847ec26090f9872f0d4d4e7ff3b5e2ff5283b5f44040c74dfa438c8c214dfbc",
+      "bytes": 16459,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/legacy_support.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/legacy_support.py",
+      "sha256": "60844554f2a8535a9b5d8607d81881fba8fbfa0435d14a06d6114450a56a0d9c",
+      "bytes": 6746,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/live_metrics.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/live_metrics.py",
+      "sha256": "e9ef14c010d187b054f3bb00a05c532256f838f7cea7977087cd3f206f45c14f",
+      "bytes": 22214,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/low_space_cleanup.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/low_space_cleanup.py",
+      "sha256": "cd37a27ed1ebc751d4922ff6f41f626b7a35a3c71f651d845164b53cd7151999",
+      "bytes": 8301,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/maintenance_insights.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/maintenance_insights.py",
+      "sha256": "a91dca3a8f48491239fe8687630619d8b4b7394669a8797ac56e21720fb8d164",
+      "bytes": 19385,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/maintenance_toolkit.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/maintenance_toolkit.py",
+      "sha256": "8da2822f06f126c8a9177e2bb42fa30f6ec6cd1d43462cf729deb5511089a634",
+      "bytes": 14291,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/maintenance.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/maintenance.py",
+      "sha256": "f495c9cfc77edc62b3057279ae1d83c110f419f411b146383de54d3a5062b28b",
+      "bytes": 58853,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/native_backend.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/native_backend.py",
+      "sha256": "dbc6f6db452303a9833bfbb76c6e5519e8b6bb7fd6f1807130fea78d8dbf7975",
+      "bytes": 40041,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/native_operations.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/native_operations.py",
+      "sha256": "5b043c28bbcf94177abbd25f52f3b15ff909ee89655d870be8cedcd76c74fc13",
+      "bytes": 53261,
+      "kind": "support-source",
+      "original_sha256": "145e6b57a9781ed1d74e82fc9eb1001255a1f739aee739fda65c75c3a837117a",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/native_settings.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/native_settings.py",
+      "sha256": "d8ad04b4289d1e0eac1bd04a48ce162d984a672f8642172c298999107f233952",
+      "bytes": 8404,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/native_startup_registration.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/native_startup_registration.py",
+      "sha256": "8804b1f35c1f2180a4409f540755bfc07369314f25efac470e881abe2395a549",
+      "bytes": 9488,
+      "kind": "support-source",
+      "original_sha256": "823b635b654b5d628421ae17226c116a78f6a8db9ef949c53ad4735a49d88a16",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/native_ui.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/native_ui.py",
+      "sha256": "aaca1f0d9d79dba1840ea49457fbaeacea59aaa4ac4dc4215a14011ed683e147",
+      "bytes": 57677,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/native_workflow.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/native_workflow.py",
+      "sha256": "99df9a99866b21041152f0fb7ecd11ce175865d503c845c78d1e2f0752cf2373",
+      "bytes": 58904,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/navigation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/navigation.py",
+      "sha256": "00b20f98fdf51a3b0be9dc18a0c4c23089547ea12f3363dd34f46a352bb1830b",
+      "bytes": 24076,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/onboarding.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/onboarding.py",
+      "sha256": "a8bdff23f547a2c9643ab9582faec9c2ce3a07bad239418b856e35f52f638229",
+      "bytes": 105852,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/parallel_updates.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/parallel_updates.py",
+      "sha256": "877a8c08c5da5ff6aea6d4b1fc3d8dae9b90435844daf42bf3659e769da37c2d",
+      "bytes": 102031,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/performance_history.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/performance_history.py",
+      "sha256": "bb2e791023ad60d203244a2e34f8ea32a8285864a556fdc6cbeba035c69aaf29",
+      "bytes": 18148,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/performance.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/performance.py",
+      "sha256": "9be1531594d1dda344971738c421532d65b1aaedf6eff2292996c97cf08ddca8",
+      "bytes": 45478,
+      "kind": "support-source",
+      "original_sha256": "03cb3645f87311594378c0f2903ecb42f1dc018a8ed6e5f3a90b2027ce6749f0",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/post_run_fixes.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/post_run_fixes.py",
+      "sha256": "0ccfd51880e48c7336a21a2ef0d56fb6612f374e46ed8947d2d964fad76bd465",
+      "bytes": 62932,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/process_harness.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/process_harness.py",
+      "sha256": "4db4fc308496074a0466efb4265cb1f47cf98a1801e972cd415275eaa809e37e",
+      "bytes": 22365,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/python_relocation_automation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/python_relocation_automation.py",
+      "sha256": "85dd44c7f4a2fb0a6d4eb8e735cbdc4f96c84dee0b9c526c389ecefbec3f0921",
+      "bytes": 12950,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/python_relocation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/python_relocation.py",
+      "sha256": "36a2916a5730332912e035161ae109b7f6fa0a9b09db99e3b12e6ff267b1b9e8",
+      "bytes": 31676,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/reboot_workflow.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/reboot_workflow.py",
+      "sha256": "a313663664664fb89678fc3be119d48e24c938b78b53175509915019ad4c4c3e",
+      "bytes": 4976,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/recommendation_presentation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/recommendation_presentation.py",
+      "sha256": "9d242c18bf86f9b03718bd02473589ac00f420f5065b6aee744131f52c2ba6aa",
+      "bytes": 15494,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/recovery_retention.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/recovery_retention.py",
+      "sha256": "ec41b066df8a7d2b86f5a4116c3d108e273d985e607d5aa2729f77f3f24ffa52",
+      "bytes": 25076,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/resident_update_completion.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/resident_update_completion.py",
+      "sha256": "a788758188c14b3ed67455a18af0523fb3f4c480196b96e58aa0de4d933550cf",
+      "bytes": 12787,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/retention_cleanup.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/retention_cleanup.py",
+      "sha256": "6cc3f2d17c2997e3824912d2933891cfcd3c0da81435ef3bf22eb71298e5d667",
+      "bytes": 22429,
+      "kind": "support-source",
+      "original_sha256": "16afa6e01dbfede04e4881dfcb1bdcebee5e9919391f7b9acd157d26d884b45d",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/retention_configuration.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/retention_configuration.py",
+      "sha256": "3e26a1d170b3cb592a39715220f027cc6bd0b5feae7cf9b08b41338b4716dc82",
+      "bytes": 2909,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/run_review_inventory.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/run_review_inventory.py",
+      "sha256": "a009a67c5473b22285f9a544c45b1f57b0ef5925f1460866b6b92bf2e1bd995e",
+      "bytes": 5478,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/runtime_priority.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/runtime_priority.py",
+      "sha256": "832c1c5dd2ca48bbed79898152026b4145c175d4d0b2f386f4a1e101605e3697",
+      "bytes": 5648,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/sampler.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/sampler.py",
+      "sha256": "ca2e51afbf46447036c2d262e3a7050c2a32bc26c09f758be0d567eb711e6a5f",
+      "bytes": 6555,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/sandbox.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/sandbox.py",
+      "sha256": "cd79a11b00e5350631e438950162b8424cf655b012744a24a50a270690eea0eb",
+      "bytes": 13678,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/scan_cadence.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/scan_cadence.py",
+      "sha256": "001bb9d3caa54c2d5443c6bc78f9defd1bdf837cad822861a5941b1e84d7a077",
+      "bytes": 10666,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/security_updates.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/security_updates.py",
+      "sha256": "0237fcab090f7b9002baa59d4203f9861e47f5a3af80d64fd1cccbd7302304e6",
+      "bytes": 23637,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/self_update_launchers.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/self_update_launchers.py",
+      "sha256": "f356999e06d48a4a521caf1755b4283ebbb14faed3b2491af195791f5e64f3b3",
+      "bytes": 35527,
+      "kind": "support-source",
+      "original_sha256": "6e5061615559f33a08e557a47a1d39f58d215f770f7991fabb31006709c45427",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/self_update_permissions.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/self_update_permissions.py",
+      "sha256": "335f76c05af3402ec621d142c37d2e509e4793cb06325c9543361a28dd9220aa",
+      "bytes": 14879,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/self_update_ui.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/self_update_ui.py",
+      "sha256": "b5d1813f0b0fd2baeaf4c793690693f04307760110399b3321a61d2c3320a20a",
+      "bytes": 33674,
+      "kind": "ui",
+      "original_sha256": "ebd9347a5fdc4f263d34b092190343b168bc2189a252418b632a609fad911eb6",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/self_update.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/self_update.py",
+      "sha256": "0c9b94ad7495ae784d0d89beffc181e3b497bf55a521b98e7beed5d52ea9cbd5",
+      "bytes": 52134,
+      "kind": "support-source",
+      "original_sha256": "8373648d885b3645024f1c47bfe469f7f76f8f2228920530b896289f06373efa",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/slowdown.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/slowdown.py",
+      "sha256": "379b3cbc4eced8581eeff803dce8098a5754cdd4cd03e60a735dd616f043dce6",
+      "bytes": 9414,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/smart_configuration.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/smart_configuration.py",
+      "sha256": "27fdad48cd8b4ac0adedaaf2bfed53bbdb5cca3acc5ae1ac0c6d0e9caeaa133e",
+      "bytes": 1380,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/smart_maintenance.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/smart_maintenance.py",
+      "sha256": "6323266c22e9fb475c05aba46abc32f8c0c482e729801534020cd76478524c7e",
+      "bytes": 33417,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/software_app_rules.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/software_app_rules.py",
+      "sha256": "c7354f3278560d806c6381c98e453547a1716d82612d08fd672a1d5bd48eb63d",
+      "bytes": 5376,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/source_workspace.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/source_workspace.py",
+      "sha256": "f69bcb6187f66c913d6c0ba5d630d01aa232cb1b11b9088ec222d0b2e4c2f126",
+      "bytes": 8639,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/speed_enhancements.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/speed_enhancements.py",
+      "sha256": "8b93142c649283588121913cecd51f5c66c8247b7a8fccd20f57603c23c6367b",
+      "bytes": 38818,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/speed_verification.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/speed_verification.py",
+      "sha256": "0b1165d3bf991e2312af1a28107132370c2d3d6dfd8d19a29368189642031939",
+      "bytes": 1301,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/startup_registration.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/startup_registration.py",
+      "sha256": "c6f3c5de401a72d10ab450140d93a72676ec18efa17e364189b814d4d1cf5c54",
+      "bytes": 11521,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/startup_safety.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/startup_safety.py",
+      "sha256": "40e35edb7e783991af687e45dcabf554eeb63dd068a9c9bbe8bb5eed6743236b",
+      "bytes": 3530,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/storage_growth.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/storage_growth.py",
+      "sha256": "a2c8f0510f9f0ce351510e03d6e48f564e02374d738042476dd12f7f21b81211",
+      "bytes": 11972,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/system_diagnostics.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/system_diagnostics.py",
+      "sha256": "8bd62dd69c49bd1ef47a278458e318aafc3586dc501e06929699ff03de3f8b17",
+      "bytes": 25339,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/system_privacy.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/system_privacy.py",
+      "sha256": "46a4044ef97db76f15f4ba6a463379df86279d4b4e0d2b659fe40eac72abea07",
+      "bytes": 80904,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/system_restore.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/system_restore.py",
+      "sha256": "65a3608dcc6f1ef7e40082346b3a6e64795bb719730cf634391cad73042505e2",
+      "bytes": 24311,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/thread_metrics.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/thread_metrics.py",
+      "sha256": "4e8c29ca6b4eafe666ab9f835b55d85410da3288ff6a446d90bb3c7bf88e15b8",
+      "bytes": 6438,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/tls_context.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/tls_context.py",
+      "sha256": "eabf450ab091ea3dfbb85525f622dcbea555f19a4273cb852e3284d3d2f26e15",
+      "bytes": 2836,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/toolkit_configuration.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/toolkit_configuration.py",
+      "sha256": "3314fd7dd24ff0ec4f5e44a91f5fb0245ff51c108901b8e364150aae25c55237",
+      "bytes": 6502,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/tools.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/tools.py",
+      "sha256": "d7ab64c030b864c7ea3f10a5fbedb477fbbc48d9a0d051148b85447f9a27fa7b",
+      "bytes": 7469,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/ui.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/ui.py",
+      "sha256": "14b1a23798e0bd0abf30ae2064f3114438590ea3528f51ed2933d7501d047746",
+      "bytes": 336657,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/unattended_configuration.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/unattended_configuration.py",
+      "sha256": "1b0aea204edda51e854c1bf9b8f1b1cb8a05d7c4581dd8a086176ed1b988fb56",
+      "bytes": 6819,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_hold_rechecks.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_hold_rechecks.py",
+      "sha256": "8cc8b9af438c92da1c510af4e2ffaf9cff13b1a63802b0b970dc073cb3210573",
+      "bytes": 17038,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_holds.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_holds.py",
+      "sha256": "f437349883809bf8b40cf8adf88bf2fd750295e87b46ac6218a74c5b6ffa3099",
+      "bytes": 6340,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_payload_lifecycle.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_payload_lifecycle.py",
+      "sha256": "2318aea89804465bad68e37df67244f4c7029de6e044bb436608ef7663087071",
+      "bytes": 5221,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_payloads.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_payloads.py",
+      "sha256": "69ac44cd278c174c6f0a3b3fd1190770fdfbaeb974779799820752f32bfd69f3",
+      "bytes": 23617,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_recovery.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_recovery.py",
+      "sha256": "d987747179eece2c7399f6d20c57d2fc3903b5c5e13cb89956ec2d7dc9d2cf49",
+      "bytes": 45318,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_resume.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_resume.py",
+      "sha256": "68dca8ff8069e91bc32c499426be396cb048564720b148f6068ec15e01483ed5",
+      "bytes": 12415,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/update_scan_evidence.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/update_scan_evidence.py",
+      "sha256": "6a9141bfa550419ad6735771e8c073ce83e4ac1eca7f876a2bae97c3c1a2726b",
+      "bytes": 8644,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/verification.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/verification.py",
+      "sha256": "8139eee591ced28621ce7d2180e05cc7e23f9352373d47c3e4467c4c34e6579b",
+      "bytes": 55144,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/volume_guard.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/volume_guard.py",
+      "sha256": "08ff3fd625ab1f080a554c471049fea8c748c8a5c1f7229c640b7de046d2a1d0",
+      "bytes": 8074,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/widgets/__init__.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/__init__.py",
+      "sha256": "b09977aa00c9e88964fa42c190cdebdb3419631065f67052bd482e92a9315da1",
+      "bytes": 76,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/app_rules_editor.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/app_rules_editor.py",
+      "sha256": "6d013470c4a158337518eb4da2417563309516b0bf02a6d7ba13694e646c8d26",
+      "bytes": 11087,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/button_tooltips.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/button_tooltips.py",
+      "sha256": "545d465a4892f838745cf6e61b98cda22cb59b9242ec41d3a97e9bd1e790fe47",
+      "bytes": 8515,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/cloud_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/cloud_panel.py",
+      "sha256": "c35aeb64622ebf01a959a1e5676e38ff7ca7621f385e65bd9ec291adca7ae0ad",
+      "bytes": 10173,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/code_highlighter.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/code_highlighter.py",
+      "sha256": "dd6d7f44951c720e5b5e4c31febb973fe8a12aaca4c0cdcb501285be3afcf2ae",
+      "bytes": 2673,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/compact_worker_ring.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/compact_worker_ring.py",
+      "sha256": "9e84fb7e667ca2f46f8317e79f6440ce7319b7367ea68fdb912431cf3b556337",
+      "bytes": 3090,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/drive_guard_choices.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/drive_guard_choices.py",
+      "sha256": "922b40711ed3cb81146a26c21e5722ff15c77798c05c885a591ca02341fe6e75",
+      "bytes": 2387,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/emergency_stop.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/emergency_stop.py",
+      "sha256": "831ceaad4236e2e65f8937c6a5345a97ffc3f1203f27f9dce21ac10049df72db",
+      "bytes": 1497,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/file_utilities_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/file_utilities_panel.py",
+      "sha256": "8fd112d1b0293484857836954da47a0b618d3644068698cf338543065d480090",
+      "bytes": 15673,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/flow_layout.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/flow_layout.py",
+      "sha256": "0ab978900db1b4a2c4615a90a61d0db29eb44844ad208195f1c9a37bbe427615",
+      "bytes": 2247,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/fullscreen.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/fullscreen.py",
+      "sha256": "a1c1f7b641e9ffc138b7744df5527dfecf8b115453346cd5744ca497cb67bfad",
+      "bytes": 8581,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/header_controls.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/header_controls.py",
+      "sha256": "fe60e5262f6e33904187b2b9107f172f4d5f6309f7106172a2e5755f63e39d12",
+      "bytes": 44066,
+      "kind": "ui",
+      "original_sha256": "15360e6b04065c5c8609682172a52a54c5f0b45db0dac5e23a949a8198f70b1c",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/widgets/LICENSE-Angerona.txt",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/LICENSE-Angerona.txt",
+      "sha256": "dfc874530365a156acb2bae950751e19aa0156dfcb70211863ed9ee003810c0e",
+      "bytes": 1099,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/live_activity.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/live_activity.py",
+      "sha256": "15d12dbfe8d5faeb399d8ea6d8af977ee1ad0173dc302ceebbb3bbef2e84ecb1",
+      "bytes": 8005,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/loading.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/loading.py",
+      "sha256": "f1001344608c23b54bc6e837d89226db629ddedf72c60c658fb110152837abff",
+      "bytes": 7932,
+      "kind": "ui",
+      "original_sha256": "a75f17e9984361b897b37566b71f324097913c553e390d0cbe3e3ebcdc499846",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/widgets/local_loading.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/local_loading.py",
+      "sha256": "0e1b366e14a9a77ad96ae8d64bc2d51aa64963930a534af3fa6a2bc9bea57b84",
+      "bytes": 7699,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/maintenance_toolkit_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/maintenance_toolkit_panel.py",
+      "sha256": "6432fe8ca216325d6e19ba11a25b21120442509a37f2fda4ff55ccd52cc73b83",
+      "bytes": 21093,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/navigation_scroll.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/navigation_scroll.py",
+      "sha256": "4c5088b62ac30c450d261fb5948d29f553db9de9474746a9eb4846f912523d91",
+      "bytes": 2480,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/privacy_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/privacy_panel.py",
+      "sha256": "aab0659c9f3d966930c13b119b003c7d1ca9775b8e0c9bbc0ecc153b10548e27",
+      "bytes": 11017,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/process_harness_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/process_harness_panel.py",
+      "sha256": "e24324d6d2c61cc41717fc7e9d33bd3b75279849b077e8e323ac92d76219f5a9",
+      "bytes": 17261,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/questions.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/questions.py",
+      "sha256": "bb7b911293eb7c636c141cdb45eb06c795f8a11ef7836f5a5e8d2da03df47821",
+      "bytes": 2382,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/recovery_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/recovery_panel.py",
+      "sha256": "2bec61e9a83d5f3e8bd495146570b598a7d438411abccf2e051a5a528652b5c0",
+      "bytes": 23880,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/resource_comparison.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/resource_comparison.py",
+      "sha256": "0a00612c6943410d2aac5ee06e8d173f92c906f4d393058d65440d36db2dcaac",
+      "bytes": 5003,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/responsive_text.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/responsive_text.py",
+      "sha256": "e41fe0a23caaa00ebe0d5d7272ffe238c4b678fd939be812dd78f38ec638599f",
+      "bytes": 2017,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/responsive.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/responsive.py",
+      "sha256": "ccec43e6f45fa243fac8eee2ca823b04a2fd3811c98ad44cb5f0e55af79a79c1",
+      "bytes": 5098,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/retention_cleanup_choices.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/retention_cleanup_choices.py",
+      "sha256": "997ff9540d68b5af1481f5631a30092464adbfe546af4d1a65df03f0f98739bb",
+      "bytes": 2345,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/revert_dialog.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/revert_dialog.py",
+      "sha256": "b70219d18ab82a3f98ceafe60e149058b3ea91b0968360521c56c34850192acd",
+      "bytes": 16144,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/services_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/services_panel.py",
+      "sha256": "add7c978747b18842686822a30d5ca22b895245094ee7ac8afe8d1b6ae99d231",
+      "bytes": 5894,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/smart_maintenance_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/smart_maintenance_panel.py",
+      "sha256": "f0321d97a2ebe2f5054136de0121a5548cce54ee2cffb9c24c665035801f8f3c",
+      "bytes": 8265,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/smart_setup_choices.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/smart_setup_choices.py",
+      "sha256": "399137338db2691eeb5c7fe3fe46dbb899e5b951a706749384aead036881c9b2",
+      "bytes": 2929,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/speed_enhancements_panel.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/speed_enhancements_panel.py",
+      "sha256": "6017da1af871c8445095293f1fcffa19fb93e214bdba63ee293346d93ded586a",
+      "bytes": 17331,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/theme.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/theme.py",
+      "sha256": "96c60f53b8cd4a2e0fd5456b913e493b049215fee59003730ea700f9de8b00de",
+      "bytes": 15296,
+      "kind": "ui",
+      "original_sha256": "9325ba96e24794a1a2c75901be43738a322ee9fe9b68f491a84bb79f6dfe77ba",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/optimus/widgets/unattended_setup_choices.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/unattended_setup_choices.py",
+      "sha256": "85205366cd671c1b2bb6f3fbf86361c00a8f19c7ec0d85b71b0b4b9fee9701c9",
+      "bytes": 2611,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/window_geometry.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/window_geometry.py",
+      "sha256": "d731d100dd349365aa90a918f91275177c33627b14736e9a748f7b06723666d7",
+      "bytes": 11896,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/worker_grid.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/worker_grid.py",
+      "sha256": "b1dc83b7495bbdfe1fb781d71c3d1aa975d68bbc945db9d49dd6d07512286dd4",
+      "bytes": 6499,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/worker_navigation.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/worker_navigation.py",
+      "sha256": "ac2458f255bd565fe40aa722f101ca8fdfeed6274ada0627811ff82d0ab71f18",
+      "bytes": 3688,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/widgets/wrapping_checkbox.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/widgets/wrapping_checkbox.py",
+      "sha256": "405136c42c52771d19a7fd877bc7c2d80b58434ffa963e7d76e9fd21f45f9bd2",
+      "bytes": 1667,
+      "kind": "ui"
+    },
+    {
+      "path": "source/src/optimus/windows_compatibility.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/windows_compatibility.py",
+      "sha256": "b02e9c15314a3532f2465cff0e018e5c78c7cf78293bda55f433f22c0f552eb6",
+      "bytes": 22521,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/winget_console.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/winget_console.py",
+      "sha256": "95310e181822c25c81e587b6921f51ea577a26048c709c9d61651e37789d6ddd",
+      "bytes": 50943,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/winget_progress.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/winget_progress.py",
+      "sha256": "a1cc799734866f6e25895a41f0288d3d4a3481cdb8f7025d87775b89b45c2f25",
+      "bytes": 10261,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/worker_status.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/worker_status.py",
+      "sha256": "30b3ea4f98744444bf69f526f1e239ff8f1c259c66ae8dc929e8b876d487c774",
+      "bytes": 6720,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/worker_totals.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/worker_totals.py",
+      "sha256": "75e3671a88a813db30aef875480b72454576cea8e12d985dab7f10692f5492da",
+      "bytes": 14223,
+      "kind": "support-source"
+    },
+    {
+      "path": "source/src/optimus/workflow.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/workflow.py",
+      "sha256": "6ab32ae7744389762fa5cc0ed724aed16fcfdcb85d3daa274e30a8acc03f017a",
+      "bytes": 75059,
+      "kind": "support-source"
+    },
+    {
+      "path": "variants/objects/01b9699f56ea60832758ca75876370d605e838a795d15af84c426cd1706922eb/worker_grid.py",
+      "source": "source://optimus/Releases/0.12.7/source/src/optimus/widgets/worker_grid.py",
+      "sha256": "01b9699f56ea60832758ca75876370d605e838a795d15af84c426cd1706922eb",
+      "bytes": 6618,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.7"
+    },
+    {
+      "path": "variants/objects/06dd7db5d26ee943b3fa449bc7166a3b37c5ce79f996c8627a9dbc09a8c8dab3/ui.py",
+      "source": "source://optimus/Releases/0.12.7/source/src/optimus/ui.py",
+      "sha256": "06dd7db5d26ee943b3fa449bc7166a3b37c5ce79f996c8627a9dbc09a8c8dab3",
+      "bytes": 293970,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.7"
+    },
+    {
+      "path": "variants/objects/0a00612c6943410d2aac5ee06e8d173f92c906f4d393058d65440d36db2dcaac/resource_comparison.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/resource_comparison.py",
+      "sha256": "0a00612c6943410d2aac5ee06e8d173f92c906f4d393058d65440d36db2dcaac",
+      "bytes": 5003,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/0ab978900db1b4a2c4615a90a61d0db29eb44844ad208195f1c9a37bbe427615/flow_layout.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/flow_layout.py",
+      "sha256": "0ab978900db1b4a2c4615a90a61d0db29eb44844ad208195f1c9a37bbe427615",
+      "bytes": 2247,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/0e1b366e14a9a77ad96ae8d64bc2d51aa64963930a534af3fa6a2bc9bea57b84/local_loading.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/local_loading.py",
+      "sha256": "0e1b366e14a9a77ad96ae8d64bc2d51aa64963930a534af3fa6a2bc9bea57b84",
+      "bytes": 7699,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/10ecfae70e5361b04d0a1f20e05bd59b78f94ed4d3a285e764dcf26be8c5f1e0/local_loading.py",
+      "source": "source://optimus/Releases/0.9.1/source/src/optimus/widgets/local_loading.py",
+      "sha256": "10ecfae70e5361b04d0a1f20e05bd59b78f94ed4d3a285e764dcf26be8c5f1e0",
+      "bytes": 7618,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.1"
+    },
+    {
+      "path": "variants/objects/12d3df3b21e2be050946b28b9befd13304624d169e45b48556942bad62627d86/privacy_panel.py",
+      "source": "source://optimus-history/Optimus-v0.1.0-backup/source/src/optimus/widgets/privacy_panel.py",
+      "sha256": "12d3df3b21e2be050946b28b9befd13304624d169e45b48556942bad62627d86",
+      "bytes": 10037,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.1.0-backup"
+    },
+    {
+      "path": "variants/objects/14b1a23798e0bd0abf30ae2064f3114438590ea3528f51ed2933d7501d047746/ui.py",
+      "source": "source://optimus/Releases/0.12.31/source/src/optimus/ui.py",
+      "sha256": "14b1a23798e0bd0abf30ae2064f3114438590ea3528f51ed2933d7501d047746",
+      "bytes": 336657,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.31"
+    },
+    {
+      "path": "variants/objects/15360e6b04065c5c8609682172a52a54c5f0b45db0dac5e23a949a8198f70b1c/header_controls.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/header_controls.py",
+      "sha256": "fe60e5262f6e33904187b2b9107f172f4d5f6309f7106172a2e5755f63e39d12",
+      "bytes": 44066,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11",
+      "original_sha256": "15360e6b04065c5c8609682172a52a54c5f0b45db0dac5e23a949a8198f70b1c",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/156f6c210b78135323f6df4e4682faad0d2c3c1e074bdf99ef606cdb828c9064/ui.py",
+      "source": "source://optimus/Releases/0.12.30/source/src/optimus/ui.py",
+      "sha256": "156f6c210b78135323f6df4e4682faad0d2c3c1e074bdf99ef606cdb828c9064",
+      "bytes": 331308,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.30"
+    },
+    {
+      "path": "variants/objects/15d12dbfe8d5faeb399d8ea6d8af977ee1ad0173dc302ceebbb3bbef2e84ecb1/live_activity.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/live_activity.py",
+      "sha256": "15d12dbfe8d5faeb399d8ea6d8af977ee1ad0173dc302ceebbb3bbef2e84ecb1",
+      "bytes": 8005,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/19d1e60e62ffcf615ed3f146aafda94070fd744e54e98ef1e62432de58dff19d/ui.py",
+      "source": "source://optimus-history/Optimus-v0.1.0-backup/source/src/optimus/ui.py",
+      "sha256": "19d1e60e62ffcf615ed3f146aafda94070fd744e54e98ef1e62432de58dff19d",
+      "bytes": 96398,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.1.0-backup"
+    },
+    {
+      "path": "variants/objects/1a59ad7cea97dc5730c3efe5e4db7721d10eb3fa024426cef505f5287baaf0b7/header_controls.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/widgets/header_controls.py",
+      "sha256": "69dc00d5d57087a5b67cdbb70ab16fe1223cd790c39a0706198af885d95f6759",
+      "bytes": 43523,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0",
+      "original_sha256": "1a59ad7cea97dc5730c3efe5e4db7721d10eb3fa024426cef505f5287baaf0b7",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/206ba963ad6236826c9e335821b1ccc5010a3df52c93110eb2e2ea9f4459688d/ui.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/ui.py",
+      "sha256": "206ba963ad6236826c9e335821b1ccc5010a3df52c93110eb2e2ea9f4459688d",
+      "bytes": 175654,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0"
+    },
+    {
+      "path": "variants/objects/222648e29274486bc0ed34aec682562b3fc93cf301abefbae4521bc0172d5850/onboarding.py",
+      "source": "source://optimus/Releases/0.12.2/source/src/optimus/onboarding.py",
+      "sha256": "222648e29274486bc0ed34aec682562b3fc93cf301abefbae4521bc0172d5850",
+      "bytes": 102770,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.2"
+    },
+    {
+      "path": "variants/objects/2284511abbef7d85a10d49be96d95c3628ce57ffc2849f56cdd5b3616a106f28/ui.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/ui.py",
+      "sha256": "2284511abbef7d85a10d49be96d95c3628ce57ffc2849f56cdd5b3616a106f28",
+      "bytes": 311398,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/234208d6285e7b8e9b218599792069086ca8f3c03209c7a0b2a6cedc3165523f/onboarding.py",
+      "source": "source://optimus-history/Optimus-v0.2.0-backup/source/src/optimus/onboarding.py",
+      "sha256": "234208d6285e7b8e9b218599792069086ca8f3c03209c7a0b2a6cedc3165523f",
+      "bytes": 28050,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.2.0-backup"
+    },
+    {
+      "path": "variants/objects/244ef9432ef4add88744f07abe3c334a51c6eb64496dfe0559dc68739117dc14/ui.py",
+      "source": "source://optimus-history/Optimus-v0.2.0-backup/source/src/optimus/ui.py",
+      "sha256": "244ef9432ef4add88744f07abe3c334a51c6eb64496dfe0559dc68739117dc14",
+      "bytes": 100421,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.2.0-backup"
+    },
+    {
+      "path": "variants/objects/267524a63371380db2b47a2a2ee34f69dd71821ddc05fb95dbbc06b3238d1b81/speed_enhancements_panel.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/widgets/speed_enhancements_panel.py",
+      "sha256": "267524a63371380db2b47a2a2ee34f69dd71821ddc05fb95dbbc06b3238d1b81",
+      "bytes": 17836,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0"
+    },
+    {
+      "path": "variants/objects/2afa2a23e32558fb0df098d9d4fee351cb2cbe51b1a8de0c42b6d9d023b2fc01/onboarding.py",
+      "source": "source://optimus-history/Optimus-v0.4.0-backup/source/src/optimus/onboarding.py",
+      "sha256": "2afa2a23e32558fb0df098d9d4fee351cb2cbe51b1a8de0c42b6d9d023b2fc01",
+      "bytes": 68527,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.4.0-backup"
+    },
+    {
+      "path": "variants/objects/2bec61e9a83d5f3e8bd495146570b598a7d438411abccf2e051a5a528652b5c0/recovery_panel.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/recovery_panel.py",
+      "sha256": "2bec61e9a83d5f3e8bd495146570b598a7d438411abccf2e051a5a528652b5c0",
+      "bytes": 23880,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/30229beb5a3e8ecb399c789ad8380815632ef67ccf0c53fd98a39785e5447f60/worker_grid.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/worker_grid.py",
+      "sha256": "30229beb5a3e8ecb399c789ad8380815632ef67ccf0c53fd98a39785e5447f60",
+      "bytes": 3815,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/3393233666110bb284698bd4644320669f9af9b4e79f8ade6d13dcfe652aa107/onboarding.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/onboarding.py",
+      "sha256": "3393233666110bb284698bd4644320669f9af9b4e79f8ade6d13dcfe652aa107",
+      "bytes": 104014,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/33b6620d47febd8608aeff50e6640f83f4a1a33fa641403067e8c26575cd4925/ui.py",
+      "source": "source://optimus/Releases/0.12.12/source/src/optimus/ui.py",
+      "sha256": "33b6620d47febd8608aeff50e6640f83f4a1a33fa641403067e8c26575cd4925",
+      "bytes": 311802,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.12"
+    },
+    {
+      "path": "variants/objects/341d5f3f94748d0fc930fa03b00258e83b6df53707348ef2d9f5d43bfac64a75/header_controls.py",
+      "source": "source://optimus/Releases/0.9.0/source/src/optimus/widgets/header_controls.py",
+      "sha256": "f062532db14b3fba32d891076454dd739c49bc0448b6f2f58dace7a572bd9cb4",
+      "bytes": 43774,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.0",
+      "original_sha256": "341d5f3f94748d0fc930fa03b00258e83b6df53707348ef2d9f5d43bfac64a75",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/379b6cbd80de08b16402a5261438cc4656e192a6fb4bd57b368db6ee89cc1d79/onboarding.py",
+      "source": "source://optimus/Releases/0.6.1/source/src/optimus/onboarding.py",
+      "sha256": "379b6cbd80de08b16402a5261438cc4656e192a6fb4bd57b368db6ee89cc1d79",
+      "bytes": 89422,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.1"
+    },
+    {
+      "path": "variants/objects/399137338db2691eeb5c7fe3fe46dbb899e5b951a706749384aead036881c9b2/smart_setup_choices.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/smart_setup_choices.py",
+      "sha256": "399137338db2691eeb5c7fe3fe46dbb899e5b951a706749384aead036881c9b2",
+      "bytes": 2929,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/3a97a72489812dced8f1af1166a5b369cd15d4d1b51f4003bac69ace22db01ba/ui.py",
+      "source": "source://optimus/Releases/0.6.2/source/src/optimus/ui.py",
+      "sha256": "3a97a72489812dced8f1af1166a5b369cd15d4d1b51f4003bac69ace22db01ba",
+      "bytes": 153679,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.2"
+    },
+    {
+      "path": "variants/objects/3efac183c7a740ed06e7156276e43fb891d478add7967c2f95c528e33687cc21/ui.py",
+      "source": "source://optimus/Releases/0.6.1/source/src/optimus/ui.py",
+      "sha256": "3efac183c7a740ed06e7156276e43fb891d478add7967c2f95c528e33687cc21",
+      "bytes": 150134,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.1"
+    },
+    {
+      "path": "variants/objects/3f3093e1cd54c709cf6ce3e5d002ed42872c2d00634d9b33c0f1f3cfd192b21d/live_activity.py",
+      "source": "source://optimus/Releases/0.11.9/source/src/optimus/widgets/live_activity.py",
+      "sha256": "3f3093e1cd54c709cf6ce3e5d002ed42872c2d00634d9b33c0f1f3cfd192b21d",
+      "bytes": 7683,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.9"
+    },
+    {
+      "path": "variants/objects/405136c42c52771d19a7fd877bc7c2d80b58434ffa963e7d76e9fd21f45f9bd2/wrapping_checkbox.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/wrapping_checkbox.py",
+      "sha256": "405136c42c52771d19a7fd877bc7c2d80b58434ffa963e7d76e9fd21f45f9bd2",
+      "bytes": 1667,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/4504bccbe14768082e36354749283217d6af25b5fc5d7c63b86b36cd68aceafc/worker_navigation.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/widgets/worker_navigation.py",
+      "sha256": "4504bccbe14768082e36354749283217d6af25b5fc5d7c63b86b36cd68aceafc",
+      "bytes": 3583,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/45734a6709151fedd9587e9c7dbd6b2228d8714b704543fdbb79c967b4fe5b1b/native_ui.py",
+      "source": "source://optimus/Releases/0.9.0/source/src/optimus/native_ui.py",
+      "sha256": "45734a6709151fedd9587e9c7dbd6b2228d8714b704543fdbb79c967b4fe5b1b",
+      "bytes": 46482,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.0"
+    },
+    {
+      "path": "variants/objects/47e8ff915a4f0cc4a3af7dc50a80a23809ea04eaa169c4e49cc7f84547444567/ui.py",
+      "source": "source://optimus/Releases/0.9.1/source/src/optimus/ui.py",
+      "sha256": "47e8ff915a4f0cc4a3af7dc50a80a23809ea04eaa169c4e49cc7f84547444567",
+      "bytes": 196653,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.1"
+    },
+    {
+      "path": "variants/objects/4c067fbe787342907e879ebf1b1e2ec4e14c700f6ac235d830f972e9773ac8a9/live_activity.py",
+      "source": "source://optimus/Releases/0.11.10/source/src/optimus/widgets/live_activity.py",
+      "sha256": "4c067fbe787342907e879ebf1b1e2ec4e14c700f6ac235d830f972e9773ac8a9",
+      "bytes": 7941,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.10"
+    },
+    {
+      "path": "variants/objects/4c5088b62ac30c450d261fb5948d29f553db9de9474746a9eb4846f912523d91/navigation_scroll.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/navigation_scroll.py",
+      "sha256": "4c5088b62ac30c450d261fb5948d29f553db9de9474746a9eb4846f912523d91",
+      "bytes": 2480,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/4d15ce3bed51fad4927be16b395c2490f2c70d14476cf8cba2fcf3a84c7de2d4/ui.py",
+      "source": "source://optimus/Releases/0.8.1/source/src/optimus/ui.py",
+      "sha256": "4d15ce3bed51fad4927be16b395c2490f2c70d14476cf8cba2fcf3a84c7de2d4",
+      "bytes": 178650,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.1"
+    },
+    {
+      "path": "variants/objects/545d465a4892f838745cf6e61b98cda22cb59b9242ec41d3a97e9bd1e790fe47/button_tooltips.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/button_tooltips.py",
+      "sha256": "545d465a4892f838745cf6e61b98cda22cb59b9242ec41d3a97e9bd1e790fe47",
+      "bytes": 8515,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/54e3077b261ba7f0597179211d7dbe2729ce8a32258c86f2b3b47e348fa93f3b/loading.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/widgets/loading.py",
+      "sha256": "6ad0828a8f033df9137cadc30fbd330dedb81ada2ee449083aca71adcddea233",
+      "bytes": 6708,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0",
+      "original_sha256": "54e3077b261ba7f0597179211d7dbe2729ce8a32258c86f2b3b47e348fa93f3b",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/560361185f871b34f9a683cb60f8f10bd7ad584d7c3d3180c13a35026a61978d/native_ui.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/native_ui.py",
+      "sha256": "560361185f871b34f9a683cb60f8f10bd7ad584d7c3d3180c13a35026a61978d",
+      "bytes": 46057,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0"
+    },
+    {
+      "path": "variants/objects/592b97828c0ceab2e26f9d4883d62bdab352c3ecec7ea6809ed7a4bf97ede699/ui.py",
+      "source": "source://optimus/Releases/0.12.6/source/src/optimus/ui.py",
+      "sha256": "592b97828c0ceab2e26f9d4883d62bdab352c3ecec7ea6809ed7a4bf97ede699",
+      "bytes": 278465,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.6"
+    },
+    {
+      "path": "variants/objects/5bf436109e7d90f9023d3d3e8272405c146884d3ea54fce4a49d40e2f96e97de/unattended_setup_choices.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/unattended_setup_choices.py",
+      "sha256": "5bf436109e7d90f9023d3d3e8272405c146884d3ea54fce4a49d40e2f96e97de",
+      "bytes": 2289,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/5ccc79629c89ad1d0cecd7ae642fcad14dc4e34d2d038235142897eb895ae59b/maintenance_toolkit_panel.py",
+      "source": "source://optimus/Releases/0.12.2/source/src/optimus/widgets/maintenance_toolkit_panel.py",
+      "sha256": "5ccc79629c89ad1d0cecd7ae642fcad14dc4e34d2d038235142897eb895ae59b",
+      "bytes": 20529,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.2"
+    },
+    {
+      "path": "variants/objects/5cd509e3193b8611464dfa2a5b7414b7203713cc19f0798330a8d2edd9e9996c/loading.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/widgets/loading.py",
+      "sha256": "2d4f016027cd53f11b3a50e08465c59d4927f144161dbb47cc56bac7618e13bd",
+      "bytes": 6990,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0",
+      "original_sha256": "5cd509e3193b8611464dfa2a5b7414b7203713cc19f0798330a8d2edd9e9996c",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/5d52d59dc5308dd49e2bc40549e65bcea7a379037608199fab55f60aba348470/ui.py",
+      "source": "source://optimus/Releases/0.7.2/source/src/optimus/ui.py",
+      "sha256": "5d52d59dc5308dd49e2bc40549e65bcea7a379037608199fab55f60aba348470",
+      "bytes": 167521,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.7.2"
+    },
+    {
+      "path": "variants/objects/5f337c93b2e8683e24cf473b2782db3b3d9862f68a6b8e82b1e1ce5b200c31ed/onboarding.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/onboarding.py",
+      "sha256": "5f337c93b2e8683e24cf473b2782db3b3d9862f68a6b8e82b1e1ce5b200c31ed",
+      "bytes": 100893,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/5f860bcf3d407fd70c5d0a9364ffef4cee6f3353e90f6251dbecfa1b45c8ee4e/native_ui.py",
+      "source": "source://optimus/Releases/0.12.2/source/src/optimus/native_ui.py",
+      "sha256": "5f860bcf3d407fd70c5d0a9364ffef4cee6f3353e90f6251dbecfa1b45c8ee4e",
+      "bytes": 56842,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.2"
+    },
+    {
+      "path": "variants/objects/6017da1af871c8445095293f1fcffa19fb93e214bdba63ee293346d93ded586a/speed_enhancements_panel.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/speed_enhancements_panel.py",
+      "sha256": "6017da1af871c8445095293f1fcffa19fb93e214bdba63ee293346d93ded586a",
+      "bytes": 17331,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/602a761093db11d87e2d0f00596351d8963d0cd0269ad1f8058cc50b5cb32085/ui.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/ui.py",
+      "sha256": "602a761093db11d87e2d0f00596351d8963d0cd0269ad1f8058cc50b5cb32085",
+      "bytes": 245137,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/6186b602654a4cff9cb32b2de4bf41595ec007af77735d6573955a55c89e4c06/onboarding.py",
+      "source": "source://optimus-history/Optimus/source/src/optimus/onboarding.py",
+      "sha256": "6186b602654a4cff9cb32b2de4bf41595ec007af77735d6573955a55c89e4c06",
+      "bytes": 78037,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.5.0-Desktop"
+    },
+    {
+      "path": "variants/objects/6432fe8ca216325d6e19ba11a25b21120442509a37f2fda4ff55ccd52cc73b83/maintenance_toolkit_panel.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/maintenance_toolkit_panel.py",
+      "sha256": "6432fe8ca216325d6e19ba11a25b21120442509a37f2fda4ff55ccd52cc73b83",
+      "bytes": 21093,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/64a40c3096b73f1ba5f57738dac101402b63fa485a5827205c83467eb7d6a9dd/ui.py",
+      "source": "source://optimus/Releases/0.7.1/source/src/optimus/ui.py",
+      "sha256": "64a40c3096b73f1ba5f57738dac101402b63fa485a5827205c83467eb7d6a9dd",
+      "bytes": 156950,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.7.1"
+    },
+    {
+      "path": "variants/objects/6786454ea0a22f54364bb060b2a00954307a54bcaf3dc331f8613bea684212e8/onboarding.py",
+      "source": "source://optimus/Releases/0.9.4/source/src/optimus/onboarding.py",
+      "sha256": "6786454ea0a22f54364bb060b2a00954307a54bcaf3dc331f8613bea684212e8",
+      "bytes": 93888,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.4"
+    },
+    {
+      "path": "variants/objects/67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497/holographic_orb.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/widgets/holographic_orb.py",
+      "sha256": "c799530f8afad55dc7ad7721a749e4cb64f2b7d2df729e03b266d2eea85c60e9",
+      "bytes": 42739,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0",
+      "original_sha256": "67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/6982456309a4c644854f4c13c1f6e16c6f986bcfaa7bbe922796d25d795a3fd8/onboarding.py",
+      "source": "source://optimus/Releases/0.12.27/source/src/optimus/onboarding.py",
+      "sha256": "6982456309a4c644854f4c13c1f6e16c6f986bcfaa7bbe922796d25d795a3fd8",
+      "bytes": 104778,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.27"
+    },
+    {
+      "path": "variants/objects/6af64f61893c5ebaa275c01dae7e73a7bf13c5d8839dc1df43bb0db54f6e1190/worker_grid.py",
+      "source": "source://optimus/Releases/0.12.6/source/src/optimus/widgets/worker_grid.py",
+      "sha256": "6af64f61893c5ebaa275c01dae7e73a7bf13c5d8839dc1df43bb0db54f6e1190",
+      "bytes": 5347,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.6"
+    },
+    {
+      "path": "variants/objects/6bdbce3feab133402d49fbb2110bf5515372a273b12929ed1651ff9211404b16/ui.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/ui.py",
+      "sha256": "6bdbce3feab133402d49fbb2110bf5515372a273b12929ed1651ff9211404b16",
+      "bytes": 228540,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/6be533a55b69114bcf0b8c9c245b2ebf44e82cbbf49aed0800aec9af2dc5722d/onboarding.py",
+      "source": "source://optimus/Releases/0.9.0/source/src/optimus/onboarding.py",
+      "sha256": "6be533a55b69114bcf0b8c9c245b2ebf44e82cbbf49aed0800aec9af2dc5722d",
+      "bytes": 93888,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.0"
+    },
+    {
+      "path": "variants/objects/6d013470c4a158337518eb4da2417563309516b0bf02a6d7ba13694e646c8d26/app_rules_editor.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/widgets/app_rules_editor.py",
+      "sha256": "6d013470c4a158337518eb4da2417563309516b0bf02a6d7ba13694e646c8d26",
+      "bytes": 11087,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/7106159c669c54d22dc9535f802f785e9a6327f48dbc6b01c90a1f1be3f0f3f1/native_ui.py",
+      "source": "source://optimus/Releases/0.9.4/source/src/optimus/native_ui.py",
+      "sha256": "7106159c669c54d22dc9535f802f785e9a6327f48dbc6b01c90a1f1be3f0f3f1",
+      "bytes": 46482,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.4"
+    },
+    {
+      "path": "variants/objects/71e103a2b5b8eb4d4ccf65d83d064b378515ca012a0029e1739c80a6182ee883/loading.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/loading.py",
+      "sha256": "d0f811007332c13376ebedaf68fc80002311d1787967f607cfaea7cf035c87ae",
+      "bytes": 7415,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1",
+      "original_sha256": "71e103a2b5b8eb4d4ccf65d83d064b378515ca012a0029e1739c80a6182ee883",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/725a897f450cd936d0d9498232fbe60775f97d686786c699bc3869f76ab9ca0b/optimus.svg",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/assets/optimus.svg",
+      "sha256": "725a897f450cd936d0d9498232fbe60775f97d686786c699bc3869f76ab9ca0b",
+      "bytes": 377,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/7402f8b5ee3136a2e05cef4a308bdee7cd0fc9ba554a1e68c737581f5ba758e8/checkbox-check.svg",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/assets/checkbox-check.svg",
+      "sha256": "7402f8b5ee3136a2e05cef4a308bdee7cd0fc9ba554a1e68c737581f5ba758e8",
+      "bytes": 187,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/7828c616a7eee10213493ccf5cf41635504aa237e0d5b52674eea0625bee4207/window_geometry.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/window_geometry.py",
+      "sha256": "7828c616a7eee10213493ccf5cf41635504aa237e0d5b52674eea0625bee4207",
+      "bytes": 11677,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/788daf91bfe5c843f45e4e951ed04233f816e07418a6d830bf0720689ba29afe/ui.py",
+      "source": "source://optimus/Releases/0.12.19/source/src/optimus/ui.py",
+      "sha256": "788daf91bfe5c843f45e4e951ed04233f816e07418a6d830bf0720689ba29afe",
+      "bytes": 317078,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.19"
+    },
+    {
+      "path": "variants/objects/7f25d94d21e98803bd8c645fbec0c6e65b012ee95dbfee79ebb1f705ab1b9dd3/onboarding.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/onboarding.py",
+      "sha256": "7f25d94d21e98803bd8c645fbec0c6e65b012ee95dbfee79ebb1f705ab1b9dd3",
+      "bytes": 88737,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0"
+    },
+    {
+      "path": "variants/objects/813d02e1c9d7de4b4c3872b24ab39cd511d294206df066acfd6310aad57725cf/ui.py",
+      "source": "source://optimus/Releases/0.12.3/source/src/optimus/ui.py",
+      "sha256": "813d02e1c9d7de4b4c3872b24ab39cd511d294206df066acfd6310aad57725cf",
+      "bytes": 269363,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.3"
+    },
+    {
+      "path": "variants/objects/81a3958664c9e97fcbfafdd87f0ba307c869072d05d44233f99165ed6bf80e94/header_controls.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/widgets/header_controls.py",
+      "sha256": "7055684ff1124e2937c7dfe3379c9d76b6343cb2c0fa1eefcf64edb293f0aa7b",
+      "bytes": 43710,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0",
+      "original_sha256": "81a3958664c9e97fcbfafdd87f0ba307c869072d05d44233f99165ed6bf80e94",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/831ceaad4236e2e65f8937c6a5345a97ffc3f1203f27f9dce21ac10049df72db/emergency_stop.py",
+      "source": "source://optimus/Releases/0.12.19/source/src/optimus/widgets/emergency_stop.py",
+      "sha256": "831ceaad4236e2e65f8937c6a5345a97ffc3f1203f27f9dce21ac10049df72db",
+      "bytes": 1497,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.19"
+    },
+    {
+      "path": "variants/objects/846b3c1497dab421cfdaf981d8c028adda369b2ddb0e788a6f7bfae2828a31e0/ui.py",
+      "source": "source://optimus/Releases/0.9.4/source/src/optimus/ui.py",
+      "sha256": "846b3c1497dab421cfdaf981d8c028adda369b2ddb0e788a6f7bfae2828a31e0",
+      "bytes": 203476,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.4"
+    },
+    {
+      "path": "variants/objects/85205366cd671c1b2bb6f3fbf86361c00a8f19c7ec0d85b71b0b4b9fee9701c9/unattended_setup_choices.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/widgets/unattended_setup_choices.py",
+      "sha256": "85205366cd671c1b2bb6f3fbf86361c00a8f19c7ec0d85b71b0b4b9fee9701c9",
+      "bytes": 2611,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/88be9abd57b6fd019b1883fd3a867ccf1b3749061fa5a7dc0fb268791a44f60c/native_ui.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/native_ui.py",
+      "sha256": "88be9abd57b6fd019b1883fd3a867ccf1b3749061fa5a7dc0fb268791a44f60c",
+      "bytes": 53439,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/88fbf81373969fca1d3c866e3a12e0b772de750360c322db75cdde77f60a6749/ui.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/ui.py",
+      "sha256": "88fbf81373969fca1d3c866e3a12e0b772de750360c322db75cdde77f60a6749",
+      "bytes": 145448,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0"
+    },
+    {
+      "path": "variants/objects/8d4a01880af0a6fc7c729d6e6f0f3b21dc84f878ffaed19cef20adc7b330beda/ui.py",
+      "source": "source://optimus/Releases/0.9.2/source/src/optimus/ui.py",
+      "sha256": "8d4a01880af0a6fc7c729d6e6f0f3b21dc84f878ffaed19cef20adc7b330beda",
+      "bytes": 201782,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.2"
+    },
+    {
+      "path": "variants/objects/8fd112d1b0293484857836954da47a0b618d3644068698cf338543065d480090/file_utilities_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/file_utilities_panel.py",
+      "sha256": "8fd112d1b0293484857836954da47a0b618d3644068698cf338543065d480090",
+      "bytes": 15673,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/922b40711ed3cb81146a26c21e5722ff15c77798c05c885a591ca02341fe6e75/drive_guard_choices.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/widgets/drive_guard_choices.py",
+      "sha256": "922b40711ed3cb81146a26c21e5722ff15c77798c05c885a591ca02341fe6e75",
+      "bytes": 2387,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/9325ba96e24794a1a2c75901be43738a322ee9fe9b68f491a84bb79f6dfe77ba/theme.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/theme.py",
+      "sha256": "96c60f53b8cd4a2e0fd5456b913e493b049215fee59003730ea700f9de8b00de",
+      "bytes": 15296,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1",
+      "original_sha256": "9325ba96e24794a1a2c75901be43738a322ee9fe9b68f491a84bb79f6dfe77ba",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/9327bdd4e1609a7c61fe8dae473b812f8e78289a637ac982c7f49c1a6db0a356/ui.py",
+      "source": "source://optimus/Releases/0.9.9/source/src/optimus/ui.py",
+      "sha256": "9327bdd4e1609a7c61fe8dae473b812f8e78289a637ac982c7f49c1a6db0a356",
+      "bytes": 211285,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.9"
+    },
+    {
+      "path": "variants/objects/944d0b8b505bb26f4fb6eefb75c69c1bc64d2e2838b502d4e18216dcf917615b/speed_enhancements_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/speed_enhancements_panel.py",
+      "sha256": "944d0b8b505bb26f4fb6eefb75c69c1bc64d2e2838b502d4e18216dcf917615b",
+      "bytes": 17988,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/972dce1045c2a0972b993ab2c0f1fd06d381eee4d9fce09c039e08e1e5803925/onboarding.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/onboarding.py",
+      "sha256": "972dce1045c2a0972b993ab2c0f1fd06d381eee4d9fce09c039e08e1e5803925",
+      "bytes": 98818,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/9832373f718dc12644e9118f5c35b28cf528c134793bcc1ebcc82c266fe09f83/theme.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/widgets/theme.py",
+      "sha256": "ace2fadf9a5b32c6326db34bf87b7f1669a397642e5a1bd05216d8b6e1af46d0",
+      "bytes": 13482,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0",
+      "original_sha256": "9832373f718dc12644e9118f5c35b28cf528c134793bcc1ebcc82c266fe09f83",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/997ff9540d68b5af1481f5631a30092464adbfe546af4d1a65df03f0f98739bb/retention_cleanup_choices.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/widgets/retention_cleanup_choices.py",
+      "sha256": "997ff9540d68b5af1481f5631a30092464adbfe546af4d1a65df03f0f98739bb",
+      "bytes": 2345,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/9c82a16228a808542a3e6b0e7549c894d3315ce541d46cf5c0a432ffb3623fb5/header_controls.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/header_controls.py",
+      "sha256": "db7b73a1fead4c792d1fef87ada632d189fcc241b44e6f72d3123c9b805c627e",
+      "bytes": 43966,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1",
+      "original_sha256": "9c82a16228a808542a3e6b0e7549c894d3315ce541d46cf5c0a432ffb3623fb5",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/9df0f354fb1644340def9ede7f37b90281ef1bbee332e1e0957f72d2c6046ee7/ui.py",
+      "source": "source://optimus/Releases/0.12.9/source/src/optimus/ui.py",
+      "sha256": "9df0f354fb1644340def9ede7f37b90281ef1bbee332e1e0957f72d2c6046ee7",
+      "bytes": 297638,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.9"
+    },
+    {
+      "path": "variants/objects/9e84fb7e667ca2f46f8317e79f6440ce7319b7367ea68fdb912431cf3b556337/compact_worker_ring.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/compact_worker_ring.py",
+      "sha256": "9e84fb7e667ca2f46f8317e79f6440ce7319b7367ea68fdb912431cf3b556337",
+      "bytes": 3090,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/9f4eceb620bc68bd704494e6d2cddd7bc0a5bd84057d1d02cc0dae804bf3b033/ui.py",
+      "source": "source://optimus/Releases/0.9.8/source/src/optimus/ui.py",
+      "sha256": "9f4eceb620bc68bd704494e6d2cddd7bc0a5bd84057d1d02cc0dae804bf3b033",
+      "bytes": 207926,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.8"
+    },
+    {
+      "path": "variants/objects/a1c1f7b641e9ffc138b7744df5527dfecf8b115453346cd5744ca497cb67bfad/fullscreen.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/fullscreen.py",
+      "sha256": "a1c1f7b641e9ffc138b7744df5527dfecf8b115453346cd5744ca497cb67bfad",
+      "bytes": 8581,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/a7330e73912354b011e8c152d1259da52ec64531cdabacd7221de11b46c930a5/onboarding.py",
+      "source": "source://optimus/Releases/0.7.1/source/src/optimus/onboarding.py",
+      "sha256": "a7330e73912354b011e8c152d1259da52ec64531cdabacd7221de11b46c930a5",
+      "bytes": 89749,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.7.1"
+    },
+    {
+      "path": "variants/objects/a75f17e9984361b897b37566b71f324097913c553e390d0cbe3e3ebcdc499846/loading.py",
+      "source": "source://optimus/Releases/0.12.12/source/src/optimus/widgets/loading.py",
+      "sha256": "f1001344608c23b54bc6e837d89226db629ddedf72c60c658fb110152837abff",
+      "bytes": 7932,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.12",
+      "original_sha256": "a75f17e9984361b897b37566b71f324097913c553e390d0cbe3e3ebcdc499846",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/a77695bd3e691edbbb2020593f29828ed1e0d386fdd49ea74936ff93d1037aca/ui.py",
+      "source": "source://optimus/Releases/0.12.27/source/src/optimus/ui.py",
+      "sha256": "a77695bd3e691edbbb2020593f29828ed1e0d386fdd49ea74936ff93d1037aca",
+      "bytes": 329207,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.27"
+    },
+    {
+      "path": "variants/objects/a8bdff23f547a2c9643ab9582faec9c2ce3a07bad239418b856e35f52f638229/onboarding.py",
+      "source": "source://optimus/Releases/0.12.30/source/src/optimus/onboarding.py",
+      "sha256": "a8bdff23f547a2c9643ab9582faec9c2ce3a07bad239418b856e35f52f638229",
+      "bytes": 105852,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.30"
+    },
+    {
+      "path": "variants/objects/a8c3de6b9614512b4f9357fbf0fdb8be5a7b8410fdfaef68799242d5722844c5/compact_worker_ring.py",
+      "source": "source://optimus/Releases/0.12.7/source/src/optimus/widgets/compact_worker_ring.py",
+      "sha256": "a8c3de6b9614512b4f9357fbf0fdb8be5a7b8410fdfaef68799242d5722844c5",
+      "bytes": 2700,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.7"
+    },
+    {
+      "path": "variants/objects/aab0659c9f3d966930c13b119b003c7d1ca9775b8e0c9bbc0ecc153b10548e27/privacy_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/privacy_panel.py",
+      "sha256": "aab0659c9f3d966930c13b119b003c7d1ca9775b8e0c9bbc0ecc153b10548e27",
+      "bytes": 11017,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/aaca1f0d9d79dba1840ea49457fbaeacea59aaa4ac4dc4215a14011ed683e147/native_ui.py",
+      "source": "source://optimus/Releases/0.12.19/source/src/optimus/native_ui.py",
+      "sha256": "aaca1f0d9d79dba1840ea49457fbaeacea59aaa4ac4dc4215a14011ed683e147",
+      "bytes": 57677,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.19"
+    },
+    {
+      "path": "variants/objects/ab56d8cf1287cc972623d4b517972b2077c7c76a202442ff33c4e802d3b8276e/unattended_setup_choices.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/widgets/unattended_setup_choices.py",
+      "sha256": "ab56d8cf1287cc972623d4b517972b2077c7c76a202442ff33c4e802d3b8276e",
+      "bytes": 2384,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/ac2458f255bd565fe40aa722f101ca8fdfeed6274ada0627811ff82d0ab71f18/worker_navigation.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/worker_navigation.py",
+      "sha256": "ac2458f255bd565fe40aa722f101ca8fdfeed6274ada0627811ff82d0ab71f18",
+      "bytes": 3688,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/add7c978747b18842686822a30d5ca22b895245094ee7ac8afe8d1b6ae99d231/services_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/services_panel.py",
+      "sha256": "add7c978747b18842686822a30d5ca22b895245094ee7ac8afe8d1b6ae99d231",
+      "bytes": 5894,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/ade31c00cc28e5aecea6ee708c6f0cbe3c4831d60725666f30c17e2778b95f4e/ui.py",
+      "source": "source://optimus/App/source/src/optimus/ui.py",
+      "sha256": "ade31c00cc28e5aecea6ee708c6f0cbe3c4831d60725666f30c17e2778b95f4e",
+      "bytes": 145536,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0-App"
+    },
+    {
+      "path": "variants/objects/adef44c528e6badc9aa012db01f719428e75477f852e15843e2d2f28c823b710/ui.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/ui.py",
+      "sha256": "adef44c528e6badc9aa012db01f719428e75477f852e15843e2d2f28c823b710",
+      "bytes": 267426,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/ae091d58e90c59ec57281da3cf6f4e000001c1fd77f161d9c14dbd1c531c3fd5/LICENSE-Angerona.txt",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/widgets/LICENSE-Angerona.txt",
+      "sha256": "ae091d58e90c59ec57281da3cf6f4e000001c1fd77f161d9c14dbd1c531c3fd5",
+      "bytes": 1078,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0"
+    },
+    {
+      "path": "variants/objects/ae68865e685f5df6aaff233914372a53313f7e562c24429a21cc5fc12b4944f0/onboarding.py",
+      "source": "source://optimus/Releases/0.6.2/source/src/optimus/onboarding.py",
+      "sha256": "ae68865e685f5df6aaff233914372a53313f7e562c24429a21cc5fc12b4944f0",
+      "bytes": 89745,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.2"
+    },
+    {
+      "path": "variants/objects/aedebc0c2975b5464ab937083e9c1bfde9221370ec74630cdd55e0b53f72696f/RACCOON-NOTICE.txt",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/assets/RACCOON-NOTICE.txt",
+      "sha256": "aedebc0c2975b5464ab937083e9c1bfde9221370ec74630cdd55e0b53f72696f",
+      "bytes": 1802,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/afa4eb8731b27600a5b6a644f0d2412e25b0d52c4344c4936575e79513a065fc/ui.py",
+      "source": "source://optimus-history/Optimus/source/src/optimus/ui.py",
+      "sha256": "afa4eb8731b27600a5b6a644f0d2412e25b0d52c4344c4936575e79513a065fc",
+      "bytes": 115477,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.5.0-Desktop"
+    },
+    {
+      "path": "variants/objects/b09977aa00c9e88964fa42c190cdebdb3419631065f67052bd482e92a9315da1/__init__.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/__init__.py",
+      "sha256": "b09977aa00c9e88964fa42c190cdebdb3419631065f67052bd482e92a9315da1",
+      "bytes": 76,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/b0ce795bc254f318692dcc72c2b7e0998f17943daa9f8b75eea4570bbf826095/ui.py",
+      "source": "source://optimus/Releases/0.12.2/source/src/optimus/ui.py",
+      "sha256": "b0ce795bc254f318692dcc72c2b7e0998f17943daa9f8b75eea4570bbf826095",
+      "bytes": 268111,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.2"
+    },
+    {
+      "path": "variants/objects/b1dc83b7495bbdfe1fb781d71c3d1aa975d68bbc945db9d49dd6d07512286dd4/worker_grid.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/worker_grid.py",
+      "sha256": "b1dc83b7495bbdfe1fb781d71c3d1aa975d68bbc945db9d49dd6d07512286dd4",
+      "bytes": 6499,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/b39b2142148e9395d7b72dbd93041c3eab23fada3267c6ae6adda986203ec48e/ui.py",
+      "source": "source://optimus/Releases/0.11.10/source/src/optimus/ui.py",
+      "sha256": "b39b2142148e9395d7b72dbd93041c3eab23fada3267c6ae6adda986203ec48e",
+      "bytes": 253699,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.10"
+    },
+    {
+      "path": "variants/objects/b70219d18ab82a3f98ceafe60e149058b3ea91b0968360521c56c34850192acd/revert_dialog.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/revert_dialog.py",
+      "sha256": "b70219d18ab82a3f98ceafe60e149058b3ea91b0968360521c56c34850192acd",
+      "bytes": 16144,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/baef419000194c893afe757998ab90281e69aca4fa9bb0daca82b18f8ad3ab4b/live_activity.py",
+      "source": "source://optimus/Releases/0.11.1/source/src/optimus/widgets/live_activity.py",
+      "sha256": "baef419000194c893afe757998ab90281e69aca4fa9bb0daca82b18f8ad3ab4b",
+      "bytes": 6676,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.1"
+    },
+    {
+      "path": "variants/objects/bb7b911293eb7c636c141cdb45eb06c795f8a11ef7836f5a5e8d2da03df47821/questions.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/questions.py",
+      "sha256": "bb7b911293eb7c636c141cdb45eb06c795f8a11ef7836f5a5e8d2da03df47821",
+      "bytes": 2382,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/bbbaed5533d023d3053d63744fa5621ff9c36728c55e02d1d583ac1130d3b964/native_ui.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/native_ui.py",
+      "sha256": "bbbaed5533d023d3053d63744fa5621ff9c36728c55e02d1d583ac1130d3b964",
+      "bytes": 57509,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/bf4dfc23ec8b2d5318c80ebc7f1caa6c3ad7a42e6c8cf78c95a41429d0bc548f/worker_grid.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/widgets/worker_grid.py",
+      "sha256": "bf4dfc23ec8b2d5318c80ebc7f1caa6c3ad7a42e6c8cf78c95a41429d0bc548f",
+      "bytes": 5226,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/bfb804fd5e3edd49982411d4069769addf5720f828c7d7d694d415305522e329/ui.py",
+      "source": "source://optimus/Releases/0.9.6/source/src/optimus/ui.py",
+      "sha256": "bfb804fd5e3edd49982411d4069769addf5720f828c7d7d694d415305522e329",
+      "bytes": 203934,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.6"
+    },
+    {
+      "path": "variants/objects/bff26f8907551308715ae39c0b1c7bf6c9cb51c1530b8e873c66513be25cd8c7/recovery_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/recovery_panel.py",
+      "sha256": "bff26f8907551308715ae39c0b1c7bf6c9cb51c1530b8e873c66513be25cd8c7",
+      "bytes": 23176,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/c12da1f7eecaa03e470d753a9e317efb027697790d284a648cbc0bab95c65e5f/onboarding.py",
+      "source": "source://optimus-history/Optimus-v0.3.0-backup/source/src/optimus/onboarding.py",
+      "sha256": "c12da1f7eecaa03e470d753a9e317efb027697790d284a648cbc0bab95c65e5f",
+      "bytes": 54955,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.3.0-backup"
+    },
+    {
+      "path": "variants/objects/c192d28133fdd96ef757f8cdd348946abd7d230c23bf9811d47c8b53a3c03d1c/ui.py",
+      "source": "source://optimus-history/Optimus-v0.4.0-backup/source/src/optimus/ui.py",
+      "sha256": "c192d28133fdd96ef757f8cdd348946abd7d230c23bf9811d47c8b53a3c03d1c",
+      "bytes": 113924,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.4.0-backup"
+    },
+    {
+      "path": "variants/objects/c35aeb64622ebf01a959a1e5676e38ff7ca7621f385e65bd9ec291adca7ae0ad/cloud_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/cloud_panel.py",
+      "sha256": "c35aeb64622ebf01a959a1e5676e38ff7ca7621f385e65bd9ec291adca7ae0ad",
+      "bytes": 10173,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/c3989c8452c0c0ca8686914b3ae304f6b07554288c24095696bd6a99f4c560f7/theme.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/widgets/theme.py",
+      "sha256": "a1fd2d625b22da4a8698a7c5e9a6657b9e59e5c21427a10d3799d5ed56d32676",
+      "bytes": 14726,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0",
+      "original_sha256": "c3989c8452c0c0ca8686914b3ae304f6b07554288c24095696bd6a99f4c560f7",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/c46ca78383028c3e3891d4bcd7a9b3da1a33cef6ee797a69fa935844c9d066d7/ui.py",
+      "source": "source://optimus/Releases/0.12.21/source/src/optimus/ui.py",
+      "sha256": "c46ca78383028c3e3891d4bcd7a9b3da1a33cef6ee797a69fa935844c9d066d7",
+      "bytes": 320302,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.21"
+    },
+    {
+      "path": "variants/objects/c4ef3e6bfd9507cb1a7b4c956e110500c8646395e4f03a0d65bcc5fefbf49292/ui.py",
+      "source": "source://optimus-history/Optimus-v0.1.2-backup/source/src/optimus/ui.py",
+      "sha256": "c4ef3e6bfd9507cb1a7b4c956e110500c8646395e4f03a0d65bcc5fefbf49292",
+      "bytes": 96442,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.1.2-backup"
+    },
+    {
+      "path": "variants/objects/c6dcc1e3d707002f9798258a8c47345f6cee0b2e715b3c0b8445ddc53f5ade96/process_harness_panel.py",
+      "source": "source://optimus/Releases/0.6.0/source/src/optimus/widgets/process_harness_panel.py",
+      "sha256": "c6dcc1e3d707002f9798258a8c47345f6cee0b2e715b3c0b8445ddc53f5ade96",
+      "bytes": 16946,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.6.0"
+    },
+    {
+      "path": "variants/objects/ccec43e6f45fa243fac8eee2ca823b04a2fd3811c98ad44cb5f0e55af79a79c1/responsive.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/responsive.py",
+      "sha256": "ccec43e6f45fa243fac8eee2ca823b04a2fd3811c98ad44cb5f0e55af79a79c1",
+      "bytes": 5098,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/d06eb2aeffe21f8862b591926efd3b72abd08364c41e1d9ce51787fb0c858fc3/self_update_ui.py",
+      "source": "source://optimus/Releases/0.11.10/source/src/optimus/self_update_ui.py",
+      "sha256": "ffb0bd3eca3659869e6a6f3aaa66390c5849176ae84444721a4ca01a3c06a288",
+      "bytes": 28372,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.10",
+      "original_sha256": "d06eb2aeffe21f8862b591926efd3b72abd08364c41e1d9ce51787fb0c858fc3",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/d0d392f777864ed5a7b3b6735cadbe5904f0dd55a6615ddcaf223f417cc9438d/ui.py",
+      "source": "source://optimus/Releases/0.11.2/source/src/optimus/ui.py",
+      "sha256": "d0d392f777864ed5a7b3b6735cadbe5904f0dd55a6615ddcaf223f417cc9438d",
+      "bytes": 246649,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.2"
+    },
+    {
+      "path": "variants/objects/d479783f09966147f3ffe86f27b1aeaea7187f1259ee5343a2fa001ed8e9a36b/ui.py",
+      "source": "source://optimus-history/Optimus-v0.4.1-backup/source/src/optimus/ui.py",
+      "sha256": "d479783f09966147f3ffe86f27b1aeaea7187f1259ee5343a2fa001ed8e9a36b",
+      "bytes": 114054,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.4.1-backup"
+    },
+    {
+      "path": "variants/objects/d731d100dd349365aa90a918f91275177c33627b14736e9a748f7b06723666d7/window_geometry.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/window_geometry.py",
+      "sha256": "d731d100dd349365aa90a918f91275177c33627b14736e9a748f7b06723666d7",
+      "bytes": 11896,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/d880e80b05af41b610df8cae06e21fe324b39a43d057573d5068d3fcecc0f454/ui.py",
+      "source": "source://optimus/Releases/0.11.9/source/src/optimus/ui.py",
+      "sha256": "d880e80b05af41b610df8cae06e21fe324b39a43d057573d5068d3fcecc0f454",
+      "bytes": 253273,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.9"
+    },
+    {
+      "path": "variants/objects/dc98a85445598c02951eadc7c9850526cd984b86049555220cbcf6d96b1c573b/header_controls.py",
+      "source": "source://optimus/Releases/0.7.1/source/src/optimus/widgets/header_controls.py",
+      "sha256": "e47d8fd406f1b3ec800bef830b920e4a2067e4becb63e5ed03cea0ae7f9486b0",
+      "bytes": 43526,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.7.1",
+      "original_sha256": "dc98a85445598c02951eadc7c9850526cd984b86049555220cbcf6d96b1c573b",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/dd2180e64e24dae1734207f6894a57d890f9f2493b377a8726213512eaa75430/ui.py",
+      "source": "source://optimus/Releases/0.12.24/source/src/optimus/ui.py",
+      "sha256": "dd2180e64e24dae1734207f6894a57d890f9f2493b377a8726213512eaa75430",
+      "bytes": 328671,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.24"
+    },
+    {
+      "path": "variants/objects/dd6d7f44951c720e5b5e4c31febb973fe8a12aaca4c0cdcb501285be3afcf2ae/code_highlighter.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/code_highlighter.py",
+      "sha256": "dd6d7f44951c720e5b5e4c31febb973fe8a12aaca4c0cdcb501285be3afcf2ae",
+      "bytes": 2673,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/dfc57725c65f071e3290bfa328bf3bd7e3ebb0669fa7b40add67a5d456513c46/optimus.ico",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/assets/optimus.ico",
+      "sha256": "dfc57725c65f071e3290bfa328bf3bd7e3ebb0669fa7b40add67a5d456513c46",
+      "bytes": 41086,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/dfc874530365a156acb2bae950751e19aa0156dfcb70211863ed9ee003810c0e/LICENSE-Angerona.txt",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/LICENSE-Angerona.txt",
+      "sha256": "dfc874530365a156acb2bae950751e19aa0156dfcb70211863ed9ee003810c0e",
+      "bytes": 1099,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/e0be733cdde626bd281469349da95abb7437cc0ec09fde60c3869ea2d3e89116/ui.py",
+      "source": "source://optimus/Releases/0.9.0/source/src/optimus/ui.py",
+      "sha256": "e0be733cdde626bd281469349da95abb7437cc0ec09fde60c3869ea2d3e89116",
+      "bytes": 194614,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.9.0"
+    },
+    {
+      "path": "variants/objects/e24324d6d2c61cc41717fc7e9d33bd3b75279849b077e8e323ac92d76219f5a9/process_harness_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/process_harness_panel.py",
+      "sha256": "e24324d6d2c61cc41717fc7e9d33bd3b75279849b077e8e323ac92d76219f5a9",
+      "bytes": 17261,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/e41fe0a23caaa00ebe0d5d7272ffe238c4b678fd939be812dd78f38ec638599f/responsive_text.py",
+      "source": "source://optimus/Releases/0.12.11/source/src/optimus/widgets/responsive_text.py",
+      "sha256": "e41fe0a23caaa00ebe0d5d7272ffe238c4b678fd939be812dd78f38ec638599f",
+      "bytes": 2017,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.11"
+    },
+    {
+      "path": "variants/objects/e5b3870184e1d3bdadcba84771af6a4d0adaf33a0ce1f0d437fbbebd25bb5189/ui.py",
+      "source": "source://optimus/Releases/0.11.7/source/src/optimus/ui.py",
+      "sha256": "e5b3870184e1d3bdadcba84771af6a4d0adaf33a0ce1f0d437fbbebd25bb5189",
+      "bytes": 251543,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.7"
+    },
+    {
+      "path": "variants/objects/ea46dc03f7c8eec8aa5006fea5ff7171c956ed1063d13a1ad0d6579a70c91a82/onboarding.py",
+      "source": "source://optimus/Releases/0.8.0/source/src/optimus/onboarding.py",
+      "sha256": "ea46dc03f7c8eec8aa5006fea5ff7171c956ed1063d13a1ad0d6579a70c91a82",
+      "bytes": 93519,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.8.0"
+    },
+    {
+      "path": "variants/objects/ebbd26295d2e678dc41369d82bd3a620d0881bc1880bdfc3a99d6ba895898813/ui.py",
+      "source": "source://optimus-history/Optimus-v0.3.0-backup/source/src/optimus/ui.py",
+      "sha256": "ebbd26295d2e678dc41369d82bd3a620d0881bc1880bdfc3a99d6ba895898813",
+      "bytes": 100495,
+      "kind": "unique-ui-revision",
+      "firstVersion": "Optimus-v0.3.0-backup"
+    },
+    {
+      "path": "variants/objects/ebd9347a5fdc4f263d34b092190343b168bc2189a252418b632a609fad911eb6/self_update_ui.py",
+      "source": "source://optimus/Releases/0.12.19/source/src/optimus/self_update_ui.py",
+      "sha256": "b5d1813f0b0fd2baeaf4c793690693f04307760110399b3321a61d2c3320a20a",
+      "bytes": 33674,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.19",
+      "original_sha256": "ebd9347a5fdc4f263d34b092190343b168bc2189a252418b632a609fad911eb6",
+      "privacy_redacted": true
+    },
+    {
+      "path": "variants/objects/f0321d97a2ebe2f5054136de0121a5548cce54ee2cffb9c24c665035801f8f3c/smart_maintenance_panel.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/widgets/smart_maintenance_panel.py",
+      "sha256": "f0321d97a2ebe2f5054136de0121a5548cce54ee2cffb9c24c665035801f8f3c",
+      "bytes": 8265,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/f04baa695bb85ace982131c163125578004d398ed04065530c5a02687c5d407e/onboarding.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/onboarding.py",
+      "sha256": "f04baa695bb85ace982131c163125578004d398ed04065530c5a02687c5d407e",
+      "bytes": 102114,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/f1ebc0dcffde83a6dfc8fbc70232688277593ba7e22257f0dd2552166957322a/native_ui.py",
+      "source": "source://optimus/Releases/0.11.11/source/src/optimus/native_ui.py",
+      "sha256": "f1ebc0dcffde83a6dfc8fbc70232688277593ba7e22257f0dd2552166957322a",
+      "bytes": 56255,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.11"
+    },
+    {
+      "path": "variants/objects/f28046c864a9c834308e68890ee9b55bfe685a0013ce56fcb442aabf480f3bd1/ui.py",
+      "source": "source://optimus/Releases/0.11.5/source/src/optimus/ui.py",
+      "sha256": "f28046c864a9c834308e68890ee9b55bfe685a0013ce56fcb442aabf480f3bd1",
+      "bytes": 249680,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.5"
+    },
+    {
+      "path": "variants/objects/f47b523ede8b377bcbb3bb8f6f5fff6171f027f5863cd8db65a040919f94fd4a/onboarding.py",
+      "source": "source://optimus/Releases/0.12.3/source/src/optimus/onboarding.py",
+      "sha256": "f47b523ede8b377bcbb3bb8f6f5fff6171f027f5863cd8db65a040919f94fd4a",
+      "bytes": 103231,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.12.3"
+    },
+    {
+      "path": "variants/objects/f9674ee14b54a3f6d8a6d365f2cfb098779a9f52b60b9365382a2ff39bb3524f/native_ui.py",
+      "source": "source://optimus/Releases/0.10.1/source/src/optimus/native_ui.py",
+      "sha256": "f9674ee14b54a3f6d8a6d365f2cfb098779a9f52b60b9365382a2ff39bb3524f",
+      "bytes": 51136,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.10.1"
+    },
+    {
+      "path": "variants/objects/fcc7e2725a8d4bf5aef7c6d0237ad747b91998b105d14e9e018c439f043b9515/native_ui.py",
+      "source": "source://optimus/Releases/0.11.10/source/src/optimus/native_ui.py",
+      "sha256": "fcc7e2725a8d4bf5aef7c6d0237ad747b91998b105d14e9e018c439f043b9515",
+      "bytes": 53792,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.11.10"
+    },
+    {
+      "path": "variants/objects/fe91d99bda606f873c7fb6eeeea6b5c008c245ffd9c866f70c9a61550403a670/native_ui.py",
+      "source": "source://optimus/Releases/0.7.1/source/src/optimus/native_ui.py",
+      "sha256": "fe91d99bda606f873c7fb6eeeea6b5c008c245ffd9c866f70c9a61550403a670",
+      "bytes": 43079,
+      "kind": "unique-ui-revision",
+      "firstVersion": "0.7.1"
+    }
+  ],
+  "publication_privacy": "Local identifiers and owner-specific non-legal links redacted. sha256 describes published bytes; original_sha256, when present, is the pre-redaction digest. Historical object directories retain their original-source identifier. Required legal attribution retained.",
+  "publication_omissions": [
+    {
+      "path": "reference/media/optimus-016-stop-dashboard.png",
+      "original_sha256": "5875da16d79b467b3e035639fb6a7a242ece4840f3ac75bf1e071f8fc9dd0494",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "reference/media/optimus-completed.png",
+      "original_sha256": "8922423e6970406836c29176b52cd4de6f30f403b2c2c97a5e999c8767586324",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "reference/media/optimus-demo.gif",
+      "original_sha256": "1a2a10af4f73cfdcdad698b857aba2da91575582e26bfcf21ec6a319570b3582",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "reference/media/optimus-walkthrough.mp4",
+      "original_sha256": "07ee2f5a3efea995ef76402c276786d17296a80465afff62a5e92754b25f357b",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "reference/media/optimus-workers.png",
+      "original_sha256": "d86e80c985631eee37adb74b331c4caef46cc5330c7ea06c92df408061e4a762",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "reference/optimus-held-apps.png",
+      "original_sha256": "0e22f33eb05914856bc60317c96b5f255220dd11fd94a0938b3c4693b0b1e94e",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "reference/optimus-workers.png",
+      "original_sha256": "dcc199eb4b3f03c88e34b8c4f65d6eddde79ec5cb36ef3cabea1526747ab457c",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "source/src/optimus/assets/raccoon-cane-dance.gif",
+      "original_sha256": "751abce658a0c372cc91f784e010724728197efe417e8cef833b3ad96747f321",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "source/src/optimus/assets/raccoon-cane-dance.png",
+      "original_sha256": "81c45a8c3273b1ef41229ab50d4395c9e770e0b43cbadb7efa1e99a0a52b7fc4",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "variants/objects/751abce658a0c372cc91f784e010724728197efe417e8cef833b3ad96747f321/raccoon-cane-dance.gif",
+      "original_sha256": "751abce658a0c372cc91f784e010724728197efe417e8cef833b3ad96747f321",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    },
+    {
+      "path": "variants/objects/81c45a8c3273b1ef41229ab50d4395c9e770e0b43cbadb7efa1e99a0a52b7fc4/raccoon-cane-dance.png",
+      "original_sha256": "81c45a8c3273b1ef41229ab50d4395c9e770e0b43cbadb7efa1e99a0a52b7fc4",
+      "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain."
+    }
+  ]
+}

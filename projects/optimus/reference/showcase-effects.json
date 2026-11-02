@@ -1,0 +1,607 @@
+{
+  "capture": "Offscreen QWidget renders composed using actual mask state from original PanelRevealOverlay",
+  "synthetic_data": true,
+  "backend_instantiated": false,
+  "frames": 82,
+  "frame_duration_ms": 40,
+  "mask_samples": [
+    {
+      "frame": 0,
+      "mask": null
+    },
+    {
+      "frame": 1,
+      "mask": null
+    },
+    {
+      "frame": 2,
+      "mask": null
+    },
+    {
+      "frame": 3,
+      "mask": null
+    },
+    {
+      "frame": 4,
+      "mask": null
+    },
+    {
+      "frame": 5,
+      "mask": [
+        287,
+        137,
+        4,
+        28
+      ]
+    },
+    {
+      "frame": 6,
+      "mask": [
+        287,
+        137,
+        4,
+        28
+      ]
+    },
+    {
+      "frame": 7,
+      "mask": [
+        156,
+        0,
+        265,
+        339
+      ]
+    },
+    {
+      "frame": 8,
+      "mask": [
+        60,
+        0,
+        457,
+        339
+      ]
+    },
+    {
+      "frame": 9,
+      "mask": [
+        1,
+        0,
+        576,
+        339
+      ]
+    },
+    {
+      "frame": 10,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 11,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 12,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 13,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 14,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 15,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 16,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 17,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 18,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 19,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 20,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 21,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 22,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 23,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 24,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 25,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 26,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 27,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 28,
+      "mask": [
+        0,
+        0,
+        579,
+        339
+      ]
+    },
+    {
+      "frame": 29,
+      "mask": [
+        0,
+        0,
+        579,
+        339
+      ]
+    },
+    {
+      "frame": 30,
+      "mask": [
+        0,
+        0,
+        579,
+        339
+      ]
+    },
+    {
+      "frame": 31,
+      "mask": [
+        81,
+        0,
+        416,
+        339
+      ]
+    },
+    {
+      "frame": 32,
+      "mask": [
+        197,
+        0,
+        184,
+        339
+      ]
+    },
+    {
+      "frame": 33,
+      "mask": null
+    },
+    {
+      "frame": 34,
+      "mask": null
+    },
+    {
+      "frame": 35,
+      "mask": null
+    },
+    {
+      "frame": 36,
+      "mask": null
+    },
+    {
+      "frame": 37,
+      "mask": null
+    },
+    {
+      "frame": 38,
+      "mask": null
+    },
+    {
+      "frame": 39,
+      "mask": null
+    },
+    {
+      "frame": 40,
+      "mask": null
+    },
+    {
+      "frame": 41,
+      "mask": null
+    },
+    {
+      "frame": 42,
+      "mask": null
+    },
+    {
+      "frame": 43,
+      "mask": null
+    },
+    {
+      "frame": 44,
+      "mask": null
+    },
+    {
+      "frame": 45,
+      "mask": [
+        287,
+        137,
+        4,
+        28
+      ]
+    },
+    {
+      "frame": 46,
+      "mask": [
+        287,
+        137,
+        4,
+        28
+      ]
+    },
+    {
+      "frame": 47,
+      "mask": [
+        287,
+        137,
+        4,
+        28
+      ]
+    },
+    {
+      "frame": 48,
+      "mask": [
+        240,
+        24,
+        97,
+        284
+      ]
+    },
+    {
+      "frame": 49,
+      "mask": [
+        94,
+        0,
+        389,
+        339
+      ]
+    },
+    {
+      "frame": 50,
+      "mask": [
+        6,
+        0,
+        567,
+        339
+      ]
+    },
+    {
+      "frame": 51,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 52,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 53,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 54,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 55,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 56,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 57,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 58,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 59,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 60,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 61,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 62,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 63,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 64,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 65,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 66,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 67,
+      "mask": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 68,
+      "mask": [
+        0,
+        0,
+        579,
+        339
+      ]
+    },
+    {
+      "frame": 69,
+      "mask": [
+        0,
+        0,
+        579,
+        339
+      ]
+    },
+    {
+      "frame": 70,
+      "mask": [
+        0,
+        0,
+        579,
+        339
+      ]
+    },
+    {
+      "frame": 71,
+      "mask": null
+    },
+    {
+      "frame": 72,
+      "mask": null
+    },
+    {
+      "frame": 73,
+      "mask": null
+    },
+    {
+      "frame": 74,
+      "mask": null
+    },
+    {
+      "frame": 75,
+      "mask": null
+    },
+    {
+      "frame": 76,
+      "mask": null
+    },
+    {
+      "frame": 77,
+      "mask": null
+    },
+    {
+      "frame": 78,
+      "mask": null
+    },
+    {
+      "frame": 79,
+      "mask": null
+    },
+    {
+      "frame": 80,
+      "mask": null
+    },
+    {
+      "frame": 81,
+      "mask": null
+    }
+  ]
+}

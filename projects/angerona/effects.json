@@ -1,0 +1,161 @@
+{
+  "project": "Angerona",
+  "source_version": "1.15.0",
+  "motion_policy": {
+    "source": "source/src/angerona/gui/header_controls.py",
+    "line": 442,
+    "symbol": "motion_allowed",
+    "environment": "ANGERONA_REDUCE_MOTION",
+    "config": "ui_motion_enabled",
+    "os_preference": "Windows SPI_GETCLIENTAREAANIMATION"
+  },
+  "effects": [
+    {
+      "id": "window-open",
+      "label": "Live window reveal",
+      "source": "source/src/angerona/gui/header_controls.py",
+      "line": 1015,
+      "symbol": "PanelRevealOverlay._start_target_reveal",
+      "provenance": "original-source",
+      "duration_ms": 360,
+      "easing": "OutCubic",
+      "trigger": "show content window",
+      "implementation": "QPropertyAnimation and QWidget QRegion mask",
+      "preview": "showcase.py: Open animated window"
+    },
+    {
+      "id": "window-close",
+      "label": "Reverse content-window close",
+      "source": "source/src/angerona/gui/header_controls.py",
+      "line": 1048,
+      "symbol": "PanelRevealOverlay._start_target_close",
+      "provenance": "original-source",
+      "duration_formula": "max(90, round(320 * current_progress))",
+      "easing": "InCubic",
+      "trigger": "close captured content window",
+      "preview": "showcase.py: close the content window"
+    },
+    {
+      "id": "orb-collapse",
+      "label": "Collapse outline to holographic orb",
+      "source": "source/src/angerona/gui/holographic_orb.py",
+      "line": 133,
+      "symbol": "CollapseTrail",
+      "provenance": "original-source",
+      "duration_ms": 440,
+      "easing": "InOutCubic",
+      "trigger": "main close or minimize",
+      "completion_guard_grace_ms": 750,
+      "preview": "showcase.py: Collapse to holographic orb"
+    },
+    {
+      "id": "orb-restore",
+      "label": "Restore outline from holographic orb",
+      "source": "source/src/angerona/gui/holographic_orb.py",
+      "line": 1209,
+      "symbol": "HolographicOrbController.restore_window",
+      "provenance": "original-source",
+      "duration_ms": 440,
+      "easing": "InOutCubic",
+      "trigger": "orb double click / restore",
+      "preview": "showcase.py: double-click orb"
+    },
+    {
+      "id": "orb-menu",
+      "label": "Orb radial service moons",
+      "source": "source/src/angerona/gui/holographic_orb.py",
+      "line": 274,
+      "symbol": "HolographicOrb",
+      "provenance": "original-source",
+      "duration_ms": 260,
+      "easing": "OutCubic",
+      "frame_interval_ms": 50,
+      "trigger": "orb activation",
+      "preview": "showcase.py: click orb"
+    },
+    {
+      "id": "run-progress",
+      "label": "Progress ring and percentage",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 162,
+      "symbol": "RunSpinner",
+      "provenance": "original-source",
+      "frame_interval_ms": 33,
+      "arc_degrees": 105,
+      "step_degrees": 11,
+      "completion_linger_ms": 1500,
+      "completion_disappearance": "hide; original comment calls it fade but no opacity driver exists",
+      "estimated_progress_formula": "95 * (1 - (1 - elapsed / expected_seconds) ** 2)",
+      "preview": "showcase.py: Replay loading sequence"
+    },
+    {
+      "id": "global-loading",
+      "label": "Overlapping background loading indicator",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 344,
+      "symbol": "GlobalLoadingIndicator",
+      "provenance": "original-source",
+      "reveal_delay_ms": 140,
+      "frame_interval_ms": 33,
+      "lifecycle": "token-counted begin/update/finish",
+      "preview": "showcase.py: Replay loading sequence"
+    },
+    {
+      "id": "threat-overlay",
+      "label": "Threat glyph sweep and red flash",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 560,
+      "symbol": "ThreatOverlay",
+      "provenance": "original-source",
+      "duration_ms": 1500,
+      "fade_interval_ms": 40,
+      "fade_step": 0.04,
+      "preview": "showcase.py: Preview alert sweep"
+    },
+    {
+      "id": "shark-swim",
+      "label": "Vector shark with bubble wake",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 618,
+      "symbol": "SharkSwimIndicator",
+      "provenance": "original-source",
+      "frame_interval_ms": 33,
+      "preview": "showcase.py: animated shark"
+    },
+    {
+      "id": "shark-banner",
+      "label": "Full-width vector shark banner",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 747,
+      "symbol": "SharkSwimBanner",
+      "provenance": "original-source",
+      "frame_interval_ms": 50
+    },
+    {
+      "id": "swords",
+      "label": "Vector clashing swords and spark",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 873,
+      "symbol": "ClashingSwords",
+      "provenance": "original-source",
+      "frame_interval_ms": 40,
+      "preview": "showcase.py: animated swords"
+    },
+    {
+      "id": "mic-meter",
+      "label": "Smoothed level with held peak",
+      "source": "source/src/angerona/gui/animations.py",
+      "line": 471,
+      "symbol": "_LevelBar",
+      "provenance": "original-source",
+      "attack_factor": 0.6,
+      "release_factor": 0.3,
+      "peak_decay": 0.015
+    }
+  ],
+  "media": [
+    "media/screenshots/dashboard-demo.png",
+    "media/screenshots/effects-playground.png",
+    "media/demo/effects-playground.gif"
+  ]
+}

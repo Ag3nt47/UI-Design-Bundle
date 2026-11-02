@@ -1,0 +1,933 @@
+"""Dynamic threat animation overlay.
+
+On a confirmed threat, a stylized shark sweeps across the window (mouth open)
+over a red flash that fades — an unmistakable visual alarm. The same overlay
+can run a different colour/glyph for other events (e.g. a scan sweep).
+"""
+from __future__ import annotations
+
+from angerona.gui.presentation_timer import PresentationTimer
+
+import itertools
+import threading
+from contextlib import contextmanager
+
+from PySide6.QtCore import QEvent, QObject, QPoint, QPropertyAnimation, QRectF, Qt, QTimer, Signal, Slot
+from PySide6.QtGui import QColor, QPainter
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QWidget
+
+
+# ── Live progress spinner: a smooth ring + a red→yellow→green percentage ──────
+_C_RED = (255, 77, 77)
+_C_YEL = (255, 176, 32)
+_C_GRN = (47, 227, 138)
+
+
+def _mix(a, b, t: float) -> QColor:
+    t = max(0.0, min(1.0, t))
+    return QColor(int(a[0] + (b[0] - a[0]) * t),
+                  int(a[1] + (b[1] - a[1]) * t),
+                  int(a[2] + (b[2] - a[2]) * t))
+
+
+def color_for_pct(pct: float) -> QColor:
+    """Red at 0%, warming through amber at the midpoint, to green near 100%."""
+    p = max(0.0, min(100.0, float(pct))) / 100.0
+    return _mix(_C_RED, _C_YEL, p / 0.5) if p < 0.5 else _mix(_C_YEL, _C_GRN, (p - 0.5) / 0.5)
+
+
+class _SpinRing(QWidget):
+    """A small, continuously-rotating arc — the 'it's working' wheel. Smooth
+    (~30 fps) and its colour tracks the current percentage."""
+
+    def __init__(self, parent: QWidget | None = None, d: int = 18) -> None:
+        super().__init__(parent)
+        self.setFixedSize(d, d)
+        self._angle = 0.0
+        self._color = QColor(*_C_RED)
+        self._timer = PresentationTimer(self, cosmetic=True)
+        self._timer.timeout.connect(self._tick)
+
+    def start(self) -> None:
+        if not self._timer.isActive():
+            self._timer.start(33)
+        self.show()
+
+    def stop(self) -> None:
+        self._timer.stop()
+
+    def set_color(self, c: QColor) -> None:
+        self._color = c
+        self.update()
+
+    def _tick(self) -> None:
+        self._angle = (self._angle + 11.0) % 360.0
+        self.update()
+
+    def paintEvent(self, _evt) -> None:  # noqa: N802
+        from PySide6.QtGui import QPen
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        w, h = self.width(), self.height()
+        m = 3.0
+        rect = QRectF(m, m, w - 2 * m, h - 2 * m)
+        p.setPen(QPen(QColor(255, 255, 255, 30), 2.4))
+        p.drawArc(rect, 0, 360 * 16)
+        pen = QPen(self._color, 2.6)
+        pen.setCapStyle(Qt.RoundCap)
+        p.setPen(pen)
+        p.drawArc(rect, int(-self._angle * 16), 105 * 16)   # a sweeping 105° arc
+        p.end()
+
+
+class _ActivityLabel(QLabel):
+    """Shrinkable plain text; full activity details survive visual elision."""
+
+    def __init__(self) -> None:
+        super().__init__("")
+        self.full_text = ""
+        self.setTextFormat(Qt.PlainText)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+    def setText(self, text: str) -> None:  # noqa: N802 (Qt signature)
+        self.full_text = str(text)
+        self.setToolTip(self.full_text)
+        self.setAccessibleName(self.full_text)
+        self._elide()
+        self.updateGeometry()
+
+    def clear(self) -> None:
+        self.setText("")
+
+    def sizeHint(self):  # noqa: N802 (Qt signature)
+        hint = self._line_hint(super().sizeHint())
+        hint.setWidth(min(480, self.fontMetrics().horizontalAdvance(
+            getattr(self, "full_text", ""))))
+        return hint
+
+    def minimumSizeHint(self):  # noqa: N802 (Qt signature)
+        hint = self._line_hint(super().minimumSizeHint())
+        hint.setWidth(0)
+        return hint
+
+    def _line_hint(self, hint):
+        # Keep one readable line even when a narrow visual label becomes empty.
+        # Qt may ask for hints while constructing or applying a style.
+        margins = self.contentsMargins()
+        height = self.fontMetrics().height() + self.margin() * 2 + margins.top() + margins.bottom()
+        hint.setHeight(max(hint.height(), height))
+        return hint
+
+    def _elide(self) -> None:
+        QLabel.setText(self, self.fontMetrics().elidedText(
+            getattr(self, "full_text", ""), Qt.ElideRight,
+            max(0, self.contentsRect().width() - self.margin() * 2)))
+
+    def resizeEvent(self, event) -> None:  # noqa: N802 (Qt signature)
+        super().resizeEvent(event)
+        self._elide()
+
+    def changeEvent(self, event) -> None:  # noqa: N802 (Qt signature)
+        super().changeEvent(event)
+        if event.type() in (QEvent.FontChange, QEvent.ApplicationFontChange, QEvent.StyleChange):
+            self._elide()
+            self.updateGeometry()
+
+
+class HeaderActivityLane(QWidget):
+    """One full-width row that disappears when both indicators are idle."""
+
+    def __init__(self, *indicators: QWidget) -> None:
+        super().__init__()
+        self.setObjectName("HeaderActivityLane")
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._indicators = indicators
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(4)
+        for indicator in indicators:
+            layout.addWidget(indicator, 1)
+            indicator.installEventFilter(self)
+        self.hide()
+
+    def eventFilter(self, watched, event) -> bool:  # noqa: N802 (Qt signature)
+        if event.type() == QEvent.ShowToParent:
+            self.show()
+        elif event.type() == QEvent.HideToParent:
+            self.setVisible(any(indicator is not watched and not indicator.isHidden()
+                                for indicator in self._indicators))
+        return super().eventFilter(watched, event)
+
+
+class RunSpinner(QWidget):
+    """Compact 'actively running' indicator: a smooth spinning ring next to a
+    live percentage, both coloured red→amber→green as progress climbs.
+
+    Determinate use (self-test, eco wake): call ``start(label)`` then
+    ``set_progress(done, total)``; ``finish()`` snaps to a green 100% and fades.
+    Estimated use (a drill with no exact count): ``begin_estimated(seconds)``
+    eases the bar toward 95% over the expected duration; ``finish()`` completes it.
+    """
+
+    def __init__(self, parent: QWidget | None = None, *, bounded_text: bool = False) -> None:
+        super().__init__(parent)
+        self._ring = _SpinRing(self)
+        self._label = _ActivityLabel() if bounded_text else QLabel("")
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(8, 0, 8, 0)
+        lay.setSpacing(8)
+        lay.addWidget(self._ring)
+        lay.addWidget(self._label)
+        if bounded_text:
+            self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self.setAccessibleName("Dashboard operation progress")
+        self._text = ""
+        self._pct = 0
+        self._t0 = 0.0
+        self._secs = 1.0
+        self._est_timer = QTimer(self)
+        self._est_timer.timeout.connect(self._ease)
+        self._done_timer = QTimer(self)
+        self._done_timer.setSingleShot(True)
+        self._done_timer.timeout.connect(self.stop)
+        self._compact = False
+        self.hide()
+
+    def set_compact(self, compact: bool, extent: int = 34) -> None:
+        """Keep the progress ring visible when dashboard header space is tight."""
+        self._compact = bool(compact)
+        self._label.setVisible(not self._compact)
+        if self._compact:
+            width = max(28, int(extent))
+            self.layout().setContentsMargins(4, 0, 4, 0)
+            self.layout().setSpacing(0)
+            self.setMinimumWidth(width)
+            self.setMaximumWidth(width)
+        else:
+            self.layout().setContentsMargins(8, 0, 8, 0)
+            self.layout().setSpacing(8)
+            self.setMinimumWidth(0)
+            self.setMaximumWidth(16_777_215)
+
+    @property
+    def current_text(self) -> str:
+        return self._label.full_text if isinstance(self._label, _ActivityLabel) else self._label.text()
+
+    def start(self, text: str = "") -> None:
+        self._text = text
+        self._pct = 0
+        self._est_timer.stop()
+        self._done_timer.stop()
+        self._ring.start()
+        self.show()
+        self._render()
+
+    def set_pct(self, pct: float) -> None:
+        self._pct = max(0, min(100, int(round(pct))))
+        self._render()
+
+    def set_text(self, text: str) -> None:
+        self._text = str(text or "")
+        self._render()
+
+    def set_progress(self, done: int, total: int) -> None:
+        self.set_pct(0 if total <= 0 else done / total * 100.0)
+
+    def begin_estimated(self, seconds: float, text: str = "") -> None:
+        import time as _t
+        self.start(text or self._text)
+        self._secs = max(1.0, float(seconds))
+        self._t0 = _t.time()
+        self._est_timer.start(60)
+
+    def _ease(self) -> None:
+        import time as _t
+        e = min(1.0, (_t.time() - self._t0) / self._secs)
+        self.set_pct(95.0 * (1.0 - (1.0 - e) ** 2))   # ease-out toward 95%
+
+    def finish(self, text: str | None = None) -> None:
+        self._est_timer.stop()
+        if text is not None:
+            self._text = text
+        self.set_pct(100)
+        self._done_timer.start(1500)   # linger on green, then fade out
+
+    def succeed(self, text: str = "Fixed and verified") -> None:
+        """Become a persistent green checkmark until the next start/stop."""
+        self._est_timer.stop()
+        self._done_timer.stop()
+        self._ring.stop()
+        self._ring.hide()
+        self._pct = 100
+        self._text = text
+        label = f"✓  {text}  100%"
+        self._label.setText(label)
+        self.setToolTip(label)
+        self.setAccessibleDescription(label)
+        self._label.setStyleSheet(
+            "color:rgb(47,227,138); font-weight:800; letter-spacing:0.4px;"
+        )
+        self.show()
+
+    def stop(self) -> None:
+        self._est_timer.stop()
+        self._done_timer.stop()
+        self._ring.stop()
+        self.hide()
+
+    def _render(self) -> None:
+        c = color_for_pct(self._pct)
+        self._ring.set_color(c)
+        label = f"{self._text}  {self._pct}%" if self._text else f"{self._pct}%"
+        self._label.setText(label)
+        self._label.setStyleSheet(
+            f"color: rgb({c.red()},{c.green()},{c.blue()}); font-weight:700; letter-spacing:0.3px;")
+        self.setToolTip(label)
+        self.setAccessibleDescription(label)
+
+
+# ── Application-wide loading activity ──────────────────────────────────────────
+class _LoadingActivityBus(QObject):
+    """Thread-safe signal bridge from workers to the dashboard header."""
+
+    started = Signal(str, str, int, int)
+    updated = Signal(str, str, int, int)
+    finished = Signal(str)
+
+
+_loading_bus = _LoadingActivityBus()
+_loading_ids = itertools.count(1)
+_loading_id_lock = threading.Lock()
+
+
+def begin_loading(label: str, *, done: int = 0, total: int = 0) -> str:
+    """Start one globally visible activity and return its opaque token.
+
+    Signals may be emitted from ordinary Python worker threads. Qt queues them
+    safely to every indicator living on the GUI thread.
+    """
+    with _loading_id_lock:
+        token = f"loading-{next(_loading_ids)}"
+    _loading_bus.started.emit(token, str(label or "Loading"), int(done), int(total))
+    return token
+
+
+def update_loading(
+    token: str,
+    label: str | None = None,
+    *,
+    done: int = 0,
+    total: int = 0,
+) -> None:
+    """Update a live activity without touching a widget from a worker thread."""
+    _loading_bus.updated.emit(
+        str(token), str(label or ""), int(done), int(total)
+    )
+
+
+def finish_loading(token: str | None) -> None:
+    """Finish a global activity. Unknown/already-finished tokens are harmless."""
+    if token:
+        _loading_bus.finished.emit(str(token))
+
+
+@contextmanager
+def loading_activity(label: str):
+    """Context-manager form for bounded synchronous or worker operations."""
+    token = begin_loading(label)
+    try:
+        yield token
+    finally:
+        finish_loading(token)
+
+
+class GlobalLoadingIndicator(QWidget):
+    """Reference-counted header animation for overlapping background work.
+
+    Fast operations finish before the short reveal delay and therefore do not
+    make the header flicker. Longer work remains animated until every active
+    token has completed; finishing one job can never hide another job's state.
+    """
+
+    _REVEAL_DELAY_MS = 140
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._ring = _SpinRing(self)
+        self._ring.set_color(QColor(56, 189, 248))
+        self._label = _ActivityLabel()
+        self._label.setStyleSheet(
+            "color:#7dd3fc;font-weight:700;letter-spacing:0.3px;"
+        )
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(8, 0, 8, 0)
+        lay.setSpacing(8)
+        lay.addWidget(self._ring)
+        lay.addWidget(self._label)
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self._activities: dict[str, tuple[str, int, int]] = {}
+        self._order: list[str] = []
+        self._reveal_timer = QTimer(self)
+        self._reveal_timer.setSingleShot(True)
+        self._reveal_timer.timeout.connect(self._reveal_if_active)
+        _loading_bus.started.connect(self._on_started)
+        _loading_bus.updated.connect(self._on_updated)
+        _loading_bus.finished.connect(self._on_finished)
+        self.setToolTip(
+            "Angerona is loading local information or bringing protection modules online."
+        )
+        self.setAccessibleName("Dashboard loading activity")
+        self.setAccessibleDescription(
+            "Shows startup and background loading progress; details remain available as a tooltip."
+        )
+        self._compact = False
+        self.hide()
+
+    def set_compact(self, compact: bool, extent: int = 34) -> None:
+        """Show a reserved ring-only indicator when the header is constrained."""
+        self._compact = bool(compact)
+        self._label.setVisible(not self._compact)
+        if self._compact:
+            width = max(28, int(extent))
+            self.layout().setContentsMargins(4, 0, 4, 0)
+            self.layout().setSpacing(0)
+            self.setMinimumWidth(width)
+            self.setMaximumWidth(width)
+        else:
+            self.layout().setContentsMargins(8, 0, 8, 0)
+            self.layout().setSpacing(8)
+            self.setMinimumWidth(0)
+            self.setMaximumWidth(16_777_215)
+
+    @property
+    def active_count(self) -> int:
+        return len(self._activities)
+
+    @property
+    def current_text(self) -> str:
+        return self._label.full_text
+
+    @Slot(str, str, int, int)
+    def _on_started(self, token: str, label: str, done: int, total: int) -> None:
+        self._activities[token] = (label, done, total)
+        if token in self._order:
+            self._order.remove(token)
+        self._order.append(token)
+        self._render_latest()
+        if not self.isVisible() and not self._reveal_timer.isActive():
+            self._reveal_timer.start(self._REVEAL_DELAY_MS)
+
+    @Slot(str, str, int, int)
+    def _on_updated(self, token: str, label: str, done: int, total: int) -> None:
+        previous = self._activities.get(token)
+        if previous is None:
+            return
+        old_label, old_done, old_total = previous
+        self._activities[token] = (
+            label or old_label,
+            done if total > 0 else old_done,
+            total if total > 0 else old_total,
+        )
+        self._render_latest()
+
+    @Slot(str)
+    def _on_finished(self, token: str) -> None:
+        self._activities.pop(token, None)
+        try:
+            self._order.remove(token)
+        except ValueError:
+            pass
+        if self._activities:
+            self._render_latest()
+            return
+        self._reveal_timer.stop()
+        self._ring.stop()
+        self.hide()
+
+    def _reveal_if_active(self) -> None:
+        if not self._activities:
+            return
+        self._ring.start()
+        self.show()
+        self._render_latest()
+
+    def _render_latest(self) -> None:
+        if not self._order:
+            self._label.clear()
+            return
+        token = self._order[-1]
+        label, done, total = self._activities[token]
+        progress = f"  {done}/{total}" if total > 0 else ""
+        overlap = (
+            f"  (+{len(self._activities) - 1})"
+            if len(self._activities) > 1 else ""
+        )
+        text = f"{label}{progress}{overlap}"
+        self._label.setText(text)
+        self.setToolTip(text)
+        self.setAccessibleDescription(text)
+
+
+class _LevelBar(QWidget):
+    """The bar itself: a rounded track that fills left→right with the mic level,
+    coloured green (quiet) → amber → red (loud), with a held peak tick."""
+
+    def __init__(self, parent: QWidget | None = None, w: int = 104, h: int = 12) -> None:
+        super().__init__(parent)
+        self.setMinimumWidth(w)
+        self.setFixedHeight(h)
+        self._level = 0.0
+        self._peak = 0.0
+        self._target = 0.0
+
+    def set_target(self, lv: float) -> None:
+        self._target = max(0.0, min(1.0, float(lv)))
+        if self._target > self._peak:
+            self._peak = self._target
+
+    def tick(self) -> None:
+        # Fast attack, slow release — reads like a real audio meter.
+        k = 0.6 if self._target > self._level else 0.3
+        self._level += (self._target - self._level) * k
+        self._peak = max(self._level, self._peak - 0.015)
+        self.update()
+
+    def paintEvent(self, _evt) -> None:  # noqa: N802
+        from PySide6.QtCore import QRectF
+        from PySide6.QtGui import QBrush, QLinearGradient, QPen
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        w, h = self.width(), self.height()
+        r = h / 2.0
+        p.setPen(Qt.NoPen)
+        p.setBrush(QColor(18, 24, 32))
+        p.drawRoundedRect(QRectF(0, 0, w, h), r, r)
+        fw = self._level * w
+        if fw > 1:
+            grad = QLinearGradient(0, 0, w, 0)
+            grad.setColorAt(0.0, QColor(47, 227, 138))
+            grad.setColorAt(0.62, QColor(255, 176, 32))
+            grad.setColorAt(1.0, QColor(255, 77, 77))
+            p.setBrush(QBrush(grad))
+            p.drawRoundedRect(QRectF(0, 0, fw, h), r, r)
+        px = self._peak * w
+        if px > 1:
+            p.setPen(QPen(QColor(230, 240, 255), 1.4))
+            p.drawLine(int(px), 2, int(px), h - 2)
+        p.end()
+
+
+class MicMeter(QWidget):
+    """A little "ARIA can hear you" indicator: a mic glyph + a live level bar.
+    Purely a VU meter — push_level(0..1) is fed from the audio thread; it shows
+    the operator that the microphone is working. Hidden until set_active(True)."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._active = False
+        self._icon = QLabel("\U0001F3A4")   # 🎤
+        self._icon.setStyleSheet("font-size:13px;")
+        self._bar = _LevelBar(self)
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(6)
+        lay.addWidget(self._icon)
+        lay.addWidget(self._bar, 1)
+        self._timer = PresentationTimer(self, cosmetic=True)
+        self._timer.timeout.connect(self._bar.tick)
+        self.setToolTip("Microphone input level — if this moves when you speak, ARIA can hear you.")
+        self.hide()
+
+    def set_active(self, on: bool) -> None:
+        self._active = bool(on)
+        if on:
+            self.show()
+            if not self._timer.isActive():
+                self._timer.start(40)   # ~25 fps meter animation
+        else:
+            self._timer.stop()
+            self._bar.set_target(0.0)
+            self._bar._level = self._bar._peak = 0.0
+            self._bar.update()
+            self.hide()
+
+    def push_level(self, lv: float) -> None:
+        """Feed a new level (0..1) — safe to call from a Qt signal on the GUI thread."""
+        if self._active:
+            self._bar.set_target(lv)
+
+
+class ThreatOverlay(QWidget):
+    def __init__(self, parent: QWidget) -> None:
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._glyph = QLabel("\U0001F988", self)  # 🦈
+        self._glyph.setStyleSheet("font-size:96px;")
+        self._glyph.adjustSize()
+        self._anim = QPropertyAnimation(self._glyph, b"pos", self)
+        self._anim.finished.connect(self._maybe_hide)
+        self._flash = 0.0
+        self._color = QColor(255, 40, 40)
+        self._timer = QTimer(self)
+        self._timer.timeout.connect(self._fade)
+        self.hide()
+
+    def trigger(self, glyph: str = "\U0001F988", color=(255, 40, 40)) -> None:
+        p = self.parentWidget()
+        if p is None:
+            return
+        self.setGeometry(p.rect())
+        self._color = QColor(*color)
+        self._glyph.setText(glyph)
+        self._glyph.adjustSize()
+        y = self.height() // 2 - self._glyph.height() // 2
+        start = QPoint(-self._glyph.width() - 40, y)
+        end = QPoint(self.width() + 40, y)
+        self._glyph.move(start)
+        self.show()
+        self.raise_()
+        self._anim.stop()
+        self._anim.setDuration(1500)
+        self._anim.setStartValue(start)
+        self._anim.setEndValue(end)
+        self._anim.start()
+        self._flash = 1.0
+        self._timer.start(40)
+
+    def _fade(self) -> None:
+        self._flash = max(0.0, self._flash - 0.04)
+        if self._flash <= 0:
+            self._timer.stop()
+            self._maybe_hide()
+        self.update()
+
+    def _maybe_hide(self) -> None:
+        from PySide6.QtCore import QAbstractAnimation
+        if self._flash <= 0 and self._anim.state() != QAbstractAnimation.Running:
+            self.hide()
+
+    def paintEvent(self, event) -> None:
+        if self._flash <= 0:
+            return
+        painter = QPainter(self)
+        c = QColor(self._color)
+        c.setAlpha(int(self._flash * 110))
+        painter.fillRect(self.rect(), c)
+
+
+class SharkSwimIndicator(QWidget):
+    """Small looping SWIM animation next to the "Initiate Shark Attack" button.
+
+    A hand-drawn VECTOR shark (deliberately not the 🦈 emoji — colour-emoji
+    glyphs don't render through a rotated/scaled QPainter, which is why the
+    previous version only showed the bubbles). It swims across the strip, bobs,
+    undulates its body, flicks its tail, turns to face its swim direction, and
+    leaves a small bubble wake. Purely cosmetic — signals a drill is running."""
+
+    _BODY_LEN = 26.0   # nose-to-tail span in px (used for edge margins)
+
+    def __init__(self, parent: QWidget | None = None, width: int = 160, height: int = 34) -> None:
+        super().__init__(parent)
+        self.setFixedSize(width, height)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._x = self._BODY_LEN
+        self._dir = 1
+        self._phase = 0.0
+        self._timer = PresentationTimer(self, cosmetic=True)
+        self._timer.timeout.connect(self._tick)
+        self.hide()
+
+    def start(self) -> None:
+        self._x = self._BODY_LEN
+        self._dir = 1
+        self._phase = 0.0
+        self.show()
+        self._timer.start(33)   # ~30 fps for a smooth swim
+
+    def stop(self) -> None:
+        self._timer.stop()
+        self.hide()
+
+    def _tick(self) -> None:
+        margin = self._BODY_LEN
+        max_x = max(margin, self.width() - margin)
+        self._x += self._dir * 1.8
+        if self._x >= max_x:
+            self._x, self._dir = max_x, -1
+        elif self._x <= margin:
+            self._x, self._dir = margin, 1
+        self._phase += 1.0
+        self.update()
+
+    def paintEvent(self, event) -> None:
+        import math
+        from PySide6.QtCore import QPointF
+        from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen
+
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+
+        phase = self._phase
+        bob = math.sin(phase * 0.18) * 3.0
+        undulate = math.sin(phase * 0.35) * 4.0     # whole-body sway (degrees)
+        swish = math.sin(phase * 0.5)               # tail phase [-1, 1]
+        cx = self._x
+        cy = self.height() / 2.0 + bob
+
+        # ── bubble wake, trailing behind the swim direction ──
+        p.setPen(Qt.NoPen)
+        for i in range(1, 4):
+            bx = cx - self._dir * (self._BODY_LEN * 0.5 + i * 6.0)
+            by = cy + math.sin(phase * 0.3 + i) * 1.5
+            r = 2.2 - i * 0.5
+            if r > 0 and 0 <= bx <= self.width():
+                p.setBrush(QColor(140, 205, 255, 130 - i * 25))
+                p.drawEllipse(QPointF(bx, by), r, r)
+
+        # ── the shark (base drawing faces RIGHT; scale(dir,1) flips it) ──
+        p.save()
+        p.translate(cx, cy)
+        p.scale(float(self._dir), 1.0)
+        p.rotate(undulate)
+
+        L, Hh = 13.0, 5.0
+        p.setPen(QPen(QColor(205, 224, 240), 1.0))
+
+        # tail fin (behind body, flicks with swish)
+        tail = QPainterPath()
+        tail.moveTo(-L + 2, 0)
+        tail.lineTo(-L - 7, -5 + swish * 3)
+        tail.lineTo(-L - 3, 0)
+        tail.lineTo(-L - 7, 5 + swish * 3)
+        tail.closeSubpath()
+        p.setBrush(QColor(60, 92, 120))
+        p.drawPath(tail)
+
+        # body (teardrop: pointed nose at +L, rounded tail at -L)
+        body = QPainterPath()
+        body.moveTo(-L + 2, 0)
+        body.cubicTo(-L * 0.2, -Hh, L * 0.55, -Hh, L, -0.5)
+        body.cubicTo(L * 0.55, Hh, -L * 0.2, Hh, -L + 2, 0)
+        p.setBrush(QColor(74, 112, 146))
+        p.drawPath(body)
+
+        # dorsal fin
+        dorsal = QPainterPath()
+        dorsal.moveTo(-1, -Hh + 0.5)
+        dorsal.lineTo(3, -Hh - 6)
+        dorsal.lineTo(5, -Hh + 0.5)
+        dorsal.closeSubpath()
+        p.setBrush(QColor(60, 92, 120))
+        p.drawPath(dorsal)
+
+        # pectoral fin (under belly, sweeps back)
+        pect = QPainterPath()
+        pect.moveTo(3, Hh - 1)
+        pect.lineTo(0, Hh + 4)
+        pect.lineTo(6, Hh - 0.5)
+        pect.closeSubpath()
+        p.drawPath(pect)
+
+        # gill slits
+        p.setPen(QPen(QColor(180, 205, 225), 0.8))
+        p.drawLine(QPointF(L * 0.30, -2), QPointF(L * 0.30, 2))
+        p.drawLine(QPointF(L * 0.30 + 2, -2), QPointF(L * 0.30 + 2, 2))
+
+        # eye + highlight
+        p.setPen(Qt.NoPen)
+        p.setBrush(QColor(15, 20, 28))
+        p.drawEllipse(QPointF(L * 0.62, -1.2), 1.1, 1.1)
+        p.setBrush(QColor(255, 255, 255, 200))
+        p.drawEllipse(QPointF(L * 0.62 + 0.4, -1.6), 0.4, 0.4)
+
+        p.restore()
+        p.end()
+
+
+class SharkSwimBanner(QWidget):
+    """A big, full-width swimming shark that glides across the TOP of the window
+    for the whole duration of a Shark Attack drill — the unmistakable "the shark
+    is loose" banner. Vector-drawn (no emoji), transparent to mouse, and it
+    re-spans the window on resize."""
+
+    _SCALE = 2.1
+
+    def __init__(self, parent: QWidget | None = None, height: int = 48) -> None:
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._h = height
+        self._x = 60.0
+        self._dir = 1
+        self._phase = 0.0
+        self._timer = PresentationTimer(self, cosmetic=True)
+        self._timer.timeout.connect(self._tick)
+        self.hide()
+
+    def start(self) -> None:
+        par = self.parentWidget()
+        if par is None:
+            return
+        self.setGeometry(0, 0, par.width(), self._h)
+        self._x, self._dir, self._phase = 60.0, 1, 0.0
+        self.show()
+        self.raise_()
+        self._timer.start(50)   # 20 fps — smooth enough, lighter on a busy drill
+
+    def stop(self) -> None:
+        self._timer.stop()
+        self.hide()
+
+    def resizeEvent(self, event) -> None:
+        par = self.parentWidget()
+        if par is not None and self.isVisible():
+            self.setGeometry(0, 0, par.width(), self._h)
+
+    def _tick(self) -> None:
+        margin = 40.0 * self._SCALE
+        max_x = max(margin, self.width() - margin)
+        self._x += self._dir * 4.0
+        if self._x >= max_x:
+            self._x, self._dir = max_x, -1
+        elif self._x <= margin:
+            self._x, self._dir = margin, 1
+        self._phase += 1.0
+        self.update()
+
+    def paintEvent(self, event) -> None:
+        import math
+        from PySide6.QtCore import QPointF
+        from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen
+
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        s = self._SCALE
+        phase = self._phase
+        bob = math.sin(phase * 0.16) * 4.0
+        undulate = math.sin(phase * 0.30) * 4.0
+        swish = math.sin(phase * 0.50)
+        cx = self._x
+        cy = self.height() / 2.0 + bob
+
+        # bubble wake
+        p.setPen(Qt.NoPen)
+        for i in range(1, 5):
+            bx = cx - self._dir * (13 * s + i * 7 * s)
+            by = cy + math.sin(phase * 0.3 + i) * 2.0
+            r = 3.0 - i * 0.5
+            if r > 0 and 0 <= bx <= self.width():
+                p.setBrush(QColor(140, 205, 255, 120 - i * 20))
+                p.drawEllipse(QPointF(bx, by), r, r)
+
+        # shark (scaled)
+        p.save()
+        p.translate(cx, cy)
+        p.scale(self._dir * s, s)
+        p.rotate(undulate)
+        L, Hh = 13.0, 5.0
+        p.setPen(QPen(QColor(210, 228, 244), max(0.5, 1.0 / s)))
+
+        tail = QPainterPath()
+        tail.moveTo(-L + 2, 0)
+        tail.lineTo(-L - 7, -5 + swish * 3)
+        tail.lineTo(-L - 3, 0)
+        tail.lineTo(-L - 7, 5 + swish * 3)
+        tail.closeSubpath()
+        p.setBrush(QColor(60, 92, 120))
+        p.drawPath(tail)
+
+        body = QPainterPath()
+        body.moveTo(-L + 2, 0)
+        body.cubicTo(-L * 0.2, -Hh, L * 0.55, -Hh, L, -0.5)
+        body.cubicTo(L * 0.55, Hh, -L * 0.2, Hh, -L + 2, 0)
+        p.setBrush(QColor(78, 116, 150))
+        p.drawPath(body)
+
+        dorsal = QPainterPath()
+        dorsal.moveTo(-1, -Hh + 0.5)
+        dorsal.lineTo(3, -Hh - 6)
+        dorsal.lineTo(5, -Hh + 0.5)
+        dorsal.closeSubpath()
+        p.setBrush(QColor(60, 92, 120))
+        p.drawPath(dorsal)
+
+        pect = QPainterPath()
+        pect.moveTo(3, Hh - 1)
+        pect.lineTo(0, Hh + 4)
+        pect.lineTo(6, Hh - 0.5)
+        pect.closeSubpath()
+        p.drawPath(pect)
+
+        p.setPen(QPen(QColor(185, 208, 228), max(0.4, 0.8 / s)))
+        p.drawLine(QPointF(L * 0.30, -2), QPointF(L * 0.30, 2))
+        p.drawLine(QPointF(L * 0.30 + 2, -2), QPointF(L * 0.30 + 2, 2))
+
+        p.setPen(Qt.NoPen)
+        p.setBrush(QColor(15, 20, 28))
+        p.drawEllipse(QPointF(L * 0.62, -1.2), 1.1, 1.1)
+        p.setBrush(QColor(255, 255, 255, 200))
+        p.drawEllipse(QPointF(L * 0.62 + 0.4, -1.6), 0.4, 0.4)
+        p.restore()
+        p.end()
+
+
+class ClashingSwords(QWidget):
+    """A small crossed-swords icon for the Red Team Attack button. Idle: two
+    static crossed swords. Active (a drill running): the blades rapidly clash
+    together with a spark flash. Vector-drawn, mouse-transparent."""
+
+    def __init__(self, parent: QWidget | None = None, size: int = 30) -> None:
+        super().__init__(parent)
+        self.setFixedSize(size, size)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._active = False
+        self._phase = 0.0
+        self._timer = PresentationTimer(self, cosmetic=True)
+        self._timer.timeout.connect(self._tick)
+        self._timer.setInterval(40)
+
+    def set_active(self, on: bool) -> None:
+        self._active = bool(on)
+        if self._active:
+            self._timer.start()
+        else:
+            self._timer.stop()
+        self.update()
+
+    def _tick(self) -> None:
+        # Only repaint while clashing (active); idle icon is static → no CPU cost.
+        if self._active:
+            self._phase += 1.0
+            self.update()
+
+    def paintEvent(self, event) -> None:
+        import math
+        from PySide6.QtCore import QPointF
+        from PySide6.QtGui import QColor, QPainter, QPen
+
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        w, h = self.width(), self.height()
+        cx, cy = w / 2.0, h / 2.0
+        clash = (math.sin(self._phase * 0.9) * 0.5 + 0.5) if self._active else 0.0
+        gap = 3.2 * (1.0 - clash)          # blades meet as they clash
+
+        blade = QPen(QColor(225, 230, 240), 2.2)
+        guard = QPen(QColor(190, 150, 70), 2.0)
+
+        # sword A: lower-left hilt → upper-right tip (shifted by -gap)
+        p.setPen(blade)
+        p.drawLine(QPointF(cx - 7 - gap, cy + 8), QPointF(cx + 7 - gap, cy - 8))
+        # sword B: lower-right hilt → upper-left tip (shifted by +gap)
+        p.drawLine(QPointF(cx + 7 + gap, cy + 8), QPointF(cx - 7 + gap, cy - 8))
+
+        p.setPen(guard)
+        p.drawLine(QPointF(cx - 10 - gap, cy + 6), QPointF(cx - 4 - gap, cy + 10))
+        p.drawLine(QPointF(cx + 10 + gap, cy + 6), QPointF(cx + 4 + gap, cy + 10))
+
+        # spark flash at the clash point
+        if self._active and clash > 0.65:
+            p.setPen(Qt.NoPen)
+            p.setBrush(QColor(255, 232, 120, int(210 * clash)))
+            r = 2.0 + clash * 2.5
+            p.drawEllipse(QPointF(cx, cy - 2), r, r)
+        p.end()

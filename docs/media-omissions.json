@@ -1,0 +1,23 @@
+{
+  "omittedPaths": [
+    "projects/optimus/source/src/optimus/assets/raccoon-cane-dance.gif",
+    "projects/optimus/source/src/optimus/assets/raccoon-cane-dance.png",
+    "projects/optimus/variants/objects/751abce658a0c372cc91f784e010724728197efe417e8cef833b3ad96747f321/raccoon-cane-dance.gif",
+    "projects/optimus/variants/objects/81c45a8c3273b1ef41229ab50d4395c9e770e0b43cbadb7efa1e99a0a52b7fc4/raccoon-cane-dance.png",
+    "projects/optimus/reference/optimus-held-apps.png",
+    "projects/optimus/reference/optimus-workers.png",
+    "projects/optimus/reference/media/optimus-016-stop-dashboard.png",
+    "projects/optimus/reference/media/optimus-completed.png",
+    "projects/optimus/reference/media/optimus-demo.gif",
+    "projects/optimus/reference/media/optimus-walkthrough.mp4",
+    "projects/optimus/reference/media/optimus-workers.png",
+    "projects/optimus/reference/showcase-contact.png"
+  ],
+  "reason": "No explicit open redistribution license for third-party raccoon media; derivatives embedding it omitted. Loader source, attribution and optional custom asset slot remain.",
+  "retainedLoaderSource": true,
+  "cleanCapturePaths": [
+    "projects/optimus/reference/showcase.png",
+    "projects/optimus/reference/showcase-effects.gif",
+    "projects/optimus/reference/showcase-effects.json"
+  ]
+}

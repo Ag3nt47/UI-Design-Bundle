@@ -1,0 +1,44 @@
+{
+  "project": "Palamedes",
+  "source": "original authored React UI",
+  "captureDate": "2026-11-02",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "browser": "156.0.8078.74",
+  "externalRequests": "blocked; fresh synthetic context; no credentials or personal browser storage",
+  "compatibilityFix": "Six App.jsx storage effects return void in the temporary capture environment to prevent React 19 StrictMode destroy-is-not-a-function error. Exact source snapshot is unchanged.",
+  "timing": "Playwright virtual clock and paused Web Animations for deterministic authored motion frames; loader held by delaying its real lazy module request.",
+  "errors": [],
+  "failedResources": [],
+  "screenshots": [
+    "palamedes-crt.png",
+    "palamedes-cyber.png",
+    "palamedes-graphing.png",
+    "palamedes-loading.png",
+    "palamedes-mode-picker.png",
+    "palamedes-settings.png",
+    "palamedes-shutdown.png",
+    "palamedes-slate.png",
+    "palamedes-standby.png",
+    "palamedes-startup.png"
+  ],
+  "animations": [
+    {
+      "name": "palamedes-startup",
+      "count": 24,
+      "durationMs": 1150
+    },
+    {
+      "name": "palamedes-loading",
+      "count": 24,
+      "durationMs": 1725
+    },
+    {
+      "name": "palamedes-shutdown",
+      "count": 15,
+      "durationMs": 700
+    }
+  ]
+}

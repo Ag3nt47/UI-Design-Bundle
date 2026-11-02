@@ -1,0 +1,1073 @@
+{
+  "snapshotDate": "2026-11-02",
+  "projects": [
+    {
+      "id": "angerona",
+      "name": "Angerona",
+      "description": "Cyan security workbench \u00b7 holographic orb \u00b7 mask reveal \u00b7 live telemetry art",
+      "readme": "projects/angerona/README.md",
+      "sourceFiles": 116,
+      "sourceBytes": 5626253,
+      "effects": {
+        "project": "Angerona",
+        "source_version": "1.15.0",
+        "motion_policy": {
+          "source": "source/src/angerona/gui/header_controls.py",
+          "line": 442,
+          "symbol": "motion_allowed",
+          "environment": "ANGERONA_REDUCE_MOTION",
+          "config": "ui_motion_enabled",
+          "os_preference": "Windows SPI_GETCLIENTAREAANIMATION"
+        },
+        "effects": [
+          {
+            "id": "window-open",
+            "label": "Live window reveal",
+            "source": "source/src/angerona/gui/header_controls.py",
+            "line": 1015,
+            "symbol": "PanelRevealOverlay._start_target_reveal",
+            "provenance": "original-source",
+            "duration_ms": 360,
+            "easing": "OutCubic",
+            "trigger": "show content window",
+            "implementation": "QPropertyAnimation and QWidget QRegion mask",
+            "preview": "showcase.py: Open animated window"
+          },
+          {
+            "id": "window-close",
+            "label": "Reverse content-window close",
+            "source": "source/src/angerona/gui/header_controls.py",
+            "line": 1048,
+            "symbol": "PanelRevealOverlay._start_target_close",
+            "provenance": "original-source",
+            "duration_formula": "max(90, round(320 * current_progress))",
+            "easing": "InCubic",
+            "trigger": "close captured content window",
+            "preview": "showcase.py: close the content window"
+          },
+          {
+            "id": "orb-collapse",
+            "label": "Collapse outline to holographic orb",
+            "source": "source/src/angerona/gui/holographic_orb.py",
+            "line": 133,
+            "symbol": "CollapseTrail",
+            "provenance": "original-source",
+            "duration_ms": 440,
+            "easing": "InOutCubic",
+            "trigger": "main close or minimize",
+            "completion_guard_grace_ms": 750,
+            "preview": "showcase.py: Collapse to holographic orb"
+          },
+          {
+            "id": "orb-restore",
+            "label": "Restore outline from holographic orb",
+            "source": "source/src/angerona/gui/holographic_orb.py",
+            "line": 1209,
+            "symbol": "HolographicOrbController.restore_window",
+            "provenance": "original-source",
+            "duration_ms": 440,
+            "easing": "InOutCubic",
+            "trigger": "orb double click / restore",
+            "preview": "showcase.py: double-click orb"
+          },
+          {
+            "id": "orb-menu",
+            "label": "Orb radial service moons",
+            "source": "source/src/angerona/gui/holographic_orb.py",
+            "line": 274,
+            "symbol": "HolographicOrb",
+            "provenance": "original-source",
+            "duration_ms": 260,
+            "easing": "OutCubic",
+            "frame_interval_ms": 50,
+            "trigger": "orb activation",
+            "preview": "showcase.py: click orb"
+          },
+          {
+            "id": "run-progress",
+            "label": "Progress ring and percentage",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 162,
+            "symbol": "RunSpinner",
+            "provenance": "original-source",
+            "frame_interval_ms": 33,
+            "arc_degrees": 105,
+            "step_degrees": 11,
+            "completion_linger_ms": 1500,
+            "completion_disappearance": "hide; original comment calls it fade but no opacity driver exists",
+            "estimated_progress_formula": "95 * (1 - (1 - elapsed / expected_seconds) ** 2)",
+            "preview": "showcase.py: Replay loading sequence"
+          },
+          {
+            "id": "global-loading",
+            "label": "Overlapping background loading indicator",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 344,
+            "symbol": "GlobalLoadingIndicator",
+            "provenance": "original-source",
+            "reveal_delay_ms": 140,
+            "frame_interval_ms": 33,
+            "lifecycle": "token-counted begin/update/finish",
+            "preview": "showcase.py: Replay loading sequence"
+          },
+          {
+            "id": "threat-overlay",
+            "label": "Threat glyph sweep and red flash",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 560,
+            "symbol": "ThreatOverlay",
+            "provenance": "original-source",
+            "duration_ms": 1500,
+            "fade_interval_ms": 40,
+            "fade_step": 0.04,
+            "preview": "showcase.py: Preview alert sweep"
+          },
+          {
+            "id": "shark-swim",
+            "label": "Vector shark with bubble wake",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 618,
+            "symbol": "SharkSwimIndicator",
+            "provenance": "original-source",
+            "frame_interval_ms": 33,
+            "preview": "showcase.py: animated shark"
+          },
+          {
+            "id": "shark-banner",
+            "label": "Full-width vector shark banner",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 747,
+            "symbol": "SharkSwimBanner",
+            "provenance": "original-source",
+            "frame_interval_ms": 50
+          },
+          {
+            "id": "swords",
+            "label": "Vector clashing swords and spark",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 873,
+            "symbol": "ClashingSwords",
+            "provenance": "original-source",
+            "frame_interval_ms": 40,
+            "preview": "showcase.py: animated swords"
+          },
+          {
+            "id": "mic-meter",
+            "label": "Smoothed level with held peak",
+            "source": "source/src/angerona/gui/animations.py",
+            "line": 471,
+            "symbol": "_LevelBar",
+            "provenance": "original-source",
+            "attack_factor": 0.6,
+            "release_factor": 0.3,
+            "peak_decay": 0.015
+          }
+        ],
+        "media": [
+          "media/screenshots/dashboard-demo.png",
+          "media/screenshots/effects-playground.png",
+          "media/demo/effects-playground.gif"
+        ]
+      },
+      "tokens": {
+        "project": "Angerona",
+        "version": "1.15.0",
+        "source": "source/src/angerona/gui/theme.py",
+        "color_notation": "Qt QSS; 8-digit hex uses #AARRGGBB, unlike CSS #RRGGBBAA",
+        "themes": {
+          "cyber": {
+            "label": "Modern Cyber",
+            "bg": "#0a0e14",
+            "panel": "#0f141c",
+            "panel2": "#141b26",
+            "border": "#263345",
+            "text": "#d6e2f0",
+            "dim": "#94a3b8",
+            "accent": "#1f9cff",
+            "accent2": "#ff7a1a",
+            "font": "'Segoe UI','Helvetica Neue','Arial',sans-serif",
+            "radius": "10px",
+            "alt_row": "#08ffffff",
+            "chip_h": "44px"
+          },
+          "crt": {
+            "label": "Retro CRT Terminal",
+            "bg": "#000a00",
+            "panel": "#001200",
+            "panel2": "#001a00",
+            "border": "#00b347",
+            "text": "#33ff66",
+            "dim": "#1f8a3a",
+            "accent": "#39ff14",
+            "accent2": "#00ff66",
+            "font": "'Cascadia Mono','Consolas','Courier New',monospace",
+            "radius": "2px",
+            "alt_row": "#0800ff00",
+            "chip_h": "44px"
+          },
+          "slate": {
+            "label": "Dark Slate",
+            "bg": "#020617",
+            "panel": "#0f172a",
+            "panel2": "#1e293b",
+            "border": "#334155",
+            "text": "#f1f5f9",
+            "dim": "#94a3b8",
+            "accent": "#38bdf8",
+            "accent2": "#fb923c",
+            "font": "'Segoe UI','Helvetica Neue','Arial',sans-serif",
+            "radius": "8px",
+            "alt_row": "#06ffffff",
+            "chip_h": "44px"
+          }
+        },
+        "mono_font_family": "'Fira Code','Cascadia Mono','JetBrains Mono','Consolas',monospace",
+        "scale": {
+          "minimum": 0.75,
+          "maximum": 1.35,
+          "default": 1.0
+        },
+        "typography_design_px": {
+          "base": 13,
+          "brand": 26,
+          "tagline": 11,
+          "page_title": 20,
+          "section_title": 13,
+          "card_value": 30,
+          "card_label": 11,
+          "table_header": 11
+        },
+        "spacing_design_px": {
+          "primary_button_vertical": 9,
+          "primary_button_horizontal": 16,
+          "button_vertical": 7,
+          "button_horizontal": 14,
+          "input": 7,
+          "checkbox": 18
+        },
+        "severity": {
+          "info": "#6b7280",
+          "low": "#3b82f6",
+          "medium": "#f97316",
+          "high": "#ef4444",
+          "critical": "#b91c1c"
+        },
+        "progress_rgb": {
+          "start": [
+            255,
+            77,
+            77
+          ],
+          "midpoint": [
+            255,
+            176,
+            32
+          ],
+          "complete": [
+            47,
+            227,
+            138
+          ]
+        }
+      }
+    },
+    {
+      "id": "optimus",
+      "name": "Optimus",
+      "description": "Cyber maintenance console \u00b7 starfield \u00b7 reverse close \u00b7 ring and character loaders",
+      "readme": "projects/optimus/README.md",
+      "sourceFiles": 316,
+      "sourceBytes": 16498114,
+      "effects": {
+        "project": "Optimus",
+        "version": "0.12.31",
+        "evidence": "static source; original reference media separately preserved",
+        "source_base": "source/src/optimus/",
+        "effects": [
+          {
+            "id": "window-open",
+            "source": "widgets/header_controls.py",
+            "line": 881,
+            "mechanism": "QPropertyAnimation on revealProgress, QRegion mask on real content, painted accent frame",
+            "duration_ms": 240,
+            "easing": "OutCubic",
+            "api": "PanelRevealOverlay.reveal(source, action, color)"
+          },
+          {
+            "id": "window-close",
+            "source": "widgets/header_controls.py",
+            "line": 911,
+            "mechanism": "Reverse reveal mask, then continue the original close handler; restore on close veto",
+            "duration": "max(80, round(180 * currentProgress)) ms",
+            "easing": "InCubic"
+          },
+          {
+            "id": "motion-policy",
+            "source": "widgets/header_controls.py",
+            "line": 375,
+            "inputs": [
+              "OPTIMUS_REDUCE_MOTION",
+              "config.ui_motion_enabled",
+              "Windows SPI_GETCLIENTAREAANIMATION"
+            ]
+          },
+          {
+            "id": "spiral-starfield",
+            "source": "ui.py",
+            "line": 1697,
+            "mechanism": "190 deterministic stars, three rotating spiral strands, radial gradient glow, sinusoidal twinkle",
+            "timer_ms": 33,
+            "pauses": [
+              "hidden",
+              "minimized",
+              "busy",
+              "owned content dialog visible"
+            ]
+          },
+          {
+            "id": "run-spinner",
+            "source": "widgets/loading.py",
+            "line": 90,
+            "mechanism": "105-degree arc; red/amber/green progress color",
+            "timer_ms": 33,
+            "rotation_degrees_per_tick": 11,
+            "estimated_curve": "95 * (1 - (1-e)^2)",
+            "completion": "green 100%, 1500 ms hold, then hide; source comments mention fade but no opacity tween exists"
+          },
+          {
+            "id": "local-loading-gif",
+            "source": "widgets/local_loading.py",
+            "line": 38,
+            "asset": "assets/raccoon-cane-dance.gif",
+            "poster": "assets/raccoon-cane-dance.png",
+            "mechanism": "QMovie bounded local playback, paused when hidden or minimized; static reduced-motion poster",
+            "frame_count": 54,
+            "loop_ms": 3420,
+            "asset_terms": "Separate third-party rights; retain assets/RACCOON-NOTICE.txt"
+          },
+          {
+            "id": "worker-activity-ring",
+            "source": "widgets/live_activity.py",
+            "line": 15,
+            "mechanism": "Determinate arc or rotating indeterminate arc with semantic health color and phase caption",
+            "timer_ms": 65,
+            "rotation_degrees_per_tick": 9
+          },
+          {
+            "id": "compact-worker-ring",
+            "source": "widgets/compact_worker_ring.py",
+            "line": 41,
+            "mechanism": "Smaller inherited activity ring with presentation scale 1.0\u20131.6"
+          },
+          {
+            "id": "vector-navigation",
+            "source": "widgets/header_controls.py",
+            "line": 72,
+            "mechanism": "Qt-painted high-DPI icons, cached QIcon, accessible hover definition cards, standard pointing-hand cursor"
+          },
+          {
+            "id": "button-push",
+            "source": "widgets/theme.py",
+            "line": 107,
+            "mechanism": "QSS pressed padding shifts content down about 2px and removes raised bottom border"
+          },
+          {
+            "id": "theme-surfaces",
+            "source": "widgets/theme.py",
+            "line": 107,
+            "mechanism": "Gradient panels, accent left borders, hover/selected/focus colors, zebra tables; no compositor blur"
+          },
+          {
+            "id": "legacy-holographic-orb",
+            "version": "0.4.0",
+            "source": "variants/objects/67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497/holographic_orb.py",
+            "line": 258,
+            "mechanism": "Frameless translucent floating globe with pulse, latitude/longitude grid, scanning gradient, orbital dot and expandable service nodes",
+            "timer_ms": 50,
+            "menu_duration_ms": 260,
+            "menu_easing": "OutCubic",
+            "status": "Historical source preserved; not present in latest widgets package"
+          },
+          {
+            "id": "legacy-collapse-restore-trail",
+            "version": "0.4.0",
+            "source": "variants/objects/67bc7bd066c333778f6bf3dfff474e1a5e5984baca92e13655d7fb96c06d4497/holographic_orb.py",
+            "line": 117,
+            "mechanism": "Click-through holographic outline collapses a window toward the floating orb anchor and expands it on restore",
+            "duration_ms": 440,
+            "easing": "InOutCubic",
+            "completion_grace_ms": 750,
+            "status": "Historical source; compositor and multi-monitor behavior needs target-platform runtime verification"
+          }
+        ],
+        "not_identified": [
+          "Dedicated splash-screen animation",
+          "Custom cursor artwork"
+        ],
+        "runtime_status": "See bundle validation; source analysis does not establish platform-identical native window behavior.",
+        "publicationOmissions": "Third-party raccoon art and embedded historical captures omitted. Local GIF player source and optional custom asset slot retained; new captures use original Qt rings."
+      },
+      "tokens": {
+        "project": "Optimus",
+        "version": "0.12.31",
+        "source": "source/src/optimus/widgets/theme.py",
+        "color_format": "Qt QSS; 8-digit hex is #AARRGGBB",
+        "themes": {
+          "cyber": {
+            "background": "#0a0e14",
+            "panel": "#0f141c",
+            "panel2": "#141b26",
+            "border": "#263345",
+            "text": "#d6e2f0",
+            "muted": "#94a3b8",
+            "accent": "#1f9cff",
+            "secondaryAccent": "#ff7a1a",
+            "radius_px": 10,
+            "font": "Segoe UI, Helvetica Neue, Arial, Noto Sans, DejaVu Sans, Liberation Sans, sans-serif"
+          },
+          "crt": {
+            "background": "#000a00",
+            "panel": "#001200",
+            "panel2": "#001a00",
+            "border": "#00b347",
+            "text": "#33ff66",
+            "muted": "#1f8a3a",
+            "accent": "#39ff14",
+            "secondaryAccent": "#00ff66",
+            "radius_px": 2,
+            "font": "Cascadia Mono, Consolas, Courier New, monospace"
+          },
+          "slate": {
+            "background": "#020617",
+            "panel": "#0f172a",
+            "panel2": "#1e293b",
+            "border": "#334155",
+            "text": "#f1f5f9",
+            "muted": "#94a3b8",
+            "accent": "#38bdf8",
+            "secondaryAccent": "#fb923c",
+            "radius_px": 8,
+            "font": "Segoe UI, Helvetica Neue, Arial, Noto Sans, DejaVu Sans, Liberation Sans, sans-serif"
+          }
+        },
+        "base_typography_px": {
+          "body": 13,
+          "brand": 26,
+          "tagline": 11,
+          "pageTitle": 20,
+          "sectionTitle": 13,
+          "cardValue": 30,
+          "cardLabel": 11,
+          "tableHeader": 11
+        },
+        "scaling": {
+          "default": 1,
+          "minimum": 0.75,
+          "maximum": 1.35
+        },
+        "spacing_px": {
+          "primaryButton": [
+            9,
+            16
+          ],
+          "button": [
+            7,
+            14
+          ],
+          "pill": [
+            5,
+            14
+          ],
+          "input": 7,
+          "checkbox": 18,
+          "statusChipHeight": 44
+        },
+        "progress_colors": {
+          "start": [
+            255,
+            77,
+            77
+          ],
+          "midpoint": [
+            255,
+            176,
+            32
+          ],
+          "complete": [
+            47,
+            227,
+            138
+          ]
+        },
+        "worker_health": {
+          "working": "#55c987",
+          "waiting": "#e8b34b",
+          "pressure": "#ed914b",
+          "error": "#ef6262",
+          "unverified": "#7291a8",
+          "complete": "#55c987"
+        },
+        "starfield": {
+          "background": "#0a0e14",
+          "primary": "#7acbff",
+          "highlight": "#ff7a1a",
+          "stars": 190,
+          "spiralStrands": 3,
+          "frame_interval_ms": 33
+        }
+      }
+    },
+    {
+      "id": "palamedes",
+      "name": "Palamedes",
+      "description": "Math instrument \u00b7 Cyber / Slate / CRT \u00b7 power sequence \u00b7 screen and orbit effects",
+      "readme": "projects/palamedes/README.md",
+      "sourceFiles": 49,
+      "sourceBytes": 603871,
+      "effects": {
+        "project": "Palamedes",
+        "evidence": "authored local source; not a claim of native runtime observation",
+        "effects": [
+          {
+            "id": "power-opening",
+            "trigger": "initial mount or standby Power on",
+            "stateDurationMs": 1050,
+            "animationDurationMs": 950,
+            "keyframes": "boot-open",
+            "behavior": "opaque through 70%, then fade to zero and scale to 1.03",
+            "sources": [
+              "original/src/App.jsx:useEffect initial timer and powerOn",
+              "original/src/styles.css:.power-overlay and @keyframes boot-open"
+            ]
+          },
+          {
+            "id": "power-loadbar",
+            "durationMs": 900,
+            "easing": "ease-out",
+            "behavior": "scaleX(0) to scaleX(1), left origin, glowing blue",
+            "measuredProgress": false,
+            "sources": [
+              "original/src/styles.css:.boot-loader and @keyframes loadbar"
+            ]
+          },
+          {
+            "id": "power-closing",
+            "trigger": "topbar power button",
+            "stateDurationMs": 500,
+            "overlayFadeMs": 350,
+            "shellDimMs": 400,
+            "behavior": "overlay fade in, shell brightness 0.6, then standby",
+            "closesNativeWindow": false,
+            "sources": [
+              "original/src/App.jsx:powerOff",
+              "original/src/styles.css:.power-closing"
+            ]
+          },
+          {
+            "id": "workspace-enter",
+            "trigger": "tab+nonce key changes",
+            "durationMs": 300,
+            "easing": "ease-out",
+            "behavior": "opacity 0.2 to 1, translateY(4px) to 0",
+            "sources": [
+              "original/src/App.jsx:instrument-screen",
+              "original/src/styles.css:@keyframes screen-open"
+            ]
+          },
+          {
+            "id": "workspace-loading",
+            "trigger": "React Suspense fallback",
+            "durationMs": 1800,
+            "iterations": "infinite",
+            "behavior": "linear circular LoaderCircle rotation in halo",
+            "sources": [
+              "original/src/App.jsx:Loading",
+              "original/src/styles.css:.loading-orbit and @keyframes rotate"
+            ]
+          },
+          {
+            "id": "picker-enter",
+            "durationMs": 160,
+            "easing": "ease-out",
+            "behavior": "opacity 0, translateY(6px), scale(.98) to rest",
+            "exitAnimation": false,
+            "sources": [
+              "original/src/styles.css:.mode-picker and @keyframes pop-in"
+            ]
+          },
+          {
+            "id": "modal-enter",
+            "durationMs": 200,
+            "behavior": "fade backdrop in; 8px blur",
+            "exitAnimation": false,
+            "sources": [
+              "original/src/App.jsx:settings conditional",
+              "original/src/styles.css:.modal-backdrop and @keyframes fade-in"
+            ]
+          },
+          {
+            "id": "toast-enter",
+            "durationMs": 200,
+            "lifetimeMs": 5000,
+            "behavior": "pop-in then immediate removal on timer or dismiss",
+            "exitAnimation": false,
+            "sources": [
+              "original/src/App.jsx:toast state/timer",
+              "original/src/styles.css:.toast"
+            ]
+          },
+          {
+            "id": "busy-spinner",
+            "durationMs": 1000,
+            "iterations": "infinite",
+            "behavior": "linear rotation",
+            "sources": [
+              "original/src/components/Solver.css:.spin",
+              "original/src/components/Solver.jsx:busy and ocrBusy",
+              "original/src/components/Sandbox.jsx:busy"
+            ]
+          },
+          {
+            "id": "ocr-progress",
+            "behavior": "conic-gradient ring --progress percentage*3.6deg with inset disc",
+            "sources": [
+              "original/src/components/Solver.jsx:ocrPct",
+              "original/src/styles.css:.progress-wheel"
+            ]
+          },
+          {
+            "id": "mobile-rail",
+            "durationMs": 250,
+            "behavior": "translateX(-100%) to zero on open, reversed on close below 760px",
+            "sources": [
+              "original/src/styles.css:@media(max-width:760px)"
+            ]
+          },
+          {
+            "id": "native-window",
+            "behavior": "created hidden; shown once ready-to-show; native minimize and close IPC",
+            "customOpenAnimation": false,
+            "customCloseAnimation": false,
+            "sources": [
+              "original/desktop/main.cjs:createWindow and ipcMain",
+              "original/desktop/preload.cjs:palamedesDesktop"
+            ]
+          }
+        ],
+        "reducedMotion": "Original CSS uses 0.001ms durations, one iteration and hides the power overlay. React phase timers remain.",
+        "notFound": [
+          "custom native desktop window open/close tween",
+          "modal exit tween",
+          "toast exit tween",
+          "dedicated animated graph-loader spinner"
+        ]
+      },
+      "tokens": {
+        "project": "Palamedes",
+        "source": "original/src/styles.css:1-3,6-7,11,13",
+        "colors": {
+          "cyber": {
+            "background": "#0a0e14",
+            "panel": "#101722",
+            "panelRaised": "#172130",
+            "border": "#263345",
+            "text": "#d6e2f0",
+            "muted": "#8798af",
+            "accent": "#36aaff",
+            "accentSoft": "#36aaff17",
+            "positive": "#69d4aa",
+            "danger": "#ff8f8f"
+          },
+          "slate": {
+            "background": "#070e1c",
+            "panel": "#101b2e",
+            "panelRaised": "#1b2b43",
+            "border": "#2d405c",
+            "accent": "#62bef7",
+            "accentSoft": "#62bef716"
+          },
+          "crt": {
+            "background": "#000a03",
+            "panel": "#04150b",
+            "panelRaised": "#082112",
+            "border": "#1a492b",
+            "text": "#a9edbb",
+            "muted": "#6f9b7b",
+            "accent": "#76ed8b",
+            "accentSoft": "#76ed8b12"
+          },
+          "backlights": {
+            "ice": "#36aaff",
+            "emerald": "#4cddb1",
+            "amber": "#ffb967"
+          }
+        },
+        "typography": {
+          "body": "'DM Sans','Segoe UI',sans-serif",
+          "mono": "'JetBrains Mono','Cascadia Code','Consolas',monospace",
+          "crt": "'Cascadia Mono','Consolas',monospace",
+          "brand": "Georgia,serif",
+          "basePx": 13,
+          "baseLineHeight": 1.55,
+          "headingPx": 32,
+          "headingTrackingPx": -1.6
+        },
+        "layout": {
+          "sidebarPx": 238,
+          "topbarPx": 65,
+          "workspaceMaximumPx": 1590,
+          "workspacePaddingPx": [
+            34,
+            38,
+            0
+          ],
+          "screenPaddingPx": 20,
+          "minimumScreenHeightPx": 450,
+          "panelRadiusPx": 12,
+          "enclosureRadiusPx": 20,
+          "screenRadiusPx": 10,
+          "buttonRadiusPx": 7,
+          "mobileBreakpointPx": 760,
+          "keyPressTravelPx": 2
+        },
+        "materials": {
+          "enclosureBackground": "linear-gradient(140deg,#303a48,#1c2531 23%,#151d28 70%,#303a48)",
+          "enclosureShadow": "inset 0 1px 1px #c9dfff33,inset 0 -2px 4px #0008,0 24px 50px #0003,0 0 1px #000",
+          "screenShadow": "inset 0 2px 8px #000b,0 0 15px color-mix(in srgb,var(--backlight) 10%,transparent),0 0 1px 1px color-mix(in srgb,var(--backlight) 22%,transparent)",
+          "numberKeyBackground": "linear-gradient(150deg,#2b3c51,#213047)",
+          "primaryKeyBackground": "linear-gradient(140deg,#57baff,#1882d0)",
+          "modalBackdrop": "#03070dba",
+          "modalBlurPx": 8
+        },
+        "motionMs": {
+          "openingState": 1050,
+          "bootOverlay": 950,
+          "bootStrip": 900,
+          "closingState": 500,
+          "closingOverlay": 350,
+          "shutdownDim": 400,
+          "screenEnter": 300,
+          "workspaceOrbit": 1800,
+          "solverSpinner": 1000,
+          "modePicker": 160,
+          "modal": 200,
+          "toast": 200,
+          "toastLifetime": 5000,
+          "mobileRail": 250,
+          "controlTransition": 180,
+          "toggleThumb": 200
+        }
+      }
+    }
+  ],
+  "media": [
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/demo/effects-playground.contact-sheet.png",
+      "label": "effects playground.contact sheet",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/demo/effects-playground.gif",
+      "label": "effects playground",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-auto-adapt.png",
+      "label": "security flow auto adapt",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-breach.png",
+      "label": "security flow breach",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-hardening.png",
+      "label": "security flow hardening",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-overview.png",
+      "label": "security flow overview",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-response.png",
+      "label": "security flow response",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-startup.png",
+      "label": "security flow startup",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/diagrams/security-flow-tools.png",
+      "label": "security flow tools",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/after-action-demo.png",
+      "label": "after action demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/auto-adapt-demo.png",
+      "label": "auto adapt demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/breach-lockdown-demo.png",
+      "label": "breach lockdown demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/dashboard-demo.png",
+      "label": "dashboard demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/effects-playground.png",
+      "label": "effects playground",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/github-tools-demo.png",
+      "label": "github tools demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/github-tools-settings-demo.png",
+      "label": "github tools settings demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/protection-service-console-demo.png",
+      "label": "protection service console demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/recorder-integrity-demo.png",
+      "label": "recorder integrity demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/spyware-scan-demo.png",
+      "label": "spyware scan demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/telemetry-storage-demo.png",
+      "label": "telemetry storage demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "angerona",
+      "path": "projects/angerona/media/screenshots/zero-breach-demo.png",
+      "label": "zero breach demo",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/legacy-holographic-orb.png",
+      "label": "legacy holographic orb",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/media/optimus-efficiency-setup.png",
+      "label": "optimus efficiency setup",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/media/optimus-main.png",
+      "label": "optimus main",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/media/optimus-sandbox.png",
+      "label": "optimus sandbox",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/optimus-app-rules.png",
+      "label": "optimus app rules",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/optimus-revert.png",
+      "label": "optimus revert",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/optimus-security-review.png",
+      "label": "optimus security review",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/optimus-setup.png",
+      "label": "optimus setup",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/optimus.png",
+      "label": "optimus",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/showcase-effects.gif",
+      "label": "showcase effects",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "optimus",
+      "path": "projects/optimus/reference/showcase.png",
+      "label": "showcase",
+      "kind": "image",
+      "provenance": "See project README and original media manifest"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-crt.png",
+      "label": "palamedes crt",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-cyber.png",
+      "label": "palamedes cyber",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-graphing.png",
+      "label": "palamedes graphing",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-loading.png",
+      "label": "palamedes loading",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-mode-picker.png",
+      "label": "palamedes mode picker",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-settings.png",
+      "label": "palamedes settings",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-shutdown.png",
+      "label": "palamedes shutdown",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-slate.png",
+      "label": "palamedes slate",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-standby.png",
+      "label": "palamedes standby",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/screenshots/palamedes-startup.png",
+      "label": "palamedes startup",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/animations/palamedes-loading.gif",
+      "label": "palamedes loading",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    },
+    {
+      "project": "palamedes",
+      "path": "docs/animations/palamedes-power.gif",
+      "label": "palamedes power",
+      "kind": "image",
+      "provenance": "New UI-only capture; see docs/VALIDATION.md"
+    }
+  ]
+}

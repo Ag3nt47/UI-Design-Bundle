@@ -1,0 +1,365 @@
+{
+  "project": "Palamedes",
+  "snapshotDate": "2026-11-02",
+  "sourceRoot": "source://palamedes",
+  "declaredRepository": "https://github.com/example/Palamedes",
+  "version": "1.0.0",
+  "license": "MIT",
+  "copyPolicy": "Exact authored source and package lock; no local browser storage, secrets, node_modules, .local cache, builds, installers, or updater-registration scripts.",
+  "files": [
+    {
+      "source": "source://palamedes\\.gitignore",
+      "sourceRelative": ".gitignore",
+      "bundleRelative": "original/.gitignore",
+      "sha256": "cb84f938db22532e07f38d03494bdd415f1cf989185684cde49d7d24f80367f6",
+      "bytes": 112
+    },
+    {
+      "source": "source://palamedes\\desktop\\main.cjs",
+      "sourceRelative": "desktop/main.cjs",
+      "bundleRelative": "original/desktop/main.cjs",
+      "sha256": "1596417cac3f5673362d4be52b9313d29d1c423b76e487bff0ebb5c084b53dc0",
+      "bytes": 11850,
+      "original_sha256": "049e682eefc60995ee2214f883f2a472d05a32145b5d4a3f779ad91459613a2d",
+      "privacy_redacted": true
+    },
+    {
+      "source": "source://palamedes\\desktop\\preload.cjs",
+      "sourceRelative": "desktop/preload.cjs",
+      "bundleRelative": "original/desktop/preload.cjs",
+      "sha256": "27d47de7e6e43e2da93b847bcdb0224c325e4155a9968b1f01515026029b06cb",
+      "bytes": 606
+    },
+    {
+      "source": "source://palamedes\\desktop\\update-policy.cjs",
+      "sourceRelative": "desktop/update-policy.cjs",
+      "bundleRelative": "original/desktop/update-policy.cjs",
+      "sha256": "29189d9a2d455127225f8f2bdfdb7821ed2fc91f265ca2beda5ccfa27662c630",
+      "bytes": 2941
+    },
+    {
+      "source": "source://palamedes\\index.html",
+      "sourceRelative": "index.html",
+      "bundleRelative": "original/index.html",
+      "sha256": "2ef513aa58f7802fdf6f8ab9713a1cd70047c96fb573f3355ee8eedd8c8614b2",
+      "bytes": 572
+    },
+    {
+      "source": "source://palamedes\\LICENSE",
+      "sourceRelative": "LICENSE",
+      "bundleRelative": "original/LICENSE",
+      "sha256": "170e9ecc0ca5c8e1ba204d67167e21c65f21c71f0a105bd58a42345a84157a06",
+      "bytes": 1064
+    },
+    {
+      "source": "source://palamedes\\package-lock.json",
+      "sourceRelative": "package-lock.json",
+      "bundleRelative": "original/package-lock.json",
+      "sha256": "87bdffe62068e275834e23e434f9b77b576b9d1d9520ad11438346ba0e81f7b4",
+      "bytes": 202509,
+      "original_sha256": "0cb5d79c944becfe18b925ecba6151776e071f4c5dcd0a5c6d233e0315ca0ec5",
+      "privacy_redacted": true
+    },
+    {
+      "source": "source://palamedes\\package.json",
+      "sourceRelative": "package.json",
+      "bundleRelative": "original/package.json",
+      "sha256": "864366e799fbfe791d68215e4bf7a827e768ddccb1f309f7f9e62b9197fc8279",
+      "bytes": 2200,
+      "original_sha256": "4894a770f157edf1fe2d314f9038aee718a3b850f41877241f237715ce63e89a",
+      "privacy_redacted": true
+    },
+    {
+      "source": "source://palamedes\\public\\.nojekyll",
+      "sourceRelative": "public/.nojekyll",
+      "bundleRelative": "original/public/.nojekyll",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1
+    },
+    {
+      "source": "source://palamedes\\public\\favicon.svg",
+      "sourceRelative": "public/favicon.svg",
+      "bundleRelative": "original/public/favicon.svg",
+      "sha256": "6e928cafe1b2a740a3b9499db4d1a8707badac41759824f904b422ea53826fc1",
+      "bytes": 237
+    },
+    {
+      "source": "source://palamedes\\public\\manifest.webmanifest",
+      "sourceRelative": "public/manifest.webmanifest",
+      "bundleRelative": "original/public/manifest.webmanifest",
+      "sha256": "876e7721c535c8128bfe57d33aa0a8cab5d42389f012a090eb03cc1d8d94e247",
+      "bytes": 271
+    },
+    {
+      "source": "source://palamedes\\public\\modules\\example.json",
+      "sourceRelative": "public/modules/example.json",
+      "bundleRelative": "original/public/modules/example.json",
+      "sha256": "4d05ee3b8ce551fd49399962082ce5beb4c0f080ad16ddf57e7198460dc1c7cc",
+      "bytes": 408
+    },
+    {
+      "source": "source://palamedes\\src\\App.jsx",
+      "sourceRelative": "src/App.jsx",
+      "bundleRelative": "original/src/App.jsx",
+      "sha256": "a173af128ab445ae4245cb4629166a76ba943841d1e4109ad481b03209ee0715",
+      "bytes": 20214,
+      "original_sha256": "1fe873a6a351f7e3e86834a8966252a106b5c9aea410b026d47918d16668f91d",
+      "privacy_redacted": true
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Advanced.jsx",
+      "sourceRelative": "src/components/Advanced.jsx",
+      "bundleRelative": "original/src/components/Advanced.jsx",
+      "sha256": "136112b03d14ced497732f42d1f6abecae55bc8d4a230f3375de98a751e8899f",
+      "bytes": 33765
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Calculator.jsx",
+      "sourceRelative": "src/components/Calculator.jsx",
+      "bundleRelative": "original/src/components/Calculator.jsx",
+      "sha256": "7507f57e0fd4caba41b9153924d01f5971f99e62398ee31ba43ce942b756636f",
+      "bytes": 7218
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Graphing.jsx",
+      "sourceRelative": "src/components/Graphing.jsx",
+      "bundleRelative": "original/src/components/Graphing.jsx",
+      "sha256": "bba28335b3489596cffa973e1be912f4d5fcde6aa3bba00860a20a0f1d173fb9",
+      "bytes": 11993
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Math.jsx",
+      "sourceRelative": "src/components/Math.jsx",
+      "bundleRelative": "original/src/components/Math.jsx",
+      "sha256": "42a3bcb740db843bb6473d14b3c937b86c5541d1e964cb8c9a6512b3a479d0b9",
+      "bytes": 392
+    },
+    {
+      "source": "source://palamedes\\src\\components\\MLLab.jsx",
+      "sourceRelative": "src/components/MLLab.jsx",
+      "bundleRelative": "original/src/components/MLLab.jsx",
+      "sha256": "2cdea232199efa75a3a766f78b206cf3bfa6abf4929d4733cd88f03cadaedec1",
+      "bytes": 17556
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Modules.jsx",
+      "sourceRelative": "src/components/Modules.jsx",
+      "bundleRelative": "original/src/components/Modules.jsx",
+      "sha256": "f5b1d163a7e9bca4ee59c238e9bf8232d104ca2ffa1ceaa177500befe11c528c",
+      "bytes": 5129
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Sandbox.css",
+      "sourceRelative": "src/components/Sandbox.css",
+      "bundleRelative": "original/src/components/Sandbox.css",
+      "sha256": "c2d1cd22fd3f3839bb19d9e6023e4dcf128fc9d3df9cd318158cd209e1a0271c",
+      "bytes": 7511
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Sandbox.jsx",
+      "sourceRelative": "src/components/Sandbox.jsx",
+      "bundleRelative": "original/src/components/Sandbox.jsx",
+      "sha256": "397782dfcc5e5bb3984ae84fd05afcb707657a765707817938bb7538f5d867ee",
+      "bytes": 17284
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Solver.css",
+      "sourceRelative": "src/components/Solver.css",
+      "bundleRelative": "original/src/components/Solver.css",
+      "sha256": "db1931fc27e6c0f6c3f12b0ca4cfb62cb3f0c76ba2d666ec8bdd6b6f9e1fec3f",
+      "bytes": 6814
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Solver.jsx",
+      "sourceRelative": "src/components/Solver.jsx",
+      "bundleRelative": "original/src/components/Solver.jsx",
+      "sha256": "54c2049eea4c40c2566309bdaf102d649c2a4bbd3e3bd2026a9444d24743f8e5",
+      "bytes": 12173
+    },
+    {
+      "source": "source://palamedes\\src\\components\\Textbook.jsx",
+      "sourceRelative": "src/components/Textbook.jsx",
+      "bundleRelative": "original/src/components/Textbook.jsx",
+      "sha256": "6ccb1ffd7365d7e7394ef45346457f859f5a642f98c283561cf468580ca6ab92",
+      "bytes": 6733
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\advanced.js",
+      "sourceRelative": "src/lib/advanced.js",
+      "bundleRelative": "original/src/lib/advanced.js",
+      "sha256": "114467d4d4dec0a0559dca38f00d7ebefc73a0fcd0281b831ae4c22eef955062",
+      "bytes": 6817
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\ai.js",
+      "sourceRelative": "src/lib/ai.js",
+      "bundleRelative": "original/src/lib/ai.js",
+      "sha256": "0858f0d1060dc34cf6e1bc694e3347b2f79871c44610c9af98db159ddd6263cf",
+      "bytes": 14866
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\engine.js",
+      "sourceRelative": "src/lib/engine.js",
+      "bundleRelative": "original/src/lib/engine.js",
+      "sha256": "27b208ea20060fe56047bccc7526ce6435274395b96743018d10d23b0487a95c",
+      "bytes": 28123
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\graph.js",
+      "sourceRelative": "src/lib/graph.js",
+      "bundleRelative": "original/src/lib/graph.js",
+      "sha256": "ca8332ef4f4de8024f0acb258720556f5f7122b1ea7f296550c9edfd6beedd33",
+      "bytes": 2759
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\ml.js",
+      "sourceRelative": "src/lib/ml.js",
+      "bundleRelative": "original/src/lib/ml.js",
+      "sha256": "bef3a3cf9de26edff523c3a8aede6c4582fd285c11c1a783338b2e3ffd68c565",
+      "bytes": 10228
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\modules.js",
+      "sourceRelative": "src/lib/modules.js",
+      "bundleRelative": "original/src/lib/modules.js",
+      "sha256": "01704b5925ba990c92f9e67b24cf22ece8430260487c49572068936fd884df75",
+      "bytes": 7149
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\solver.js",
+      "sourceRelative": "src/lib/solver.js",
+      "bundleRelative": "original/src/lib/solver.js",
+      "sha256": "e480d07342ec1ad52ceab875a3b0d426d6487ab1c2cd3397ce29af4089627cd5",
+      "bytes": 28843
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\storage.js",
+      "sourceRelative": "src/lib/storage.js",
+      "bundleRelative": "original/src/lib/storage.js",
+      "sha256": "ea1b574c452493138f7b073fe059aca3d52e85f8213d9ced1492d35055d03107",
+      "bytes": 614
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\textbook.js",
+      "sourceRelative": "src/lib/textbook.js",
+      "bundleRelative": "original/src/lib/textbook.js",
+      "sha256": "c2b4ff4019803054279eef3cbf12550cafb39148d38908322273fe15744c5daf",
+      "bytes": 45102
+    },
+    {
+      "source": "source://palamedes\\src\\lib\\verification.js",
+      "sourceRelative": "src/lib/verification.js",
+      "bundleRelative": "original/src/lib/verification.js",
+      "sha256": "459cd245943daf14a6a3d43d5979ae7f394e4c9650e598c2f6c305933ea5b05e",
+      "bytes": 1354
+    },
+    {
+      "source": "source://palamedes\\src\\main.jsx",
+      "sourceRelative": "src/main.jsx",
+      "bundleRelative": "original/src/main.jsx",
+      "sha256": "376ff80eb0f8587ea62e5b2660afb4947efef7954f0e4537329b300b772d05c4",
+      "bytes": 259
+    },
+    {
+      "source": "source://palamedes\\src\\styles.css",
+      "sourceRelative": "src/styles.css",
+      "bundleRelative": "original/src/styles.css",
+      "sha256": "d1db833e54d4c895604c21fba65318019109d09d4ebdd1982dd6bf5a8457709f",
+      "bytes": 37016
+    },
+    {
+      "source": "source://palamedes\\tests\\advanced.test.js",
+      "sourceRelative": "tests/advanced.test.js",
+      "bundleRelative": "original/tests/advanced.test.js",
+      "sha256": "737fc618d93807fbbb349fc21aa60220888125d03fada27d6401dceff6b743e9",
+      "bytes": 2631
+    },
+    {
+      "source": "source://palamedes\\tests\\ai.test.js",
+      "sourceRelative": "tests/ai.test.js",
+      "bundleRelative": "original/tests/ai.test.js",
+      "sha256": "8d9ac16e15ef35bfe8538b40809d720ee8a20398d89258d0e96c4949b73599d4",
+      "bytes": 7838
+    },
+    {
+      "source": "source://palamedes\\tests\\app.spec.js",
+      "sourceRelative": "tests/app.spec.js",
+      "bundleRelative": "original/tests/app.spec.js",
+      "sha256": "ed3b2b5c0bf94b1a31fb78ee677441c04744261635d61faafb0015c03fdb2377",
+      "bytes": 7232
+    },
+    {
+      "source": "source://palamedes\\tests\\engine.test.js",
+      "sourceRelative": "tests/engine.test.js",
+      "bundleRelative": "original/tests/engine.test.js",
+      "sha256": "a0525cf9167922beb58aab43384b6b739511603c8dc0c884c970cfc0e51481d9",
+      "bytes": 10735
+    },
+    {
+      "source": "source://palamedes\\tests\\graph.test.js",
+      "sourceRelative": "tests/graph.test.js",
+      "bundleRelative": "original/tests/graph.test.js",
+      "sha256": "b9d5c96638576295863bb47e13b48e7cac4d743af2329cb9c1ecb28ed090c3d4",
+      "bytes": 1269
+    },
+    {
+      "source": "source://palamedes\\tests\\ml.test.js",
+      "sourceRelative": "tests/ml.test.js",
+      "bundleRelative": "original/tests/ml.test.js",
+      "sha256": "7458070be974cd896b33e8333fa3c040a89f746ce6c867ed711cb3b32a6fab35",
+      "bytes": 3652
+    },
+    {
+      "source": "source://palamedes\\tests\\modules.test.js",
+      "sourceRelative": "tests/modules.test.js",
+      "bundleRelative": "original/tests/modules.test.js",
+      "sha256": "12fc7071baa7c490ba11a482091b6f903b833d5c19552f2045dc6b8f6fa12467",
+      "bytes": 3158
+    },
+    {
+      "source": "source://palamedes\\tests\\solver.test.js",
+      "sourceRelative": "tests/solver.test.js",
+      "bundleRelative": "original/tests/solver.test.js",
+      "sha256": "b0244c9928ff2d639185a0683a08d31c5ad481688f53aeb1edb8a740d8db73d5",
+      "bytes": 6403
+    },
+    {
+      "source": "source://palamedes\\tests\\syntax.test.js",
+      "sourceRelative": "tests/syntax.test.js",
+      "bundleRelative": "original/tests/syntax.test.js",
+      "sha256": "795eda462e06fe2a315bcb5ba12ad0beaa5d094cf12d09552d3a51d5ed8994d5",
+      "bytes": 1032
+    },
+    {
+      "source": "source://palamedes\\tests\\textbook.test.js",
+      "sourceRelative": "tests/textbook.test.js",
+      "bundleRelative": "original/tests/textbook.test.js",
+      "sha256": "d087c45ae2feae681053cda7f39efccced48a0140e66be5408b4deaaa3ac8dd2",
+      "bytes": 2990
+    },
+    {
+      "source": "source://palamedes\\tests\\updater.test.js",
+      "sourceRelative": "tests/updater.test.js",
+      "bundleRelative": "original/tests/updater.test.js",
+      "sha256": "cb634504495f171045578c48ff1670835eb0502de6defb475ef1624c34af5628",
+      "bytes": 2976,
+      "original_sha256": "14802d67fb7779017716f30340900b35724c0cf5235563aa4caf7fc6a97ba689",
+      "privacy_redacted": true
+    },
+    {
+      "source": "source://palamedes\\vite.config.js",
+      "sourceRelative": "vite.config.js",
+      "bundleRelative": "original/vite.config.js",
+      "sha256": "1cd5bb63614101025aedb928deb48c6b7fa1fb3b55f36b5775b8b99cd5c1c8be",
+      "bytes": 208
+    },
+    {
+      "source": "source://palamedes\\LICENSE",
+      "sourceRelative": "LICENSE",
+      "bundleRelative": "LICENSE",
+      "sha256": "170e9ecc0ca5c8e1ba204d67167e21c65f21c71f0a105bd58a42345a84157a06",
+      "bytes": 1064
+    }
+  ],
+  "publication_privacy": "Local identifiers and owner-specific non-legal links redacted. sha256 describes published bytes; original_sha256, when present, is the pre-redaction digest. Historical object directories retain their original-source identifier. Required legal attribution retained."
+}

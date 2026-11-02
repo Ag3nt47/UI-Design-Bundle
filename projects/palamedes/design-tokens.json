@@ -1,0 +1,14 @@
+{
+  "project": "Palamedes",
+  "source": "original/src/styles.css:1-3,6-7,11,13",
+  "colors": {
+    "cyber": {"background":"#0a0e14","panel":"#101722","panelRaised":"#172130","border":"#263345","text":"#d6e2f0","muted":"#8798af","accent":"#36aaff","accentSoft":"#36aaff17","positive":"#69d4aa","danger":"#ff8f8f"},
+    "slate": {"background":"#070e1c","panel":"#101b2e","panelRaised":"#1b2b43","border":"#2d405c","accent":"#62bef7","accentSoft":"#62bef716"},
+    "crt": {"background":"#000a03","panel":"#04150b","panelRaised":"#082112","border":"#1a492b","text":"#a9edbb","muted":"#6f9b7b","accent":"#76ed8b","accentSoft":"#76ed8b12"},
+    "backlights": {"ice":"#36aaff","emerald":"#4cddb1","amber":"#ffb967"}
+  },
+  "typography": {"body":"'DM Sans','Segoe UI',sans-serif","mono":"'JetBrains Mono','Cascadia Code','Consolas',monospace","crt":"'Cascadia Mono','Consolas',monospace","brand":"Georgia,serif","basePx":13,"baseLineHeight":1.55,"headingPx":32,"headingTrackingPx":-1.6},
+  "layout": {"sidebarPx":238,"topbarPx":65,"workspaceMaximumPx":1590,"workspacePaddingPx":[34,38,0],"screenPaddingPx":20,"minimumScreenHeightPx":450,"panelRadiusPx":12,"enclosureRadiusPx":20,"screenRadiusPx":10,"buttonRadiusPx":7,"mobileBreakpointPx":760,"keyPressTravelPx":2},
+  "materials": {"enclosureBackground":"linear-gradient(140deg,#303a48,#1c2531 23%,#151d28 70%,#303a48)","enclosureShadow":"inset 0 1px 1px #c9dfff33,inset 0 -2px 4px #0008,0 24px 50px #0003,0 0 1px #000","screenShadow":"inset 0 2px 8px #000b,0 0 15px color-mix(in srgb,var(--backlight) 10%,transparent),0 0 1px 1px color-mix(in srgb,var(--backlight) 22%,transparent)","numberKeyBackground":"linear-gradient(150deg,#2b3c51,#213047)","primaryKeyBackground":"linear-gradient(140deg,#57baff,#1882d0)","modalBackdrop":"#03070dba","modalBlurPx":8},
+  "motionMs": {"openingState":1050,"bootOverlay":950,"bootStrip":900,"closingState":500,"closingOverlay":350,"shutdownDim":400,"screenEnter":300,"workspaceOrbit":1800,"solverSpinner":1000,"modePicker":160,"modal":200,"toast":200,"toastLifetime":5000,"mobileRail":250,"controlTransition":180,"toggleThumb":200}
+}

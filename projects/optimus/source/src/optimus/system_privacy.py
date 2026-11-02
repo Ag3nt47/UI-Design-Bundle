@@ -1,0 +1,1101 @@
+"""Guarded Windows privacy choices and native Defender security controls.
+
+Primary references (policy scope/edition restrictions are intentional):
+https://learn.microsoft.com/windows/client-management/mdm/policy-csp-privacy
+https://learn.microsoft.com/windows/client-management/mdm/policy-csp-experience
+https://learn.microsoft.com/windows/client-management/mdm/policy-csp-system
+https://learn.microsoft.com/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis
+https://support.microsoft.com/windows/privacy/general-privacy-settings-in-windows
+https://support.microsoft.com/windows/privacy/privacy-settings-for-recommendations-offers-in-windows-11
+https://learn.microsoft.com/powershell/module/defender/start-mpscan
+https://learn.microsoft.com/powershell/module/defender/remove-mpthreat
+https://learn.microsoft.com/powershell/module/defender/set-mppreference
+https://learn.microsoft.com/powershell/module/netsecurity/set-netfirewallprofile
+
+AdvertisingInfo/ContentDeliveryManager preference values are not a published
+stable policy API: only existing recognizable DWORD preferences are changed.
+Missing preferences are reported unsupported. A registry readback verifies the
+written preference, not that every application obeys it or stops all sharing.
+Recall snapshot blocking is separately opt-in: Windows deletes old snapshots,
+and restoring the backed-up policy cannot recover those deleted snapshots.
+No Defender exclusion, threat-action preference, service, hosts entry, network
+blocklist, SmartScreen setting or Windows Update protection is weakened.
+"""
+from __future__ import annotations
+
+import base64
+import copy
+from functools import partial
+import json
+import math
+import os
+from pathlib import Path
+import re
+import stat
+import subprocess
+import threading
+import time
+import uuid
+
+from .workflow import atomic_json
+
+SOURCES = [
+    'https://learn.microsoft.com/windows/client-management/mdm/policy-csp-privacy',
+    'https://learn.microsoft.com/windows/client-management/mdm/policy-csp-experience',
+    'https://learn.microsoft.com/windows/client-management/mdm/policy-csp-system',
+    'https://learn.microsoft.com/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis',
+    'https://support.microsoft.com/windows/privacy/general-privacy-settings-in-windows',
+    'https://support.microsoft.com/windows/privacy/privacy-settings-for-recommendations-offers-in-windows-11',
+    'https://learn.microsoft.com/powershell/module/defender/start-mpscan',
+    'https://learn.microsoft.com/powershell/module/defender/get-mpcomputerstatus',
+    'https://learn.microsoft.com/defender-endpoint/troubleshoot-microsoft-defender-antivirus',
+    'https://learn.microsoft.com/powershell/module/defender/remove-mpthreat',
+    'https://learn.microsoft.com/powershell/module/defender/set-mppreference',
+    'https://learn.microsoft.com/powershell/module/netsecurity/set-netfirewallprofile',
+]
+_CONTROLS = {
+    'advertising_id': dict(hive='CurrentUser', path=r'Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo',
+        name='Enabled', desired=0, existing_only=True, scope='user', master='privacy_advertising_enabled', flag='privacy_disable_advertising_id', minimum_build=10240),
+    'tailored_experiences': dict(hive='CurrentUser', path=r'Software\Policies\Microsoft\Windows\CloudContent',
+        name='DisableTailoredExperiencesWithDiagnosticData', desired=1, scope='user', policy=True, master='privacy_advertising_enabled', flag='privacy_disable_tailored_experiences', minimum_build=15063),
+    'optional_diagnostics': dict(hive='LocalMachine', path=r'Software\Policies\Microsoft\Windows\DataCollection',
+        name='AllowTelemetry', desired=1, scope='device', policy=True, master='privacy_diagnostics_enabled', flag='privacy_disable_optional_diagnostics', minimum_build=10240),
+    'app_diagnostics': dict(hive='LocalMachine', path=r'Software\Policies\Microsoft\Windows\AppPrivacy',
+        name='LetAppsGetDiagnosticInfo', desired=2, scope='device', policy=True, master='privacy_diagnostics_enabled', flag='privacy_disable_app_diagnostics', minimum_build=15063),
+}
+# These mapped Group Policies explicitly exclude Home and Pro. They reduce
+# Windows consumer provisioning/promotions; they are not an installer firewall.
+_CONSUMER_POLICY_EDITIONS = ('Enterprise', 'EnterpriseN', 'EnterpriseS', 'EnterpriseSN',
+    'EnterpriseEval', 'EnterpriseNEval', 'EnterpriseSEval', 'Education', 'EducationN',
+    'IoTEnterprise', 'IoTEnterpriseS')
+for _key, _name, _master, _build in (
+    ('consumer_features', 'DisableWindowsConsumerFeatures', 'privacy_block_silent_consumer_apps_enabled', 14393),
+    ('cloud_optimized_content', 'DisableCloudOptimizedContent', 'privacy_disable_cloud_promotions_enabled', 22000),
+    ('consumer_account_content', 'DisableConsumerAccountStateContent', 'privacy_disable_cloud_promotions_enabled', 22000)):
+    _CONTROLS[_key] = dict(hive='LocalMachine', path=r'Software\Policies\Microsoft\Windows\CloudContent',
+        name=_name, desired=1, scope='device', policy=True, master=_master, flag=_master,
+        minimum_build=_build, editions=_CONSUMER_POLICY_EDITIONS,
+        source='https://learn.microsoft.com/windows/client-management/mdm/policy-csp-experience#'
+            + {'consumer_features': 'allowwindowsconsumerfeatures', 'cloud_optimized_content': 'disablecloudoptimizedcontent',
+               'consumer_account_content': 'disableconsumeraccountstatecontent'}[_key])
+for _name in ('SilentInstalledAppsEnabled', 'SubscribedContent-338388Enabled', 'SubscribedContent-338389Enabled',
+              'SubscribedContent-353694Enabled', 'SubscribedContent-353696Enabled'):
+    _CONTROLS['suggestions_' + _name] = dict(hive='CurrentUser', path=r'Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager',
+        name=_name, desired=0, existing_only=True, scope='user', master='privacy_advertising_enabled', flag='privacy_disable_suggestions', minimum_build=10240)
+_CONTROLS['suggestions_SilentInstalledAppsEnabled']['alternate_master'] = 'privacy_block_silent_consumer_apps_enabled'
+_CONTROLS['cross_device_clipboard'] = dict(hive='LocalMachine', path=r'Software\Policies\Microsoft\Windows\System',
+    name='AllowCrossDeviceClipboard', desired=0, scope='device', policy=True,
+    master='privacy_disable_clipboard_sync_enabled', flag='privacy_disable_clipboard_sync_enabled', minimum_build=17763,
+    source='https://learn.microsoft.com/windows/client-management/mdm/policy-csp-privacy#allowcrossdeviceclipboard',
+    note='Disables Windows cross-device clipboard synchronization. Local clipboard history is unchanged; this does not erase previously uploaded copies.')
+_CONTROLS['recall_snapshots'] = dict(hive='LocalMachine', path=r'SOFTWARE\Policies\Microsoft\Windows\WindowsAI',
+    name='DisableAIDataAnalysis', desired=1, scope='device', policy=True,
+    master='privacy_disable_recall_snapshots_enabled', flag='privacy_disable_recall_snapshots_enabled',
+    minimum_build=26100, minimum_revision=3915,
+    source='https://learn.microsoft.com/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis',
+    note='Windows blocks Recall snapshot saving and deletes previously saved snapshots when this policy is enabled. Restoring the original policy cannot restore deleted snapshots; a registry readback does not verify snapshot deletion.')
+# An unknown edition/build remains unverified; only recognizable Windows client
+# metadata can establish that a documented feature is simply not applicable.
+_KNOWN_CLIENT_EDITIONS = set(_CONSUMER_POLICY_EDITIONS) | {
+    'Core', 'CoreN', 'CoreSingleLanguage', 'CoreCountrySpecific',
+    'Professional', 'ProfessionalN', 'ProfessionalEducation', 'ProfessionalEducationN',
+    'ProfessionalWorkstation', 'ProfessionalWorkstationN',
+}
+_CONTROL_LABELS = {
+    'advertising_id': 'Advertising ID', 'tailored_experiences': 'Tailored experiences',
+    'optional_diagnostics': 'Optional diagnostic data', 'app_diagnostics': 'App diagnostic access',
+    'consumer_features': 'Consumer-content policy', 'cloud_optimized_content': 'Cloud promotions',
+    'consumer_account_content': 'Consumer account content', 'cross_device_clipboard': 'Cross-device clipboard',
+    'recall_snapshots': 'Recall snapshots',
+}
+
+
+def _unavailable_status(context):
+    return ('not_applicable' if context.get('platform') == 'Windows'
+            and type(context.get('build')) is int and context['build'] >= 10240
+            and context.get('edition') in _KNOWN_CLIENT_EDITIONS else 'unsupported')
+
+
+def _privacy_progress(callback, checked, total, *, policy=None, status=None, unknown=False, description=None):
+    # The fraction measures durably checked policy decisions, never native
+    # registry-call timing or the number of controls successfully applied.
+    if not callable(callback):
+        return
+    label = f'Privacy controls ({checked}/{total} checked)'
+    policy_label = _CONTROL_LABELS.get(policy, 'Windows suggestions: ' + str(policy or '').removeprefix('suggestions_'))
+    detail = description or (f'{policy_label}: ' + (str(status).replace('_', ' ') if status else 'checking'))
+    event = {'item_progress': {'key': 'privacy:controls', 'label': label, 'phase': 'verify',
+                              'percent': None if unknown else checked * 100 / total},
+             'description': label + '. ' + detail, 'current': checked, 'total': total,
+             'policy_id': policy, 'policy_status': status, 'progress_only': True}
+    try:
+        callback(event)
+    except Exception:
+        pass  # Display failures must not abandon a prepared registry operation.
+
+
+_ID = re.compile(r'^[a-f0-9]{32}$')
+MITRE_MITIGATIONS = {
+    'M1049': {'id': 'M1049', 'name': 'Antivirus/Antimalware', 'url': 'https://attack.mitre.org/mitigations/M1049/'},
+    'M1037': {'id': 'M1037', 'name': 'Filter Network Traffic', 'url': 'https://attack.mitre.org/mitigations/M1037/'},
+    'M1051': {'id': 'M1051', 'name': 'Update Software', 'url': 'https://attack.mitre.org/mitigations/M1051/'},
+}
+_ACTIONS = {'enable_defender_realtime', 'enable_firewall', 'update_defender_signatures',
+            'remediate_defender_threats', 'review_security', 'review_windows_update', 'restart_required'}
+
+_CADENCE_POWERSHELL = r'''
+function Cadence-Date($Value) {
+ if($Value -is [datetime]){return $Value.ToUniversalTime().ToString('o')}
+ return ''
+}
+function Cadence-Bool($Value) {
+ if($Value -is [bool]){return $Value}
+ return $null
+}
+function Quick-Scan-ReuseStatus {
+ # This probe is read-only. Never infer successful completion from a timestamp
+ # alone, or no current scan from a bounded history that has lost older starts.
+ $log='Microsoft-Windows-Windows Defender/Operational'
+ $boot=(Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction Stop).LastBootUpTime
+ if($boot -isnot [datetime]){throw 'Current boot metadata is unavailable.'}
+ $logInfo=Get-WinEvent -ListLog $log -ErrorAction Stop
+ if($logInfo.IsEnabled -isnot [bool] -or -not $logInfo.IsEnabled){throw 'Defender lifecycle logging is unavailable.'}
+ $oldest=Get-WinEvent -LogName $log -Oldest -MaxEvents 1 -ErrorAction Stop
+ $filter=@{LogName=$log;Id=@(1000,1001,1002);StartTime=$boot}
+ $nativeEvents=@(Get-WinEvent -FilterHashtable $filter -MaxEvents 257 -ErrorAction Stop)
+ $complete=($nativeEvents.Count -le 256);$events=@()
+ $events=@(foreach($event in @($nativeEvents|Select-Object -First 256)){
+  if($event.ProviderName -cne 'Microsoft-Windows-Windows Defender'){$complete=$false}
+  $xml=[xml]$event.ToXml()
+  $ids=@($xml.Event.EventData.Data|Where-Object{
+   ([regex]::Replace([string]$_.Name,'[^A-Za-z0-9]','')).ToLowerInvariant() -ceq 'scanid'
+  })
+  $scanID=[guid]::Empty
+  if($ids.Count -ne 1 -or -not [guid]::TryParse([string]$ids[0].'#text',[ref]$scanID) -or $scanID -eq [guid]::Empty){$complete=$false}
+  if(($event.RecordId -isnot [long] -and $event.RecordId -isnot [int]) -or
+     ($event.Id -isnot [int] -and $event.Id -isnot [long])){$complete=$false}
+  @{id=[int]$event.Id;record_id=[long]$event.RecordId;scan_id=$scanID.ToString().ToLowerInvariant();time=(Cadence-Date $event.TimeCreated)}
+ })
+ $d=Get-MpComputerStatus -ErrorAction Stop
+ $defender=@{available=$true;service_enabled=(Cadence-Bool $d.AMServiceEnabled);
+  antivirus_enabled=(Cadence-Bool $d.AntivirusEnabled);antispyware_enabled=(Cadence-Bool $d.AntispywareEnabled);
+  realtime_enabled=(Cadence-Bool $d.RealTimeProtectionEnabled);running_mode=[string]$d.AMRunningMode;
+  on_access_enabled=(Cadence-Bool $d.OnAccessProtectionEnabled);behavior_enabled=(Cadence-Bool $d.BehaviorMonitorEnabled);
+  ioav_enabled=(Cadence-Bool $d.IoavProtectionEnabled);quick_scan_overdue=(Cadence-Bool $d.QuickScanOverdue);
+  signatures_out_of_date=(Cadence-Bool $d.DefenderSignaturesOutOfDate);
+  quick_scan_start=(Cadence-Date $d.QuickScanStartTime);quick_scan_end=(Cadence-Date $d.QuickScanEndTime);
+  full_scan_start=(Cadence-Date $d.FullScanStartTime);full_scan_end=(Cadence-Date $d.FullScanEndTime);
+  full_scan_metadata_complete=(($d.PSObject.Properties.Name -contains 'FullScanStartTime') -and ($d.PSObject.Properties.Name -contains 'FullScanEndTime') -and
+   (($null -eq $d.FullScanStartTime -and $null -eq $d.FullScanEndTime) -or ($d.FullScanStartTime -is [datetime] -and $d.FullScanEndTime -is [datetime])));
+  antivirus_signature_version=[string]$d.AntivirusSignatureVersion;antivirus_signature_updated=(Cadence-Date $d.AntivirusSignatureLastUpdated);
+  antispyware_signature_version=[string]$d.AntispywareSignatureVersion;antispyware_signature_updated=(Cadence-Date $d.AntispywareSignatureLastUpdated)}
+ $threats=Threats
+ # Existing display snapshots intentionally tolerate unavailable legacy fields.
+ # Reuse has a stricter native type/coverage gate and cannot turn them into zero.
+ $rawThreats=@(Get-MpThreat -ErrorAction Stop|Select-Object -First 201)
+ if($rawThreats.Count -gt 200 -or @($rawThreats|Where-Object{$_.IsActive -isnot [bool] -or $_.IsActive -eq $true}).Count -gt 0){$threats.complete=$false}
+ $rawDetections=@(Get-MpThreatDetection -ErrorAction Stop|Select-Object -First 201)
+ if($rawDetections.Count -gt 200 -or @($rawDetections|Where-Object{
+  $_.ActionSuccess -isnot [bool] -or $_.ActionSuccess -ne $true -or
+  ($_.ThreatID -isnot [int] -and $_.ThreatID -isnot [long] -and $_.ThreatID -isnot [uint32] -and $_.ThreatID -isnot [uint64]) -or $_.ThreatID -lt 0 -or $_.ThreatID -gt [long]::MaxValue -or
+  ($_.ThreatStatusID -isnot [byte] -and $_.ThreatStatusID -isnot [int] -and $_.ThreatStatusID -isnot [long] -and $_.ThreatStatusID -isnot [uint32]) -or $_.ThreatStatusID -notin @(2,3,4,5,6,106)
+ }).Count -gt 0){$threats.detections_complete=$false;$threats.detections=@()}
+ # Only this read-only cadence view carries historical dates. The existing
+ # threat display/remediation serializer remains unchanged. uint8 is the
+ # documented native ThreatStatusID type; strings/bools never authorize reuse.
+ else{$threats.detections=@(foreach($row in $rawDetections){
+  @{threat_id=[long]$row.ThreatID;status_id=[int]$row.ThreatStatusID;action_success=(Cadence-Bool $row.ActionSuccess);
+   initial_detection_time=(Cadence-Date $row.InitialDetectionTime);last_status_change_time=(Cadence-Date $row.LastThreatStatusChangeTime)}
+ })}
+ $providers=Providers 'AntiVirusProduct'
+ $fence=Get-WinEvent -FilterHashtable $filter -MaxEvents 1 -ErrorAction Stop
+ $latest=if($events.Count){[long]($events|ForEach-Object{[long]$_.record_id}|Measure-Object -Maximum).Maximum}else{0}
+ @{ok=$true;schema=1;observed_at=[datetime]::UtcNow.ToString('o');defender=$defender;
+  antivirus_providers=$providers;threats=$threats;
+  lifecycle=@{complete=$complete;boot_time=(Cadence-Date $boot);log_oldest=(Cadence-Date $oldest.TimeCreated);
+   latest_record_id=$latest;fence_record_id=[long]$fence.RecordId;events=$events}}
+}
+'''
+
+
+_POWERSHELL = r'''
+$ErrorActionPreference='Stop';$ProgressPreference='SilentlyContinue'
+[Console]::OutputEncoding=New-Object Text.UTF8Encoding($false)
+$P=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('__PAYLOAD__'))|ConvertFrom-Json
+$C=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('__CONTROLS__'))|ConvertFrom-Json
+function Is-Admin {([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)}
+function Context {
+ $v=Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+ [pscustomobject]@{platform='Windows';build=[int]$v.CurrentBuildNumber;ubr=[int]$v.UBR;edition=[string]$v.EditionID;is_admin=(Is-Admin)}
+}
+function Read-Control($id) {
+ $s=$C.$id;if($null -eq $s){throw 'Unknown privacy control.'}
+ $h=[Microsoft.Win32.RegistryHive]([Enum]::Parse([Microsoft.Win32.RegistryHive],[string]$s.hive))
+ $view=if([Environment]::Is64BitOperatingSystem){[Microsoft.Win32.RegistryView]::Registry64}else{[Microsoft.Win32.RegistryView]::Default}
+ $base=[Microsoft.Win32.RegistryKey]::OpenBaseKey($h,$view)
+ try{$key=$base.OpenSubKey([string]$s.path,$false);if($null -eq $key){return @{exists=$false}}
+  try{if($key.GetValueNames() -cnotcontains [string]$s.name){return @{exists=$false}}
+   $kind=[string]$key.GetValueKind([string]$s.name)
+   $value=if($kind -eq 'DWord'){[int64]$key.GetValue([string]$s.name)}else{$null}
+   return @{exists=$true;type=$kind;value=$value}
+  }finally{$key.Dispose()}
+ }finally{$base.Dispose()}
+}
+function Same-Value($a,$b) {
+ if($a.exists -ne $b.exists){return $false}
+ if(-not $a.exists){return $true}
+ return $a.type -ceq $b.type -and $a.value -eq $b.value
+}
+function Defender {
+ try{$d=Get-MpComputerStatus -ErrorAction Stop
+  return @{available=$true;service_enabled=[bool]$d.AMServiceEnabled;antivirus_enabled=[bool]$d.AntivirusEnabled;
+   realtime_enabled=[bool]$d.RealTimeProtectionEnabled;running_mode=[string]$d.AMRunningMode;
+   signature_age_days=[int]$d.AntivirusSignatureAge;tamper_protected=[bool]$d.IsTamperProtected;
+   quick_scan_end=if($d.QuickScanEndTime){([datetime]$d.QuickScanEndTime).ToUniversalTime().ToString('o')}else{''}}
+ }catch{return @{available=$false;error='Defender status is unavailable.'}}
+}
+function Providers($class) {
+ try{return @{complete=$true;items=@(Get-CimInstance -Namespace root/SecurityCenter2 -ClassName $class -ErrorAction Stop|ForEach-Object{[string]$_.displayName})}}
+ catch{return @{complete=$false;items=@()}}
+}
+function Active-Defender {
+ $d=Defender
+ return $d.available -eq $true -and $d.service_enabled -eq $true -and $d.antivirus_enabled -eq $true -and $d.running_mode -ceq 'Normal'
+}
+function No-OtherProvider($class) {
+ $p=Providers $class
+ return $p.complete -eq $true -and @($p.items|Where-Object{$_ -notmatch '^((Microsoft Defender|Windows Defender|Windows Security)( Antivirus| Firewall)?|Windows Firewall)$'}).Count -eq 0
+}
+function Defender-ScopeDigest($Value) {
+ $sha=[Security.Cryptography.SHA256]::Create()
+ try{
+  $bytes=[Text.Encoding]::UTF8.GetBytes((ConvertTo-Json -InputObject $Value -Depth 8 -Compress))
+  return ([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()
+ }finally{$sha.Dispose()}
+}
+function Threats {
+ $active=@(Get-MpThreat -ErrorAction Stop|Where-Object{$_.IsActive -eq $true})
+ $scopeComplete=($active.Count -le 200);$resourceTotal=0;$resourceCharacters=0
+ $items=@(foreach($threat in @($active|Sort-Object ThreatID|Select-Object -First 200)){
+  $name=[string]$threat.ThreatName;$resources=@($threat.Resources)
+  $resourceTotal+=$resources.Count
+  if($resources.Count -lt 1 -or $resourceTotal -gt 2000){$scopeComplete=$false;$resources=@()}
+  foreach($resource in $resources){
+   if($resource -isnot [string] -or $resource.Length -lt 1 -or $resource.Length -gt 8192){$scopeComplete=$false}
+   if($resource -is [string]){$resourceCharacters+=$resource.Length}
+  }
+  if($resourceCharacters -gt 4194304){$scopeComplete=$false;$resources=@()}
+  [string[]]$resourceNames=@($resources|Where-Object{$_ -is [string] -and $_.Length -le 8192})
+  [Array]::Sort($resourceNames,[StringComparer]::Ordinal)
+  @{id=[int64]$threat.ThreatID;name=$name.Substring(0,[Math]::Min(256,$name.Length));active=$true;
+    resource_count=$resources.Count;resource_fingerprint=(Defender-ScopeDigest $resourceNames)}
+ })
+ $detections=@();$detectionsComplete=$false
+ $scopeHistory=@()
+ try{
+  $history=@(Get-MpThreatDetection -ErrorAction Stop|Select-Object -First 201)
+  $detections=@($history|Select-Object -First 200|ForEach-Object{
+   @{threat_id=[int64]$_.ThreatID;status_id=[int]$_.ThreatStatusID;action_success=[bool]$_.ActionSuccess}})
+  $detectionsComplete=($history.Count -le 200)
+  $ids=@($items|ForEach-Object{$_.id})
+  $scopeHistory=@($history|Where-Object{$ids -contains [int64]$_.ThreatID}|Sort-Object ThreatID,DetectionID|ForEach-Object{
+   if($_.DetectionID -isnot [string] -or $_.DetectionID.Length -gt 128){$scopeComplete=$false}
+   $detectionID=if($_.DetectionID -is [string]){$_.DetectionID.Substring(0,[Math]::Min(128,$_.DetectionID.Length))}else{''}
+   [ordered]@{threat_id=[int64]$_.ThreatID;detection_id=$detectionID;
+    initial=if($_.InitialDetectionTime){([datetime]$_.InitialDetectionTime).ToUniversalTime().ToString('o')}else{''};
+    changed=if($_.LastThreatStatusChangeTime){([datetime]$_.LastThreatStatusChangeTime).ToUniversalTime().ToString('o')}else{''};
+    status=[int]$_.ThreatStatusID;action_success=[bool]$_.ActionSuccess}
+  })
+ }catch{$scopeComplete=$false;$detectionsComplete=$false}
+ $scopeComplete=($scopeComplete -and $detectionsComplete)
+ $scope=[ordered]@{version=1;resources=@($items|ForEach-Object{[ordered]@{id=$_.id;count=$_.resource_count;sha256=$_.resource_fingerprint}});detections=$scopeHistory}
+ return @{complete=$true;items=$items;active_count=$active.Count;truncated=($active.Count -gt 200);detections=$detections;detections_complete=$detectionsComplete;
+  active_fingerprint=(Defender-ScopeDigest $scope);active_fingerprint_complete=$scopeComplete}
+}
+function Security-Status {
+ $d=Defender;$av=Providers 'AntiVirusProduct';$fwProviders=Providers 'FirewallProduct'
+ $f=@{complete=$false;profiles=@()}
+ try{$profiles=@(Get-NetFirewallProfile -PolicyStore ActiveStore -ErrorAction Stop|ForEach-Object{
+  @{name=[string]$_.Name;enabled=([string]$_.Enabled -eq 'True');default_inbound=[string]$_.DefaultInboundAction;default_outbound=[string]$_.DefaultOutboundAction}})
+  $f=@{complete=($profiles.Count -eq 3);profiles=$profiles}
+ }catch{}
+ $pending=$null
+ try{$u=New-Object -ComObject Microsoft.Update.SystemInfo;$pending=[bool]$u.RebootRequired}catch{}
+ $t=@{complete=$false;items=@();active_count=$null};if($d.available){try{$t=Threats}catch{}}
+ return @{context=(Context);defender=$d;antivirus_providers=$av;firewall_providers=$fwProviders;firewall=$f;reboot_required=$pending;threats=$t}
+}
+__CADENCE_FUNCTIONS__
+try {
+ $result=switch('__OPERATION__'){
+ 'context' {Context;break}
+ 'registry_read' {Read-Control ([string]$P.control);break}
+ 'privacy_snapshot' {
+  $ids=@($P.controls)
+  if($ids.Count -lt 1 -or $ids.Count -gt @($C.PSObject.Properties).Count){throw 'Invalid privacy snapshot controls.'}
+  $seen=@{};$values=@{}
+  foreach($id in $ids){
+   if($id -isnot [string] -or $null -eq $C.$id -or $seen.ContainsKey($id)){throw 'Invalid privacy snapshot control.'}
+   $seen[$id]=$true
+  }
+  $context=Context
+  foreach($id in $ids){
+   try{$values[$id]=@{ok=$true;current=(Read-Control $id)}}
+   catch{$values[$id]=@{ok=$false;error_type=$_.Exception.GetType().Name}}
+  }
+  @{ok=$true;schema=1;context=$context;controls=$values};break
+ }
+ 'registry_write' {
+  $s=$C.([string]$P.control);if($null -eq $s){throw 'Unknown privacy control.'}
+  if($s.scope -eq 'device' -and -not(Is-Admin)){throw [UnauthorizedAccessException]::new('Administrator access is required.')}
+  $before=Read-Control ([string]$P.control)
+  if(-not(Same-Value $before $P.expected)){throw 'The privacy value changed since its snapshot.'}
+  $h=[Microsoft.Win32.RegistryHive]([Enum]::Parse([Microsoft.Win32.RegistryHive],[string]$s.hive))
+  $view=if([Environment]::Is64BitOperatingSystem){[Microsoft.Win32.RegistryView]::Registry64}else{[Microsoft.Win32.RegistryView]::Default}
+  $base=[Microsoft.Win32.RegistryKey]::OpenBaseKey($h,$view)
+  try{$key=$base.CreateSubKey([string]$s.path)
+   try{if($P.remove -eq $true){$key.DeleteValue([string]$s.name,$false)}else{$key.SetValue([string]$s.name,[int]$P.value,[Microsoft.Win32.RegistryValueKind]::DWord)}}finally{$key.Dispose()}
+  }finally{$base.Dispose()}
+  @{ok=$true;current=(Read-Control ([string]$P.control))};break
+ }
+ 'security_status' {Security-Status;break}
+ 'quick_scan_reuse_status' {Quick-Scan-ReuseStatus;break}
+ 'quick_scan' {
+  if(-not(Is-Admin)){throw [UnauthorizedAccessException]::new('Administrator access is required.')}
+  if(-not(Active-Defender)){throw 'Defender is not the active antivirus provider.'}
+  $started=[datetime]::UtcNow
+  # Only the exact job returned by this request is observed. Job.Progress may
+  # be empty: the provider's -1/unknown never becomes a time-derived percent.
+  # https://learn.microsoft.com/powershell/module/defender/start-mpscan
+  # https://learn.microsoft.com/dotnet/api/system.management.automation.job.progress?view=powershellsdk-7.6.0
+  # https://learn.microsoft.com/dotnet/api/system.management.automation.progressrecord.percentcomplete?view=powershellsdk-7.6.0
+  $scanJob=Start-MpScan -ScanType QuickScan -AsJob -ErrorAction Stop
+  if($null -eq $scanJob -or $scanJob.InstanceId -isnot [guid] -or $scanJob.InstanceId -eq [guid]::Empty){throw 'Defender returned no owned scan job.'}
+  $scanJobID=$scanJob.InstanceId.ToString().ToLowerInvariant()
+  $lastPublished=-2;$lastNumeric=-1;$numericDisabled=$false
+  do{
+   $candidate=-1
+   $sources=@($scanJob)+@($scanJob.ChildJobs|Select-Object -First 8)
+   foreach($source in $sources){
+    if($null -ne $source.Progress -and $source.Progress.Count -gt 0){
+     $record=$source.Progress[$source.Progress.Count-1]
+     if($record -is [Management.Automation.ProgressRecord] -and $record.PercentComplete -ge 0 -and $record.PercentComplete -lt 100){
+      $candidate=[Math]::Max($candidate,[int]$record.PercentComplete)
+     }
+    }
+   }
+   if($candidate -ge 0 -and $candidate -lt $lastNumeric){$numericDisabled=$true}
+   if($numericDisabled){$candidate=-1}
+   if($candidate -ge 0){$lastNumeric=$candidate}
+   if($candidate -ne $lastPublished){
+    [Console]::Out.WriteLine((@{kind='defender_scan_progress';scan_job_id=$scanJobID;
+      percent=if($candidate -ge 0){$candidate}else{$null}}|ConvertTo-Json -Compress))
+    [Console]::Out.Flush();$lastPublished=$candidate
+   }
+   if([string]$scanJob.State -in @('Running','NotStarted','Blocked')){Start-Sleep -Milliseconds 200}
+  }while([string]$scanJob.State -in @('Running','NotStarted','Blocked'))
+  if([string]$scanJob.State -ne 'Completed'){throw 'Defender scan request did not complete successfully.'}
+  Receive-Job -Job $scanJob -ErrorAction Stop|Out-Null
+  $d=Defender;$end=[datetime]::MinValue
+  if($d.quick_scan_end){$end=[datetime]::Parse($d.quick_scan_end).ToUniversalTime()}
+  @{ok=$true;scan_job_id=$scanJobID;completion_verified=($end -ge $started);defender=$d;threats=(Threats)};break
+ }
+ 'enable_defender_realtime' {
+  if(-not(Is-Admin)){throw [UnauthorizedAccessException]::new('Administrator access is required.')}
+  if(-not(Active-Defender) -or -not(No-OtherProvider 'AntiVirusProduct')){throw 'The active antivirus provider changed or another provider is registered.'}
+  Set-MpPreference -DisableRealtimeMonitoring $false -ErrorAction Stop
+  @{ok=$true;defender=(Defender)};break
+ }
+ 'enable_firewall' {
+  if(-not(Is-Admin)){throw [UnauthorizedAccessException]::new('Administrator access is required.')}
+  if(-not(No-OtherProvider 'FirewallProduct')){throw 'Another firewall provider is registered or provider inventory is unknown.'}
+  $current=@(Get-NetFirewallProfile -PolicyStore ActiveStore -ErrorAction Stop)
+  foreach($fwItem in $current){if([string]$fwItem.Name -notin @('Domain','Private','Public')){throw 'Unknown firewall profile.'}}
+  if($current.Count -ne 3){throw 'Incomplete firewall inventory.'}
+  foreach($fwItem in $current){if([string]$fwItem.Enabled -eq 'False'){Set-NetFirewallProfile -Name $fwItem.Name -Enabled True -ErrorAction Stop}}
+  @{ok=$true;security=(Security-Status)};break
+ }
+ 'update_defender_signatures' {
+  if(-not(Is-Admin)){throw [UnauthorizedAccessException]::new('Administrator access is required.')}
+  if(-not(Active-Defender)){throw 'Defender is not the active antivirus provider.'}
+  Update-MpSignature -ErrorAction Stop|Out-Null
+  @{ok=$true;defender=(Defender)};break
+ }
+ 'remediate_defender_threats' {
+  if(-not(Is-Admin)){throw [UnauthorizedAccessException]::new('Administrator access is required.')}
+  if(-not(Active-Defender)){throw 'Defender is not the active antivirus provider.'}
+  $before=Threats
+  $consent=$P.remediation_consent
+  if($null -eq $consent -or $consent.confirmed -isnot [bool] -or $consent.confirmed -ne $true -or
+     $consent.scope -cne 'all_current_active_defender_threats' -or $before.truncated -or $before.active_count -lt 1){throw 'A fresh explicit all-active Defender threat confirmation is required.'}
+  $approved=@($consent.threat_ids)
+  if($approved.Count -lt 1 -or $approved.Count -gt 200 -or @($approved|Where-Object{($_ -isnot [int] -and $_ -isnot [long]) -or $_ -lt 0}).Count){throw 'Invalid approved Defender threat identities.'}
+  $approved=@($approved|Sort-Object -Unique)
+  $current=@($before.items|ForEach-Object{[int64]$_.id}|Sort-Object -Unique)
+  if($approved.Count -ne $before.active_count -or [string]::Join(',',$approved) -cne [string]::Join(',',$current)){throw 'Active Defender detections changed after confirmation. Review them again.'}
+  if($before.active_fingerprint_complete -ne $true -or $consent.resource_fingerprint -isnot [string] -or
+     $consent.resource_fingerprint -cnotmatch '^[0-9a-f]{64}$' -or $consent.resource_fingerprint -cne $before.active_fingerprint){throw 'Defender threat resources or detection instances changed after confirmation. Review them again.'}
+  if($before.active_count -gt 0){Remove-MpThreat -ErrorAction Stop|Out-Null}
+  @{ok=$true;before_count=$before.active_count;threats=(Threats)};break
+ }
+ 'review_security' {Start-Process 'windowsdefender:';@{ok=$true;opened='windowsdefender:'};break}
+ 'review_windows_update' {Start-Process 'ms-settings:windowsupdate';@{ok=$true;opened='ms-settings:windowsupdate'};break}
+ 'restart_required' {Start-Process 'ms-settings:windowsupdate';@{ok=$true;opened='ms-settings:windowsupdate'};break}
+ default {throw 'Unsupported system privacy operation.'}
+ }
+ $result|ConvertTo-Json -Depth 12 -Compress
+} catch {
+ $errorResult=@{ok=$false;error_type=$_.Exception.GetType().Name;permission_denied=($_.Exception -is [UnauthorizedAccessException]);error='Windows refused or could not complete the requested operation.'}
+ if('__OPERATION__' -eq 'quick_scan'){
+  $errorResult.may_continue=$true
+  if($scanJobID){$errorResult.scan_job_id=$scanJobID}
+ }
+ $errorResult|ConvertTo-Json -Compress
+ exit 1
+}
+'''
+
+
+def _cancelled(event):
+    return event is not None and event.is_set()
+
+
+def _script(operation, payload):
+    if operation not in {'context', 'registry_read', 'privacy_snapshot', 'registry_write', 'security_status', 'quick_scan', 'quick_scan_reuse_status'} | _ACTIONS:
+        raise ValueError('Unknown native operation.')
+    encode = lambda value: base64.b64encode(json.dumps(value, separators=(',', ':'), allow_nan=False).encode('utf-8')).decode('ascii')
+    return (_POWERSHELL.replace('__CADENCE_FUNCTIONS__', _CADENCE_POWERSHELL if operation == 'quick_scan_reuse_status' else '')
+            .replace('__OPERATION__', operation).replace('__PAYLOAD__', encode(payload or {})).replace('__CONTROLS__', encode(_CONTROLS)))
+
+
+def _native_request(operation, payload=None, *, timeout=45, cancel_event=None, progress_callback=None, stop_controller=None):
+    if _cancelled(cancel_event):
+        return {'ok': False, 'cancelled': True, 'may_continue': False}
+    if os.name != 'nt':
+        return {'ok': False, 'unsupported': True, 'error': 'Windows is required.'}
+    from .emergency_stop import EmergencyStop
+    controller = stop_controller if stop_controller is not None else EmergencyStop()
+    controller.check()
+    cancel_event = controller.bind_cancel(cancel_event)
+    executable = Path(os.environ.get('SystemRoot', r'C:\Windows')) / 'System32/WindowsPowerShell/v1.0/powershell.exe'
+    arguments = [str(executable), '-NoLogo', '-NoProfile', '-NonInteractive', '-Command', _script(operation, payload)]
+    options = dict(
+        stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL if operation == 'quick_scan' else subprocess.PIPE, text=True, encoding='utf-8', errors='replace',
+        creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+    ticket = None
+    read_only = operation in ('context', 'registry_read', 'privacy_snapshot', 'security_status', 'quick_scan', 'quick_scan_reuse_status')
+    if read_only:
+        # This is only the reporting client. Defender retains control of its
+        # service scan if the owned client stops waiting.
+        process = controller.spawn_disposable(arguments, label='Windows privacy or security scan client', **options)
+    else:
+        with controller.launch_gate():
+            ticket = controller.begin_native('Windows privacy or security change: ' + operation)
+            try:
+                process = subprocess.Popen(arguments, **options)
+                ticket.started = True
+            except Exception:
+                ticket.finish()
+                raise
+    if operation == 'quick_scan':
+        from .defender_scan import read_scan_process
+        return read_scan_process(process, timeout=timeout, cancel_event=cancel_event, progress_callback=progress_callback)
+    deadline = time.monotonic() + timeout
+    while True:
+        cancelled, expired = _cancelled(cancel_event), time.monotonic() >= deadline
+        if cancelled or expired:
+            if ticket is not None:
+                # A synchronous security/registry operation cannot be safely
+                # aborted by killing its host. Keep the original child alive
+                # and observed without turning its unresolved result into a
+                # successful privacy change or completed remediation.
+                ticket.finish(known=False, error='Stopped waiting for a Windows privacy or security change.')
+                controller.observe_native_child(process, ticket)
+                return {'ok': False, 'cancelled': cancelled, 'timed_out': expired, 'may_continue': True,
+                        'outcomeKnown': False, 'running': True,
+                        'error': 'Stopped waiting. The Windows security or privacy change is still observed; its final result needs verification.'}
+            if process.poll() is None:
+                process.terminate()  # Only this PowerShell host, never Defender/service processes.
+            try:
+                process.communicate(timeout=3)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.communicate(timeout=3)
+            return {'ok': False, 'cancelled': cancelled, 'timed_out': expired, 'may_continue': operation not in ('context', 'registry_read', 'privacy_snapshot', 'security_status', 'quick_scan_reuse_status'),
+                    'error': 'The request stopped waiting. A Windows antivirus operation may continue under Windows control.'}
+        try:
+            output, _stderr = process.communicate(timeout=min(0.2, max(0.01, deadline - time.monotonic())))
+            if len(output) > 1024 * 1024:
+                raise ValueError('The native result exceeded its report limit.')
+            value = json.loads(output.strip())
+            if not isinstance(value, dict):
+                raise ValueError('Windows returned an invalid result.')
+            if ticket is not None:
+                ticket.finish()
+            if process.returncode != 0 and value.get('ok') is not False:
+                return {'ok': False, 'error': 'Windows returned an unsuccessful native status.'}
+            if operation in ('enable_defender_realtime', 'enable_firewall',
+                             'update_defender_signatures', 'remediate_defender_threats'):
+                # These native commands are synchronous. Preserve the observed
+                # host exit separately from whether Windows accepted the change.
+                # A timeout returns above with the original child still observed.
+                value.update(outcomeKnown=True, running=False, may_continue=False)
+            return value
+        except subprocess.TimeoutExpired:
+            continue
+        except Exception as error:
+            if ticket is not None:
+                if process.poll() is not None:
+                    ticket.finish()
+                else:
+                    ticket.finish(known=False, error=error)
+                    controller.observe_native_child(process, ticket)
+            raise
+
+
+def _snapshot(value):
+    if not isinstance(value, dict) or type(value.get('exists')) is not bool:
+        raise ValueError('The registry snapshot is invalid.')
+    if value['exists'] is False:
+        return {'exists': False}
+    if value.get('type') != 'DWord' or type(value.get('value')) is not int or not 0 <= value['value'] <= 3:
+        raise ValueError('The existing privacy preference has an unsupported type or value.')
+    return {'exists': True, 'type': 'DWord', 'value': value['value']}
+
+
+def _ordinary(path):
+    for part in (path, *path.parents):
+        try:
+            info = part.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(info.st_mode) or getattr(info, 'st_file_attributes', 0) & 0x400:
+            raise ValueError('Indirect system privacy history paths are not supported.')
+
+
+def _active(status):
+    d = status.get('defender', {})
+    return isinstance(d, dict) and all(d.get(key) is True for key in ('available', 'service_enabled', 'antivirus_enabled')) and d.get('running_mode') == 'Normal'
+
+
+def _other_providers(status, field):
+    providers = status.get(field)
+    if not isinstance(providers, dict) or providers.get('complete') is not True or not isinstance(providers.get('items'), list):
+        return None
+    return [name for name in providers['items'] if not isinstance(name, str) or not re.fullmatch(r'(?:(Microsoft Defender|Windows Defender|Windows Security)( Antivirus| Firewall)?|Windows Firewall)', name, re.I)]
+
+
+def _recommendations(status):
+    result = []
+    def add(identity, title, reason, admin=False):
+        mitigation = 'M1037' if identity == 'enable_firewall' else 'M1051' if identity in ('review_windows_update', 'restart_required') else 'M1049'
+        result.append({'id': identity, 'title': title, 'reason': reason, 'action': identity, 'requires_admin': admin,
+                       'mitigations': [copy.deepcopy(MITRE_MITIGATIONS[mitigation])]})
+    defender = status.get('defender') if isinstance(status.get('defender'), dict) else {}
+    if _active(status) and defender.get('realtime_enabled') is False and _other_providers(status, 'antivirus_providers') == []:
+        add('enable_defender_realtime', 'Enable Microsoft Defender real-time protection', 'Defender is active but its real-time protection is off. Existing third-party antivirus providers will not be replaced.', True)
+    elif not _active(status) or defender.get('realtime_enabled') is not True:
+        add('review_security', 'Review antivirus protection in Windows Security', 'Protection is disabled, provided by another product, or cannot be fully verified. Review the active provider without overriding it.')
+    age = defender.get('signature_age_days')
+    if _active(status) and type(age) is int and age >= 2:
+        add('update_defender_signatures', 'Update Microsoft Defender security intelligence', 'The reported antivirus signatures are at least two days old. Download current signatures using Defender.', True)
+    firewall = status.get('firewall', {})
+    if isinstance(firewall, dict) and firewall.get('complete') is True and isinstance(firewall.get('profiles'), list):
+        disabled = [row for row in firewall['profiles'] if isinstance(row, dict) and row.get('enabled') is False]
+        if disabled and _other_providers(status, 'firewall_providers') == []:
+            add('enable_firewall', 'Enable disabled Windows Firewall profiles', 'One or more Domain, Private or Public profiles are off. Existing rules and inbound/outbound defaults remain unchanged.', True)
+        elif disabled:
+            add('review_security', 'Review firewall protection in Windows Security', 'Windows Firewall is off and a different provider is registered or provider status is unknown. Review the current provider before changing protection.')
+    else:
+        add('review_security', 'Review firewall protection in Windows Security', 'Firewall protection could not be fully verified.')
+    count = status.get('active_threat_count')
+    if _active(status) and type(count) is int and count > 0:
+        add('remediate_defender_threats', 'Review removal of all current active Defender threats', str(count) + ' active threat(s) were identified by Defender. Confirmation asks Defender to remediate ALL displayed current active threats under existing Windows policy. Quarantined history is reviewed separately; Optimus will not delete arbitrary files or change threat-action preferences.', True)
+        snapshot = status.get('threats', {})
+        result[-1].update(threat_ids=list(snapshot.get('active_ids', [])),
+                         threat_ids_complete=snapshot.get('active_ids_complete') is True,
+                         threat_names=[item['name'] for item in snapshot.get('items', []) if item.get('active') is True],
+                         resource_fingerprint=snapshot.get('active_fingerprint'),
+                         resource_fingerprint_complete=snapshot.get('active_fingerprint_complete') is True,
+                         remediation_scope='all_current_active_defender_threats')
+    snapshot = status.get('threats', {})
+    if isinstance(snapshot, dict) and snapshot.get('detections'):
+        add('review_security', 'Review quarantined and historical Defender detections', 'Defender reports retained detection history, which can include quarantined, removed, allowed or unresolved items and may predate this scan. Open Windows Security to review it; Optimus does not purge quarantine or claim the system is clean.')
+    if status.get('reboot_required') is True:
+        add('restart_required', 'Review the pending Windows restart', 'Windows Update reports a pending restart. Open Windows Update and choose when to restart; Optimus will not reboot automatically.')
+    unique = {}
+    for item in result:
+        unique.setdefault(item['id'], item)
+    return list(unique.values())
+
+
+class SystemPrivacy:
+    """Native operations are injectable for tests; no work runs on construction."""
+    def __init__(self, data_dir, runner=None, *, stop_controller=None):
+        self.directory = Path(data_dir) / 'system-privacy'
+        self.stop_controller = stop_controller
+        self.runner = partial(_native_request, stop_controller=stop_controller) if runner is None or runner is _native_request else runner
+        # Existing injected runners retain their context/registry_read contract.
+        self._batch_privacy_reads = runner is None or runner is _native_request
+        self.lock = threading.RLock()
+
+    def _call(self, operation, payload=None, *, timeout=45, cancel_event=None, progress_callback=None):
+        if self.stop_controller is not None:
+            self.stop_controller.check()
+            cancel_event = self.stop_controller.bind_cancel(cancel_event)
+        if _cancelled(cancel_event):
+            return {'ok': False, 'cancelled': True}
+        options = {}
+        if progress_callback is not None:
+            from .item_progress import accepts_progress_callback
+            if accepts_progress_callback(self.runner):
+                options['progress_callback'] = progress_callback
+        result = self.runner(operation, payload or {}, timeout=timeout, cancel_event=cancel_event, **options)
+        if not isinstance(result, dict):
+            raise ValueError('The Windows operation returned invalid metadata.')
+        return result
+
+    def _privacy_snapshot(self, controls, cancel_event=None):
+        """Read only: writes still compare a fresh native value and read back."""
+        result = self._call('privacy_snapshot', {'controls': list(controls)}, cancel_event=cancel_event)
+        context, values = result.get('context'), result.get('controls')
+        if (result.get('ok') is not True or type(result.get('schema')) is not int or result['schema'] != 1
+                or not isinstance(context, dict) or context.get('platform') != 'Windows'
+                or type(context.get('build')) is not int or not isinstance(context.get('edition'), str)
+                or type(context.get('is_admin')) is not bool or not isinstance(values, dict)
+                or set(values) != set(controls)):
+            raise ValueError('Windows did not return a complete privacy snapshot.')
+        return context, values
+
+    def _journal(self, report):
+        _ordinary(self.directory)
+        self.directory.mkdir(parents=True, exist_ok=True)
+        path = self.directory / (report['id'] + '.json')
+        _ordinary(path)
+        if path.exists() and path.lstat().st_nlink != 1:
+            raise ValueError('Linked system privacy history is not supported.')
+        atomic_json(path, report)
+        return path
+
+    def history(self):
+        """Bounded, read-only summaries; restore independently revalidates records."""
+        report = {'items': [], 'errors': [], 'complete': True, 'failed_items': 0}
+        try:
+            _ordinary(self.directory)
+            if not self.directory.exists():
+                return report
+            if not self.directory.is_dir():
+                raise ValueError('The private history location is not a directory.')
+            remaining = 20 * 1024 * 1024
+            with self.lock, os.scandir(self.directory) as entries:
+                for index, entry in enumerate(entries):
+                    if index >= 1000:
+                        report['errors'].append('The private history review limit was reached; additional records were not read.')
+                        break
+                    if not entry.name.endswith('.json'):
+                        continue
+                    try:
+                        path = self.directory / entry.name
+                        _ordinary(path)
+                        info = path.lstat()
+                        if (not stat.S_ISREG(info.st_mode) or info.st_nlink != 1
+                                or not _ID.fullmatch(path.stem) or info.st_size > 1024 * 1024):
+                            raise ValueError('Unsupported history record.')
+                        if info.st_size > remaining:
+                            report['errors'].append('The private history size limit was reached; additional records were not read.')
+                            break
+                        with path.open('rb') as stream:
+                            opened = os.fstat(stream.fileno())
+                            if (opened.st_dev, opened.st_ino, opened.st_nlink) != (info.st_dev, info.st_ino, 1):
+                                raise ValueError('The history record identity changed.')
+                            raw = stream.read(min(1024 * 1024 + 1, remaining + 1))
+                        _ordinary(path)
+                        current = path.lstat()
+                        if (current.st_dev, current.st_ino, current.st_nlink) != (info.st_dev, info.st_ino, 1) or len(raw) > 1024 * 1024:
+                            raise ValueError('The history record identity or size changed.')
+                        remaining -= len(raw)
+                        saved = json.loads(raw)
+                        if not isinstance(saved, dict) or saved.get('id') != path.stem:
+                            raise ValueError('Invalid history identity.')
+                        if saved.get('kind') != 'privacy':
+                            continue
+                        count, created = saved.get('changed_count'), saved.get('created_at')
+                        if (type(saved.get('version')) is not int or saved['version'] != 1
+                                or type(count) is not int or not 0 <= count <= len(_CONTROLS)
+                                or type(created) not in (int, float) or not 0 <= created <= 253402300799 or not math.isfinite(created)
+                                or saved.get('status') not in ('running', 'completed', 'completed_with_errors', 'cancelled')):
+                            raise ValueError('Invalid privacy history summary.')
+                        if count:
+                            report['items'].append({key: saved[key] for key in ('id', 'kind', 'status', 'created_at', 'changed_count')})
+                    except (OSError, ValueError, TypeError):
+                        report['errors'].append('A private history record could not be verified and was omitted.')
+        except (OSError, ValueError):
+            report['errors'].append('The private history location could not be verified; no records were read.')
+        report['items'].sort(key=lambda item: (item['created_at'], item['id']), reverse=True)
+        report['failed_items'] = len(report['errors'])
+        report['complete'] = not report['errors']
+        return report
+
+    def apply_privacy(self, settings, cancel_event=None, *, progress_callback=None):
+        keys = {control['master'] for control in _CONTROLS.values()} | {control['flag'] for control in _CONTROLS.values()}
+        if not isinstance(settings, dict) or any(key in settings and type(settings[key]) is not bool for key in keys):
+            raise ValueError('Privacy choices must be explicit booleans.')
+        selected = [key for key, control in _CONTROLS.items()
+                    if (settings.get(control['master'], False) and settings.get(control['flag'], True))
+                    or settings.get(control.get('alternate_master'), False)]
+        report = {'id': uuid.uuid4().hex, 'version': 1, 'kind': 'privacy', 'status': 'running', 'created_at': time.time(),
+                  'items': [], 'errors': [], 'failed_items': 0, 'changed_count': 0, 'not_applicable_count': 0,
+                  'checked_count': 0, 'selected_count': len(selected), 'cancelled': False, 'sources': SOURCES,
+                  'note': 'These Windows privacy controls reduce selected advertising/diagnostic uses. Required Windows diagnostic data, security protection and third-party app/account privacy choices remain separate. Existing content-delivery preferences are version dependent. Consumer/cloud policies require a documented Enterprise, Education or IoT Enterprise edition; clipboard/Recall policies require Pro or a supported higher edition. Device policies need administrator access. Registry readback verifies the preference only; these controls do not block every installer, reinstallation, tracker or data transfer. Windows Update, Store/browser updates and Defender remain available. If explicitly selected, the Recall policy makes Windows delete previous snapshots; restoring the policy cannot recover those snapshots.'}
+        if not selected or _cancelled(cancel_event):
+            report.update(status='cancelled' if _cancelled(cancel_event) else 'completed', cancelled=_cancelled(cancel_event))
+            return report
+        with self.lock:
+            _privacy_progress(progress_callback, 0, len(selected), unknown=True,
+                description='Reading Windows privacy eligibility; the native query has not reported a percentage.')
+            snapshots, snapshot_error = None, None
+            if self._batch_privacy_reads:
+                try:
+                    context, snapshots = self._privacy_snapshot(selected, cancel_event=cancel_event)
+                except Exception as error:
+                    context, snapshots, snapshot_error = {}, {}, error
+            else:
+                context = self._call('context', cancel_event=cancel_event)
+            self._journal(report)
+            for key in selected:
+                if _cancelled(cancel_event):
+                    report['cancelled'] = True
+                    break
+                control = _CONTROLS[key]
+                _privacy_progress(progress_callback, report['checked_count'], len(selected), policy=key)
+                if _cancelled(cancel_event):
+                    report['cancelled'] = True
+                    break
+                item = {'id': key, 'scope': control['scope'], 'status': 'prepared', 'desired': control['desired']}
+                if control.get('source'):
+                    item['source'] = control['source']
+                if control.get('note'):
+                    item['note'] = control['note']
+                report['items'].append(item)
+                try:
+                    if snapshot_error is not None:
+                        raise ValueError('The read-only privacy snapshot was unavailable.') from snapshot_error
+                    if snapshots is not None:
+                        snapshot = snapshots.get(key)
+                        if not isinstance(snapshot, dict) or snapshot.get('ok') is not True:
+                            native_error = snapshot.get('error_type') if isinstance(snapshot, dict) else None
+                            if isinstance(native_error, str) and re.fullmatch(r'[A-Za-z0-9_.]{1,80}', native_error):
+                                item['read_error_type'] = native_error
+                            raise ValueError('Windows could not read this selected privacy control.')
+                        before = _snapshot(snapshot.get('current'))
+                    if context.get('platform') != 'Windows' or type(context.get('build')) is not int or context['build'] < control['minimum_build']:
+                        item.update(status=_unavailable_status(context), reason='This Windows version does not expose the selected supported control. No policy value was written.')
+                    elif control.get('minimum_revision') and context['build'] == control['minimum_build'] and (
+                            type(context.get('ubr')) is not int or context['ubr'] < control['minimum_revision']):
+                        item.update(status=(_unavailable_status(context) if type(context.get('ubr')) is int and context['ubr'] >= 0 else 'unsupported'), reason='This policy requires Windows 11 build 26100.3915 or later. The installed cumulative-update revision is older or unknown; no policy was written.')
+                    elif control.get('editions') and context.get('edition') not in control['editions']:
+                        item.update(status=_unavailable_status(context), reason='Microsoft documents this consumer-content policy for Enterprise, Education and IoT Enterprise only. Home and Pro are not supported; no policy value was written.')
+                    elif control.get('policy') and not str(context.get('edition', '')).startswith(('Professional', 'Enterprise', 'Education', 'IoTEnterprise')):
+                        item.update(status=_unavailable_status(context), reason='This policy is not documented for the installed Windows edition; use Windows privacy Settings.')
+                    elif control['scope'] == 'device' and context.get('is_admin') is not True:
+                        item.update(status='requires_admin', reason='This is a device-wide Windows policy and needs an administrator session. No elevation was requested.')
+                    else:
+                        if snapshots is None:
+                            before = _snapshot(self._call('registry_read', {'control': key}, cancel_event=cancel_event))
+                        allowed = {0, 1, 2, 3} if key == 'optional_diagnostics' else {0, 1, 2} if key == 'app_diagnostics' else {0, 1}
+                        if before['exists'] and before['value'] not in allowed:
+                            raise ValueError('The existing preference value is not a recognized setting.')
+                        item['before'] = before
+                        if control.get('existing_only') and not before['exists']:
+                            item.update(status=_unavailable_status(context), reason='This version-dependent user preference is absent. No undocumented value was invented; review Windows Recommendations and offers.')
+                        elif key == 'optional_diagnostics' and before.get('value') == 0:
+                            item.update(status='already_configured', changed=False, reason='An existing more restrictive diagnostic-data policy was preserved; Optimus never increases collection from Off/Security to Required.')
+                        elif before.get('value') == control['desired']:
+                            item.update(status='already_configured', changed=False)
+                        else:
+                            self._journal(report)  # Original value is durable before any registry write.
+                            if _cancelled(cancel_event):
+                                report['cancelled'] = True
+                                item['status'] = 'cancelled'
+                                break
+                            try:
+                                outcome = self._call('registry_write', {'control': key, 'expected': before, 'value': control['desired'], 'remove': False}, cancel_event=cancel_event)
+                            except Exception as error:
+                                item.update(status='uncertain', error_type=type(error).__name__,
+                                    reason='The registry write returned no verified native outcome; the original value remains in private history. No further privacy writes were started.')
+                                report['failed_items'] += 1
+                                break
+                            if outcome.get('cancelled') or outcome.get('may_continue') is True:
+                                report['cancelled'] = outcome.get('cancelled') is True or _cancelled(cancel_event)
+                                item.update(status='uncertain', reason='The registry request stopped waiting and may continue; the journal retains the original value for guarded restore. No further privacy writes were started.')
+                                report['failed_items'] += 1
+                                break
+                            if outcome.get('ok') is not True or _snapshot(outcome.get('current')) != {'exists': True, 'type': 'DWord', 'value': control['desired']}:
+                                raise RuntimeError('Windows did not verify the selected privacy value.')
+                            item.update(status='applied', changed=True)
+                            report['changed_count'] += 1
+                except Exception as error:
+                    item.update(status='failed', error_type=type(error).__name__, reason='Windows refused, changed or could not verify this privacy control. The original value remains in private history when available.')
+                if item['status'] in ('failed', 'requires_admin', 'unsupported', 'uncertain'):
+                    report['failed_items'] += 1
+                if item['status'] == 'not_applicable':
+                    report['not_applicable_count'] += 1
+                report['checked_count'] += 1
+                self._journal(report)
+                if report['checked_count'] < len(selected):
+                    _privacy_progress(progress_callback, report['checked_count'], len(selected), policy=key, status=item['status'])
+            report['cancelled'] = report['cancelled'] or _cancelled(cancel_event)
+            report['status'] = 'cancelled' if report['cancelled'] else 'completed_with_errors' if report['failed_items'] else 'completed'
+            report['finished_at'] = time.time()
+            report['log_path'] = str(self._journal(report))
+            complete = (not report['cancelled'] and report['checked_count'] == len(selected)
+                        and not any(item['status'] == 'uncertain' for item in report['items']))
+            _privacy_progress(progress_callback, report['checked_count'], len(selected), unknown=not complete,
+                description=(f"Policy checks finished: {report['changed_count']} applied, "
+                    f"{report['not_applicable_count']} not applicable, {report['failed_items']} need review. "
+                    'Checks completed does not mean every setting was changed.' if complete else
+                    'Privacy checking stopped before every selected policy outcome was verified; review the saved results.'))
+            return report
+
+    def restore_privacy(self, change_id, cancel_event=None):
+        if not isinstance(change_id, str) or not _ID.fullmatch(change_id):
+            raise ValueError('Choose an exact privacy history identity.')
+        path = self.directory / (change_id + '.json')
+        _ordinary(path)
+        if not path.is_file() or path.stat().st_size > 1024 * 1024 or path.stat().st_nlink != 1:
+            raise ValueError('The privacy history is unavailable or unsupported.')
+        saved = json.loads(path.read_text(encoding='utf-8'))
+        if saved.get('id') != change_id or saved.get('kind') != 'privacy' or saved.get('version') != 1 or not isinstance(saved.get('items'), list):
+            raise ValueError('The privacy history does not describe a supported change.')
+        # Validate every entry before the first restore write; history never
+        # supplies registry paths, arbitrary value names or executable commands.
+        entries = []
+        for item in saved['items']:
+            if not isinstance(item, dict) or item.get('id') not in _CONTROLS or item.get('desired') != _CONTROLS[item['id']]['desired']:
+                raise ValueError('The privacy history contains an unknown control.')
+            if 'before' in item:
+                before = _snapshot(item['before'])
+                allowed = {0, 1, 2, 3} if item['id'] == 'optional_diagnostics' else {0, 1, 2} if item['id'] == 'app_diagnostics' else {0, 1}
+                if before['exists'] and before['value'] not in allowed:
+                    raise ValueError('The saved preference value is not a recognized setting.')
+                entries.append((item['id'], before))
+        report = {'id': uuid.uuid4().hex, 'kind': 'privacy-restore', 'source_id': change_id, 'status': 'running', 'items': [], 'failed_items': 0, 'cancelled': False}
+        with self.lock:
+            self._journal(report)
+            for key, before in entries:
+                if _cancelled(cancel_event):
+                    report['cancelled'] = True
+                    break
+                expected = {'exists': True, 'type': 'DWord', 'value': _CONTROLS[key]['desired']}
+                item = {'id': key, 'status': 'skipped'}
+                if _CONTROLS[key].get('note'):
+                    item['note'] = _CONTROLS[key]['note']
+                report['items'].append(item)
+                try:
+                    current = _snapshot(self._call('registry_read', {'control': key}, cancel_event=cancel_event))
+                    if _cancelled(cancel_event):
+                        report['cancelled'] = True
+                        item['status'] = 'cancelled'
+                        break
+                    if current == before:
+                        item['reason'] = 'The original value is already present.'
+                    elif current != expected:
+                        item['reason'] = 'The setting changed after Optimus; newer choices were preserved.'
+                    else:
+                        self._journal(report)
+                        outcome = self._call('registry_write', {'control': key, 'expected': expected, 'remove': not before['exists'], 'value': before.get('value', 0)}, cancel_event=cancel_event)
+                        if outcome.get('cancelled'):
+                            report['cancelled'] = True
+                            item['status'] = 'uncertain'
+                            break
+                        if outcome.get('ok') is True and _snapshot(outcome.get('current')) == before:
+                            item['status'] = 'restored'
+                        else:
+                            raise RuntimeError('Windows did not verify the restored preference.')
+                except Exception as error:
+                    item.update(status='failed', error_type=type(error).__name__, reason='The original value could not be restored or verified; review Windows permissions and private history.')
+                    report['failed_items'] += 1
+                self._journal(report)
+            report['status'] = 'cancelled' if report['cancelled'] else 'completed_with_errors' if report['failed_items'] else 'completed'
+            report['log_path'] = str(self._journal(report))
+            return report
+
+    def security_status(self):
+        """Read local state only; no scan, signature update or online update search."""
+        try:
+            native = self._call('security_status')
+            if native.get('ok') is False:
+                raise ValueError('The local Windows security report is unavailable.')
+            report = {key: copy.deepcopy(native.get(key)) for key in ('context', 'defender', 'antivirus_providers', 'firewall_providers', 'firewall', 'reboot_required')}
+            threats = native.get('threats', {})
+            from .defender_scan import threat_snapshot
+            report['threats'] = threat_snapshot(threats)
+            report['active_threat_count'] = report['threats']['active_count']
+            report['threat_status_complete'] = report['threats']['complete']
+            report['errors'] = []
+            for key in ('defender', 'antivirus_providers', 'firewall_providers', 'firewall'):
+                value = report.get(key)
+                if not isinstance(value, dict) or value.get('available', value.get('complete')) is not True:
+                    report['errors'].append(key + ' status could not be fully verified.')
+            if not report['threat_status_complete']:
+                report['errors'].append('Defender active-threat status could not be verified; an unknown result is not zero threats.')
+            report.update(status='partial' if report['errors'] else 'completed', failed_items=len(report['errors']), sources=SOURCES)
+        except Exception as error:
+            report = {'status': 'partial', 'errors': ['Local Windows security state could not be verified (' + type(error).__name__ + ').'],
+                      'failed_items': 1, 'defender': {}, 'firewall': {}, 'antivirus_providers': {}, 'firewall_providers': {}, 'active_threat_count': None, 'sources': SOURCES}
+        report['recommendations'] = _recommendations(report)
+        defender = report.get('defender') if isinstance(report.get('defender'), dict) else {}
+        firewall = report.get('firewall') if isinstance(report.get('firewall'), dict) else {}
+        firewall_rows = firewall.get('profiles') if isinstance(firewall.get('profiles'), list) else []
+        report['checks'] = [
+            {'id': 'antivirus', 'status': 'enabled' if _active(report) and defender.get('realtime_enabled') is True else 'review',
+             'mitigations': [copy.deepcopy(MITRE_MITIGATIONS['M1049'])],
+             'description': 'Local antivirus-provider and Defender real-time state; this does not establish that every threat is detected.'},
+            {'id': 'firewall', 'status': 'enabled' if firewall.get('complete') is True and len(firewall_rows) == 3 and all(isinstance(row, dict) and row.get('enabled') is True for row in firewall_rows) else 'review',
+             'mitigations': [copy.deepcopy(MITRE_MITIGATIONS['M1037'])],
+             'description': 'Windows Firewall profile enablement only; this does not audit every rule or prove outbound data sharing is blocked.'},
+            {'id': 'windows_updates', 'status': 'pending_restart' if report.get('reboot_required') is True else 'not_scanned',
+             'mitigations': [copy.deepcopy(MITRE_MITIGATIONS['M1051'])],
+             'description': 'This local check does not scan for missing patches. Use the separate approved Windows security-update stage or Windows Update.'},
+        ]
+        report['mitre_note'] = 'These limited control mappings provide context, not complete ATT&CK coverage, an attack simulation, vulnerability assessment or compliance certification.'
+        report['note'] = 'Local security checks do not prove that no spyware or data sharing exists. Windows privacy permissions and app/account choices are separate. No protection was disabled.'
+        return report
+
+    def scan_spyware(self, cancel_event=None, *, progress_callback=None, reuse_hours=0):
+        from .defender_scan import ScanProgress, threat_snapshot
+        from .scan_cadence import recent_quick_scan, validate_reuse_hours
+        validate_reuse_hours(reuse_hours)
+        progress = ScanProgress(progress_callback)
+        report = {'id': uuid.uuid4().hex, 'kind': 'defender-scan', 'status': 'running', 'items': [], 'errors': [], 'failed_items': 0, 'cancelled': False, 'sources': SOURCES}
+        report.update(scan_type='Defender quick scan for viruses, malware and spyware', completion_verified=False,
+                      progress_capability={'numeric_available': False, 'source': 'defender_cim_progress',
+                          'reason': 'Numeric provider request progress is shown only if Defender emits it. It is not whole-system scan coverage; elapsed time is not a completion estimate.'})
+        progress.emit('preparing', percent=0)
+        if _cancelled(cancel_event):
+            progress.emit('cancelled')
+            return dict(report, status='cancelled', cancelled=True, elapsed_seconds=progress.elapsed())
+        before = self.security_status()
+        report['recommendations'] = before['recommendations']
+        if _cancelled(cancel_event):
+            progress.emit('cancelled')
+            return dict(report, status='cancelled', cancelled=True, elapsed_seconds=progress.elapsed())
+        if reuse_hours:
+            try:
+                observed = self._call('quick_scan_reuse_status', timeout=20, cancel_event=cancel_event)
+                if _cancelled(cancel_event) or observed.get('cancelled') is True:
+                    progress.emit('cancelled')
+                    return dict(report, status='cancelled', cancelled=True, elapsed_seconds=progress.elapsed())
+                cadence = recent_quick_scan(observed, reuse_hours)
+            except Exception:
+                cadence = {'reuse': False, 'reason': 'Native recent-scan evidence could not be verified; request a fresh scan.'}
+            report['cadence_check'] = cadence
+            if _cancelled(cancel_event):
+                progress.emit('cancelled')
+                return dict(report, status='cancelled', cancelled=True, elapsed_seconds=progress.elapsed())
+            if cadence['reuse'] is True:
+                report.update(status='skipped_recent_scan', skipped=True, read_only=True,
+                    active_threat_count=0, threats=threat_snapshot(observed['threats']),
+                    elapsed_seconds=progress.elapsed(),
+                    note='A recent completed Defender quick scan was reused after fresh protection, definition, lifecycle and active-threat checks. No new scan ran; real-time protection is unchanged. This is not a clean-system guarantee.')
+                report['log_path'] = str(self._journal(report))
+                progress.emit('skipped_recent_scan')
+                return report
+        if not _active(before) or not isinstance(before.get('context'), dict) or before['context'].get('is_admin') is not True:
+            progress.emit('blocked')
+            return dict(report, status='blocked', failed_items=1, elapsed_seconds=progress.elapsed(), reason='A verified active Microsoft Defender provider and administrator session are required. Other antivirus products are not replaced or disabled.')
+        with self.lock:
+            self._journal(report)
+            try:
+                progress.emit('waiting_for_defender')
+                outcome = self._call('quick_scan', timeout=900, cancel_event=cancel_event, progress_callback=progress.native)
+                report['progress_capability']['numeric_available'] = outcome.get('numeric_progress_observed') is True
+                report['cancelled'] = _cancelled(cancel_event) or outcome.get('cancelled') is True
+                report['scan_may_continue'] = outcome.get('may_continue') is True
+                if report['cancelled']:
+                    report['status'] = 'cancelled'
+                elif outcome.get('ok') is not True or outcome.get('completion_verified') is not True:
+                    report.update(status='incomplete', failed_items=1, reason='Defender quick-scan completion was not verified. Check Windows Security; a scan may still be running.')
+                else:
+                    threats = outcome.get('threats', {})
+                    report['threats'] = threat_snapshot(threats)
+                    report['completion_verified'] = True
+                    report.update(status='completed', active_threat_count=report['threats']['active_count'],
+                                  note='Defender completed a quick scan for viruses, malware and spyware in its standard scan areas using existing Windows remediation policy. Review current and quarantined detections in Windows Security. This is not a full-system scan or a clean-system guarantee. Optimus has not requested additional removal.')
+                    after = self.security_status()
+                    report['recommendations'] = after['recommendations']
+            except Exception as error:
+                report.update(status='failed', failed_items=1, error_type=type(error).__name__, reason='Windows Defender could not complete or verify the scan. Review Windows Security.')
+            report['elapsed_seconds'] = progress.elapsed()
+            report['log_path'] = str(self._journal(report))
+            progress.emit(report['status'], percent=100 if report['completion_verified'] else None,
+                          verified=report['completion_verified'])
+            return report
+
+    def apply_recommendation(self, recommendation_id, cancel_event=None, *, remediation_consent=None):
+        if recommendation_id not in _ACTIONS:
+            raise ValueError('Choose a supported security recommendation.')
+        report = {'id': recommendation_id, 'status': 'running', 'failed_items': 0}
+        local_control = recommendation_id in ('enable_defender_realtime', 'enable_firewall',
+                                               'update_defender_signatures')
+        def no_change(reason):
+            return dict(report, status='blocked', failed_items=1, reason=reason,
+                        operation_started=False, outcomeKnown=True, running=False,
+                        may_continue=False, failure_scope='security_control' if local_control else 'security')
+        if _cancelled(cancel_event):
+            return dict(report, status='cancelled', cancelled=True)
+        current = self.security_status()
+        payload = None
+        if recommendation_id == 'remediate_defender_threats':
+            from .defender_scan import validate_remediation_consent
+            consent = validate_remediation_consent(remediation_consent, current.get('threats', {}))
+            if consent is None:
+                return dict(report, status='blocked', failed_items=1, reason='Review all current active Defender detections and confirm their exact scope before remediation. No additional removal was requested.')
+            payload = {'remediation_consent': consent}
+        permitted = {item['id'] for item in current['recommendations']}
+        if recommendation_id not in permitted and recommendation_id != 'review_windows_update':
+            return no_change('The recommendation no longer matches current Windows security state; no change was requested.')
+        manual = recommendation_id in ('review_security', 'review_windows_update', 'restart_required')
+        if not manual and (not isinstance(current.get('context'), dict) or current['context'].get('is_admin') is not True):
+            return no_change('Administrator access is required. No elevation or permission bypass was requested.')
+        journal = {'id': uuid.uuid4().hex, 'kind': 'security-recommendation', 'recommendation_id': recommendation_id,
+                   'status': 'prepared', 'before': current, 'items': [], 'failed_items': 0}
+        with self.lock:
+            self._journal(journal)
+            outcome = None
+            try:
+                outcome = self._call(recommendation_id, payload, timeout=300, cancel_event=cancel_event)
+                # Never turn a timed-out security operation into an ordinary
+                # failed control: its original native child may still be live.
+                for key in ('may_continue', 'outcomeKnown', 'running', 'timed_out'):
+                    if key in outcome:
+                        report[key] = outcome[key] if type(outcome[key]) is bool else None
+                report['operation_started'] = True
+                if local_control:
+                    report['failure_scope'] = 'security_control'
+                unresolved = (outcome.get('may_continue') is True or outcome.get('running') is True
+                              or outcome.get('outcomeKnown') is False or outcome.get('timed_out') is True
+                              or any(key in outcome and type(outcome[key]) is not bool
+                                     for key in ('may_continue', 'outcomeKnown', 'running', 'timed_out')))
+                if outcome.get('cancelled') or _cancelled(cancel_event):
+                    report.update(status='cancelled', cancelled=True, may_continue=outcome.get('may_continue') is True)
+                elif unresolved:
+                    report.update(status='uncertain', failed_items=1,
+                                  reason='The Windows security operation has not returned a verified terminal outcome. Its original process remains observed; no automatic retry was requested.')
+                elif outcome.get('ok') is not True:
+                    report.update(status='failed', failed_items=1, reason='Windows declined or could not verify the selected action; policy or tamper protection may apply.')
+                elif manual:
+                    report.update(status='manual_action_required', opened=outcome.get('opened'), reason='Windows Settings was opened for review. No automatic reboot or provider replacement was requested.')
+                else:
+                    after = self.security_status()
+                    remaining = {item['id'] for item in after['recommendations']}
+                    if after['status'] != 'completed' or recommendation_id in remaining:
+                        report.update(status='failed', failed_items=1, reason='The action returned but its intended security outcome was not verified.', after=after)
+                    else:
+                        report.update(status='completed', after=after)
+            except Exception as error:
+                report.update(status='failed', failed_items=1, error_type=type(error).__name__, reason='Windows could not complete the selected security action.')
+                if outcome is None:
+                    report.update(status='uncertain', outcomeKnown=False, running=None, may_continue=True)
+            journal.update(status=report['status'], result=report, failed_items=report['failed_items'])
+            report['log_path'] = str(self._journal(journal))
+            return report

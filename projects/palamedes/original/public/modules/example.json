@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "my-math",
+  "name": "My mathematics module",
+  "version": "1.0.0",
+  "description": "An example reusable function and explicitly run program.",
+  "functions": [{"name":"cubeCustom","args":["x"],"expression":"x^3"}],
+  "programs": [{"name":"Cubes table","language":"javascript","code":"for (let n=1; n<=10; n++) print(n, math.cubeCustom(n));\nreturn math.cubeCustom(10);"}]
+}

@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "manifests": [
+    {
+      "project": "angerona",
+      "preservedFiles": 116
+    },
+    {
+      "project": "optimus",
+      "preservedFiles": 316
+    },
+    {
+      "project": "palamedes",
+      "preservedFiles": 49
+    }
+  ],
+  "preservedBytes": 22728238,
+  "textFilesScanned": 477,
+  "pythonFilesParsed": 385,
+  "failures": [],
+  "gallery": {
+    "pageErrors": 0,
+    "filterVerified": true,
+    "windowReplayVerified": true
+  },
+  "palamedes": {
+    "productionBuild": "passed",
+    "modulesTransformed": 2719,
+    "browserPageErrors": 0,
+    "captureStates": 10
+  }
+}

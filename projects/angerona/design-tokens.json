@@ -1,0 +1,101 @@
+{
+  "project": "Angerona",
+  "version": "1.15.0",
+  "source": "source/src/angerona/gui/theme.py",
+  "color_notation": "Qt QSS; 8-digit hex uses #AARRGGBB, unlike CSS #RRGGBBAA",
+  "themes": {
+    "cyber": {
+      "label": "Modern Cyber",
+      "bg": "#0a0e14",
+      "panel": "#0f141c",
+      "panel2": "#141b26",
+      "border": "#263345",
+      "text": "#d6e2f0",
+      "dim": "#94a3b8",
+      "accent": "#1f9cff",
+      "accent2": "#ff7a1a",
+      "font": "'Segoe UI','Helvetica Neue','Arial',sans-serif",
+      "radius": "10px",
+      "alt_row": "#08ffffff",
+      "chip_h": "44px"
+    },
+    "crt": {
+      "label": "Retro CRT Terminal",
+      "bg": "#000a00",
+      "panel": "#001200",
+      "panel2": "#001a00",
+      "border": "#00b347",
+      "text": "#33ff66",
+      "dim": "#1f8a3a",
+      "accent": "#39ff14",
+      "accent2": "#00ff66",
+      "font": "'Cascadia Mono','Consolas','Courier New',monospace",
+      "radius": "2px",
+      "alt_row": "#0800ff00",
+      "chip_h": "44px"
+    },
+    "slate": {
+      "label": "Dark Slate",
+      "bg": "#020617",
+      "panel": "#0f172a",
+      "panel2": "#1e293b",
+      "border": "#334155",
+      "text": "#f1f5f9",
+      "dim": "#94a3b8",
+      "accent": "#38bdf8",
+      "accent2": "#fb923c",
+      "font": "'Segoe UI','Helvetica Neue','Arial',sans-serif",
+      "radius": "8px",
+      "alt_row": "#06ffffff",
+      "chip_h": "44px"
+    }
+  },
+  "mono_font_family": "'Fira Code','Cascadia Mono','JetBrains Mono','Consolas',monospace",
+  "scale": {
+    "minimum": 0.75,
+    "maximum": 1.35,
+    "default": 1.0
+  },
+  "typography_design_px": {
+    "base": 13,
+    "brand": 26,
+    "tagline": 11,
+    "page_title": 20,
+    "section_title": 13,
+    "card_value": 30,
+    "card_label": 11,
+    "table_header": 11
+  },
+  "spacing_design_px": {
+    "primary_button_vertical": 9,
+    "primary_button_horizontal": 16,
+    "button_vertical": 7,
+    "button_horizontal": 14,
+    "input": 7,
+    "checkbox": 18
+  },
+  "severity": {
+    "info": "#6b7280",
+    "low": "#3b82f6",
+    "medium": "#f97316",
+    "high": "#ef4444",
+    "critical": "#b91c1c"
+  },
+  "progress_rgb": {
+    "start": [
+      255,
+      77,
+      77
+    ],
+    "midpoint": [
+      255,
+      176,
+      32
+    ],
+    "complete": [
+      47,
+      227,
+      138
+    ]
+  }
+}

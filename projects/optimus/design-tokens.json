@@ -1,0 +1,17 @@
+{
+  "project":"Optimus",
+  "version":"0.12.31",
+  "source":"source/src/optimus/widgets/theme.py",
+  "color_format":"Qt QSS; 8-digit hex is #AARRGGBB",
+  "themes":{
+    "cyber":{"background":"#0a0e14","panel":"#0f141c","panel2":"#141b26","border":"#263345","text":"#d6e2f0","muted":"#94a3b8","accent":"#1f9cff","secondaryAccent":"#ff7a1a","radius_px":10,"font":"Segoe UI, Helvetica Neue, Arial, Noto Sans, DejaVu Sans, Liberation Sans, sans-serif"},
+    "crt":{"background":"#000a00","panel":"#001200","panel2":"#001a00","border":"#00b347","text":"#33ff66","muted":"#1f8a3a","accent":"#39ff14","secondaryAccent":"#00ff66","radius_px":2,"font":"Cascadia Mono, Consolas, Courier New, monospace"},
+    "slate":{"background":"#020617","panel":"#0f172a","panel2":"#1e293b","border":"#334155","text":"#f1f5f9","muted":"#94a3b8","accent":"#38bdf8","secondaryAccent":"#fb923c","radius_px":8,"font":"Segoe UI, Helvetica Neue, Arial, Noto Sans, DejaVu Sans, Liberation Sans, sans-serif"}
+  },
+  "base_typography_px":{"body":13,"brand":26,"tagline":11,"pageTitle":20,"sectionTitle":13,"cardValue":30,"cardLabel":11,"tableHeader":11},
+  "scaling":{"default":1,"minimum":0.75,"maximum":1.35},
+  "spacing_px":{"primaryButton":[9,16],"button":[7,14],"pill":[5,14],"input":7,"checkbox":18,"statusChipHeight":44},
+  "progress_colors":{"start":[255,77,77],"midpoint":[255,176,32],"complete":[47,227,138]},
+  "worker_health":{"working":"#55c987","waiting":"#e8b34b","pressure":"#ed914b","error":"#ef6262","unverified":"#7291a8","complete":"#55c987"},
+  "starfield":{"background":"#0a0e14","primary":"#7acbff","highlight":"#ff7a1a","stars":190,"spiralStrands":3,"frame_interval_ms":33}
+}

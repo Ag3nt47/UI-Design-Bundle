@@ -1,0 +1,959 @@
+{
+  "project": "Angerona",
+  "snapshot_date": "2026-11-02",
+  "source_version": "1.15.0",
+  "primary_source": "angerona-primary",
+  "legacy_source": "angerona-legacy",
+  "scope": "All primary GUI Python modules; original small dependency boundary; secondary UI source contexts; icons; pre-existing public-demo media; legacy GUI.",
+  "omitted": [
+    "host telemetry",
+    "runtime data",
+    "credentials",
+    "backend modules",
+    "virtualenv",
+    "git internals",
+    "caches",
+    "build output",
+    "private analysis"
+  ],
+  "files": [
+    {
+      "path": "source/src/angerona/gui/__init__.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/__init__.py",
+      "sha256": "e62eca6ef923289cc3d6434a7bcf8940e2494410b3d0805b25b85032c54ad1c9",
+      "bytes": 25,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/aar_history.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/aar_history.py",
+      "sha256": "7eabd7626ddaa4f20d742eb52879b90aa191e7c05cd11b974831cc4b6d947a2a",
+      "bytes": 8677,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/adaptation_workbench.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/adaptation_workbench.py",
+      "sha256": "07c0c3251d0d2c286e5dfe287e4e3e6e796b13c80a60b575decd384b6ac75d43",
+      "bytes": 119085,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/aegis_path.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/aegis_path.py",
+      "sha256": "50dc3bc05a697645d8c41957976edc90fb0cda9de40603cb555ad224d7cc5c0f",
+      "bytes": 30068,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/ai_consult_dialog.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/ai_consult_dialog.py",
+      "sha256": "ca29fef41fd0c20db2a4d8a60fcd5c4c7758db669623076f49fbdb9ed520fe3a",
+      "bytes": 17354,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/alert_preview.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/alert_preview.py",
+      "sha256": "776a9e8370e6b243b458d6a9ba1f9842b7e2df94181168b8036b3b9683de5755",
+      "bytes": 3603,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/analysis_lab.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/analysis_lab.py",
+      "sha256": "68c600394d2d8d661341ffcc49bfd3470f86324bcacecae3ca104e5e0af6c08a",
+      "bytes": 13825,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/analysis_qemu_setup.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/analysis_qemu_setup.py",
+      "sha256": "31ba3c8698e286b6987ee7281436829aadd8bed0e981958c9d24e3f478699e01",
+      "bytes": 5723,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/analysis_vmware_setup.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/analysis_vmware_setup.py",
+      "sha256": "cceaf26e757a05cef827daee51a4608fd6ad1c86047d6ac4467cf981931209e6",
+      "bytes": 7327,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/animations.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/animations.py",
+      "sha256": "051c638e00232eebc3e3fcce1da3a29acbc1646e94ad7a1fe930d312fcfe6027",
+      "bytes": 34254,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/aria_hud.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/aria_hud.py",
+      "sha256": "b525f6181bc437688543f1854977c0de2ff87f33309373c2215f3a8b93e9afda",
+      "bytes": 17331,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/async_snapshot.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/async_snapshot.py",
+      "sha256": "60bef72460bf7a183f2cba4a55a6fc33acd505cd43e5504663ebbdb2d99f9acb",
+      "bytes": 5859,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/attack_heatmap.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/attack_heatmap.py",
+      "sha256": "7866c3bab7f1695c5dc6008d22dcbffdec484a46a6fd66a81bc9f6dbf280927c",
+      "bytes": 39283,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/breach_display.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/breach_display.py",
+      "sha256": "618a9f99b3a9233378dbb8e62be6b3091b9a8f6d2b6078c83bc5b67eba5138ec",
+      "bytes": 31230,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/component_heartbeat.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/component_heartbeat.py",
+      "sha256": "abe5d4314b9bac575385e469117616a716355217e6cc370a8a138734ba7da7a7",
+      "bytes": 15751,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/context_info.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/context_info.py",
+      "sha256": "456d57998a0f556136410473114c1e7748b58636867afa6c713251239202e3f1",
+      "bytes": 24996,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/curated_tools.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/curated_tools.py",
+      "sha256": "3610f78ea2f9f8cdf1ea8c378803c3951c7c1f68ceed151b60214f52176ceb6c",
+      "bytes": 133259,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/cve_analysis_window.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/cve_analysis_window.py",
+      "sha256": "12f967ffe9524856b005055d71d682dfb4e8b947372f28e0877a20a14356d800",
+      "bytes": 27491,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/cve_detail_admission.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/cve_detail_admission.py",
+      "sha256": "00751a653f959037da73c04b2d38d02e860baab7bce340ad5ba7bf07dd559619",
+      "bytes": 5072,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/dashboard_details.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/dashboard_details.py",
+      "sha256": "10874490f0107bc362a6491d3dc881a96d2bea8e69e8a8ea07b93c1486e557a8",
+      "bytes": 26072,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/dashboard_footer.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/dashboard_footer.py",
+      "sha256": "522d762834bf77edc060b8da0b1ca8815388bde98ce1475e1739f1da91bfa7a2",
+      "bytes": 14981,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/dashboard_sections.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/dashboard_sections.py",
+      "sha256": "32038fc59e2abf9a4051da96f5607e385ccde08945628d395966cde33f77f10f",
+      "bytes": 12963,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/detection_forge.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/detection_forge.py",
+      "sha256": "4d0bd9b5079059e4d6a283c0028f38da8de0739fec19c681a0293c4b61a3466e",
+      "bytes": 27380,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/engine_console.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/engine_console.py",
+      "sha256": "afcc762ec91872fe400ea87f2c081818a8073db7430ceeb7a02c6bea8c99e411",
+      "bytes": 16190,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/fleet_center.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/fleet_center.py",
+      "sha256": "c3d98d8feefd3c675410a7de1ea62e1ec12a2a25f63d545e2827abe78c950cdb",
+      "bytes": 15003,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/flow_window.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/flow_window.py",
+      "sha256": "5d77a81caea628006a2b656aab8a31e997819cc65a902bde7c27627c8dfc9bcd",
+      "bytes": 28373,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/github_tools.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/github_tools.py",
+      "sha256": "a2ca5552b53b14a954c6d60374fbeca83bd6d40c90956db04e1834eab8940462",
+      "bytes": 13661,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/header_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/header_controls.py",
+      "sha256": "0e3e2c203c9502080ce24a50e558d1078e0ca3aabcd947727abe996b9a83194f",
+      "bytes": 50624,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/help_content.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/help_content.py",
+      "sha256": "fd7550a5633f97be0e343722b752f98765e35a8d0a24a0b3db5989877b96ec87",
+      "bytes": 12619,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/holographic_orb.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/holographic_orb.py",
+      "sha256": "a70e240087da48cc037b1478d0fa73f0fd875cd3f6a091939745cebc9b56c76e",
+      "bytes": 51846,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/incident_timeline_page.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/incident_timeline_page.py",
+      "sha256": "8eea3de1189fe5d1f90b9cb3ca33ac46d886d72d2848bbcf0ca58949d93e3b7d",
+      "bytes": 5148,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/installed_startup_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/installed_startup_controls.py",
+      "sha256": "3ddd7bfbf3c30f3afcb8c266e2c423d089479b53dd6def6e77cb89da48125d32",
+      "bytes": 22720,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/live_debug_panel.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/live_debug_panel.py",
+      "sha256": "841ac7f91fae4f05dacf4264a68d4b588b93cbde89c2645cecca23d4df3a06b1",
+      "bytes": 23986,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/live_defense_activity.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/live_defense_activity.py",
+      "sha256": "1c33e4fefc040c84660ded703ddc72bf01af1917ddd89f2bc5d30b722a3280ed",
+      "bytes": 15654,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/main_window.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/main_window.py",
+      "sha256": "c5b22514d11587f456f9a586b4ad6858813f36e8c816db0c4141b37de2ab0c54",
+      "bytes": 321343,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/normal_log_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/normal_log_controls.py",
+      "sha256": "16014be1ea933b1e9ef3448a5b9aa055672f10b5b0d918dd954a7966b5eff909",
+      "bytes": 11761,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/ollama_status.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/ollama_status.py",
+      "sha256": "35cdccd24812990b246e3c84184be98ba53bd27326a627e68a99607785305b4f",
+      "bytes": 3031,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/operations_center.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/operations_center.py",
+      "sha256": "0b99b150d7a458786e7414cd0d04cde8d01f7b8343bf9927586ac62cc0dad1f7",
+      "bytes": 57275,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/orbital_dashboard.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/orbital_dashboard.py",
+      "sha256": "437d9ba7872f648af4d816dacb471c3c4f185251400d0bf94276aee13c54cd4d",
+      "bytes": 21599,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/pages.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/pages.py",
+      "sha256": "baaadab3df876e8fb753f7ad382f765a8de6615319dcb1f92c94fedfa5863ae4",
+      "bytes": 576101,
+      "modified": false,
+      "original_sha256": "4c61992d62584e668836665e55b24be3d7d31cef62f6ccbfd1b36486d12fa2d6",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/angerona/gui/presentation_timer.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/presentation_timer.py",
+      "sha256": "ed6ed2ef4dd61580d5ea397a14233a14b4175852a38fcf80592bd124fa7c60d7",
+      "bytes": 6957,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/prevention_panel.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/prevention_panel.py",
+      "sha256": "24d9accab24bb7c3acad5bef749621c6b5081ac3c365eb247b4c9dd5870d62be",
+      "bytes": 11666,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/protection_service_console.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/protection_service_console.py",
+      "sha256": "fa47a26cf1c6a7aacfb9cb65816b594a50e0203ab6843b4edf1bbe2336ba74f2",
+      "bytes": 15907,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/recorder_integrity_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/recorder_integrity_controls.py",
+      "sha256": "02f29a96be5b062bf72abae3dc32387797b80699801faba62d87e8c9f2b4f267",
+      "bytes": 9465,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/recovery_panel.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/recovery_panel.py",
+      "sha256": "85adfbf15931026f474d61f78cdb4037bd8fa353cf9002d1b8b6d4227fd2eb56",
+      "bytes": 10916,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/red_team_console.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/red_team_console.py",
+      "sha256": "4cfda488511f51dd0b3887c1f5d34e36cdb83a41478be3a5242657056d19cb1e",
+      "bytes": 85983,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/resolve_center.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/resolve_center.py",
+      "sha256": "6c31f3ba68b5c1c165777134aaeb10bd7cde899dee730ea91a10660e730ee856",
+      "bytes": 23004,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/response_status.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/response_status.py",
+      "sha256": "ae242df9aeae86f40a550fa21636f75501b4a3eb2c9a1be1182d7ed3f8dc5e60",
+      "bytes": 8186,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/responsiveness_monitor.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/responsiveness_monitor.py",
+      "sha256": "6074aa4863b4c2bd43035f6491c7a9f25a4a749ce0053bb8ad8df976561c79d0",
+      "bytes": 6310,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/sandbox_editor.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/sandbox_editor.py",
+      "sha256": "e6bb1304a7ae600bcceece54bfcc0c90394d61ed5c36d11701129ce43e14f2b6",
+      "bytes": 28782,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/scan_center.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/scan_center.py",
+      "sha256": "ee4f04f5b43df5ab69fbfe916ab7de974c87f2be19e4a86e6e5f7e8af7273446",
+      "bytes": 29743,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/selftest_results.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/selftest_results.py",
+      "sha256": "32198965821565aeac8251b1580abb53c402b6800622f09160edd898542e4011",
+      "bytes": 6823,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/sentinel_lens.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/sentinel_lens.py",
+      "sha256": "82dc4a4ad04fce7ab32731135283876c283c40240bdc900ece31b09d213e00c3",
+      "bytes": 35129,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/setup_wizard.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/setup_wizard.py",
+      "sha256": "913959f99e800502fff14bf6228c393ec34f8e3a94831dec4803f65305baa3b3",
+      "bytes": 83206,
+      "modified": false,
+      "original_sha256": "a24d3e026ff7cfd32d1e94fe63335b08bf203bf566da3f5f36ab52cf1ec99bf5",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/src/angerona/gui/simulation_launch.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/simulation_launch.py",
+      "sha256": "8f492779fb1ec971ed705f6e41e523575e8f9eaea3360e8c1b22adb2195fdf92",
+      "bytes": 9023,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/spyware_guard_page.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/spyware_guard_page.py",
+      "sha256": "e96ee7ebd9ca46d5e505991f80bab7712faa3c6e7793e0c845bc1631c6e51b51",
+      "bytes": 65013,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/storage_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/storage_controls.py",
+      "sha256": "599ad8151aaf18012dd384e1ba991b9d83237ca147c68c61bfdf122e9a8bed94",
+      "bytes": 16562,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/system_pulse.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/system_pulse.py",
+      "sha256": "6d7100983f4a0ca4bf827f13a1edfa5ae56426b45c0338d710abd90452478e96",
+      "bytes": 17255,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/telemetry_storage_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/telemetry_storage_controls.py",
+      "sha256": "2ebd2fcd544a9a9cc619c932881acc8733c398ae1bd7515684580976fbe8bf04",
+      "bytes": 18730,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/telemetry_worker.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/telemetry_worker.py",
+      "sha256": "e7d8a910a1c9d765fcf336e559b8cea6e3f2e9f75ddc0f8325bae0be3b0080a4",
+      "bytes": 20318,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/theme.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/theme.py",
+      "sha256": "28d43fe927aa181ff69c60df3b42de04cfa1df5371aa35a1f0a2d6f8b9159d51",
+      "bytes": 13314,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/thread_lifecycle.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/thread_lifecycle.py",
+      "sha256": "a077b9eff599b532dd060423f9683d489a3f553cb7381b8ab972c3eeac2c0a3c",
+      "bytes": 6459,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/threat_intel_page.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/threat_intel_page.py",
+      "sha256": "f71db61277c26f25738a4f7e33dd76bcc99b50909fd44254bd945b74584cade3",
+      "bytes": 57277,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/top_talkers.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/top_talkers.py",
+      "sha256": "9ea08db9c87ad1def47cdd93ac657f447458012cfdf455686691c62cbfff2672",
+      "bytes": 26352,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/tour.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/tour.py",
+      "sha256": "d7a347d60d00c9dfe540fbd6f084c9f8d035fc08a6bcbaff3ebe5d6c6ffd9250",
+      "bytes": 16165,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/ugcap_page.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/ugcap_page.py",
+      "sha256": "f60d612d3c2c3815a6b3bcf3da4fc8a64648080933faffe7aa1a5aa2efc43e8a",
+      "bytes": 34671,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/update_controller.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/update_controller.py",
+      "sha256": "83dc6255ffc267c7790e9aac92ee6e4f3e945539a7fb1e38c018696b916d1c37",
+      "bytes": 9096,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/upgrade_console.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/upgrade_console.py",
+      "sha256": "65fc46f565a674a36e910be1a1a2a443b5a3a9661e1c506279f395ceb17f8c48",
+      "bytes": 42798,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/usb_approval_dialog.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/usb_approval_dialog.py",
+      "sha256": "b70e30c27b11b08d35dffcb090f5d92049233d64c2d16d6163b6d0b4cee6465d",
+      "bytes": 18131,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/window_controls.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/window_controls.py",
+      "sha256": "5e2b2b05d729e11ac2aaa72231ac1a54ec04ec65bafa188c4320cbc28f791f4b",
+      "bytes": 16665,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/window_fit.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/window_fit.py",
+      "sha256": "21f0549fb46b371aadbefa55e0a91c1249255e6e1597d2807bb3f02b57398841",
+      "bytes": 7245,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/gui/worldview_page.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/gui/worldview_page.py",
+      "sha256": "0bb8b262b4e93df1422d8c1b6973a69f9be2a80e8241756f95e5f2042cd12d66",
+      "bytes": 6835,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/__init__.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/__init__.py",
+      "sha256": "6a0fc8f942d7bff10800ae93f7d81a3f6b934e0c2b9f021ab563c438ef425d20",
+      "bytes": 114,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/core/__init__.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/core/__init__.py",
+      "sha256": "8554490413dc4c49453230a81848c43e7e317fc8f68ce19c7348250c3a6a819f",
+      "bytes": 76,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/core/background_pacing.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/core/background_pacing.py",
+      "sha256": "ae2d5ae8597070c711bdebaec2a0d915f7fc8322ecae459001577e8ec7117223",
+      "bytes": 14423,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/core/eventbus.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/core/eventbus.py",
+      "sha256": "3632fe9d388471325086300311c8159d956977898760ba9f95d0231a70dc4a20",
+      "bytes": 28827,
+      "modified": false
+    },
+    {
+      "path": "source/src/angerona/resilience/status_ui.py",
+      "source_root": "angerona-primary",
+      "source_path": "src/angerona/resilience/status_ui.py",
+      "sha256": "0b2c007a5f50ee875c774bd07684a7de93414a00392ffd88c9457fc7b1d49032",
+      "bytes": 16890,
+      "modified": false
+    },
+    {
+      "path": "source/blackbox_recorder.py",
+      "source_root": "angerona-primary",
+      "source_path": "blackbox_recorder.py",
+      "sha256": "5dc023ac84cdd0ac9a9103abbc68b1f6b1deb343fa65005f01d3ac4690f8e588",
+      "bytes": 157050,
+      "modified": false
+    },
+    {
+      "path": "source/flow_canvas.html",
+      "source_root": "angerona-primary",
+      "source_path": "flow_canvas.html",
+      "sha256": "ec6f64ff82e015ebc0d07acf14c0b545b9fc42d63030fd5345c7aa261adab3ab",
+      "bytes": 12358,
+      "modified": false
+    },
+    {
+      "path": "source/LICENSE",
+      "source_root": "angerona-primary",
+      "source_path": "LICENSE",
+      "sha256": "ae091d58e90c59ec57281da3cf6f4e000001c1fd77f161d9c14dbd1c531c3fd5",
+      "bytes": 1078,
+      "modified": false
+    },
+    {
+      "path": "source/pyproject.toml",
+      "source_root": "angerona-primary",
+      "source_path": "pyproject.toml",
+      "sha256": "747f9d2ece945324d4f4366082dfaab3eb1e54cb3eaf05a4785cf03ad30d2af7",
+      "bytes": 3026,
+      "modified": false,
+      "original_sha256": "a723ceafbb5e4cd92647ba5e60d577744e06e5b14e1805fad651a43b13cb052b",
+      "privacy_redacted": true
+    },
+    {
+      "path": "source/requirements.txt",
+      "source_root": "angerona-primary",
+      "source_path": "requirements.txt",
+      "sha256": "456f35ada31ca9ea2ad2719ff07af2b3b1484d6bae7bb0eabcc7647d26d7f2d0",
+      "bytes": 2357,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/angerona.ico",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/angerona.ico",
+      "sha256": "fbccfca20fc771b6c18f2fb4357267dac65c74cf5fb04472d1eedc9e5fe5dbca",
+      "bytes": 34686,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/angerona_icon.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/angerona_icon.png",
+      "sha256": "3bd116ed6b049d1be2637dcc0e01f0d3d4edd2c061503e04321de6c657cfd3db",
+      "bytes": 126763,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/angerona_icon_256.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/angerona_icon_256.png",
+      "sha256": "6b0b79fd0dafff0570c68ad8a478478743a096144d5d884074b5daafef3c8c46",
+      "bytes": 19328,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/angerona_icon_512.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/angerona_icon_512.png",
+      "sha256": "55e88b2ed0ae5296fffeedd84d78d3215467365598e95571cdf3e964d656f820",
+      "bytes": 54000,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/angerona_icon_64.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/angerona_icon_64.png",
+      "sha256": "0fb9187e5030e92f4c786bc29b01ab57adcc405a549bf2aea8a313864053807a",
+      "bytes": 2982,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/backup_f.ico",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/backup_f.ico",
+      "sha256": "0788816c211355c0447af19c48d174591eb262cc40f5ae9edc6f677ace469ebc",
+      "bytes": 4640,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/backup_f_preview.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/backup_f_preview.png",
+      "sha256": "e2a1b1df8f24e957a5d479de2475fd7cbcfbebfdb243673a47bed0e09d905b35",
+      "bytes": 1490,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/blackbox.ico",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/blackbox.ico",
+      "sha256": "66ac4ddc865a8d401769c1a1aa19a8848025ef9ed78652c3217bf818fa3313d7",
+      "bytes": 13310,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/blackbox_icon_256.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/blackbox_icon_256.png",
+      "sha256": "84d693cb13d6abf38ad4df23327508f0f10de244e8c1cc37b49ec6b0b0b1f448",
+      "bytes": 2125,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/skull.ico",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/skull.ico",
+      "sha256": "4039a1896d93262c26137864c5062d46a0226fe0dbea5bc6c65ac1b6cffc1877",
+      "bytes": 26678,
+      "modified": false
+    },
+    {
+      "path": "source/assets/icons/skull_preview.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/icons/skull_preview.png",
+      "sha256": "eb51ff0ca7a23865e08f510bf1f34281e88560123efb5888b5361d945f39a391",
+      "bytes": 12047,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/after-action-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/after-action-demo.png",
+      "sha256": "c8975a9e60d5b177de3b58b0bff6c6e1b7b6b5db1bec0b06cb3ebde7278ac512",
+      "bytes": 82561,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/auto-adapt-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/auto-adapt-demo.png",
+      "sha256": "e0dfef30b5ddfb654be1c0e52692c5bf148c6dbcb9c6e1f59dd6ee9ae61f20e6",
+      "bytes": 124464,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/breach-lockdown-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/breach-lockdown-demo.png",
+      "sha256": "e2d8b2fdd317ad3559cf2feef3b5b1e0c0df90bcd25f84d3993ff51158165543",
+      "bytes": 242314,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/dashboard-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/dashboard-demo.png",
+      "sha256": "b38f7d050a8248faf0e2837d09d4d358aec40cad960a3cd88482c3c15f483efd",
+      "bytes": 234148,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/github-tools-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/github-tools-demo.png",
+      "sha256": "06ecde3f1c42aa0618292164fd4d6c26b8b01aa1733a3de3302a573eb76af499",
+      "bytes": 109401,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/github-tools-settings-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/github-tools-settings-demo.png",
+      "sha256": "49b09ce4fca7cd11831f74e53aeb7f4edca75efd884035d51d215f7ff6b49cec",
+      "bytes": 84160,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/protection-service-console-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/protection-service-console-demo.png",
+      "sha256": "c72fa0c6a6c58ea27d56541edeabe143938e9e7cc8d05f4c29b88bd1134d312b",
+      "bytes": 55119,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/recorder-integrity-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/recorder-integrity-demo.png",
+      "sha256": "f1bc4f10f1a45cf912af64ed40c2452c8c0aa968a47997f8c3b259fb3788b2c4",
+      "bytes": 54078,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/spyware-scan-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/spyware-scan-demo.png",
+      "sha256": "cab89325aec516f9d5a2fc39e6fbbaccb758ef42017257bef19baa8aa1c055a1",
+      "bytes": 133182,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/telemetry-storage-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/telemetry-storage-demo.png",
+      "sha256": "4c550d6ddacba5aacd4441cdf4b5e82dda9a47eab2d496975db50c4219d2f594",
+      "bytes": 56894,
+      "modified": false
+    },
+    {
+      "path": "media/screenshots/zero-breach-demo.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/screenshots/zero-breach-demo.png",
+      "sha256": "b2184e136fe14b569993d987d4838b3d8300a70b351b6dfa2406bc6ac366e297",
+      "bytes": 112833,
+      "modified": false
+    },
+    {
+      "path": "legacy/src/angerona/gui/__init__.py",
+      "source_root": "angerona-legacy",
+      "source_path": "src/angerona/gui/__init__.py",
+      "sha256": "e62eca6ef923289cc3d6434a7bcf8940e2494410b3d0805b25b85032c54ad1c9",
+      "bytes": 25,
+      "modified": false
+    },
+    {
+      "path": "legacy/src/angerona/gui/main_window.py",
+      "source_root": "angerona-legacy",
+      "source_path": "src/angerona/gui/main_window.py",
+      "sha256": "e359397be45a70ca1deb9665a8edbf1b1b7875ef52eaaf0aec37df547df07933",
+      "bytes": 4524,
+      "modified": false
+    },
+    {
+      "path": "legacy/src/angerona/gui/pages.py",
+      "source_root": "angerona-legacy",
+      "source_path": "src/angerona/gui/pages.py",
+      "sha256": "3bdc194cb01649609fd7690b2847fae36f8a2ead3ffc8807e8e29892cb077b91",
+      "bytes": 8356,
+      "modified": false
+    },
+    {
+      "path": "legacy/src/angerona/gui/theme.py",
+      "source_root": "angerona-legacy",
+      "source_path": "src/angerona/gui/theme.py",
+      "sha256": "0f99e137a259aec93db5250f54cb607eccde279b74fddbac2c9505f333e91d65",
+      "bytes": 2007,
+      "modified": false
+    },
+    {
+      "path": "legacy/LICENSE",
+      "source_root": "angerona-legacy",
+      "source_path": "LICENSE",
+      "sha256": "ae091d58e90c59ec57281da3cf6f4e000001c1fd77f161d9c14dbd1c531c3fd5",
+      "bytes": 1078,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-auto-adapt.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-auto-adapt.png",
+      "sha256": "e08ad2bcbca4b0af0ba018efc30b0e5c5e8d4b095f1669689e484d110492d879",
+      "bytes": 206754,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-breach.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-breach.png",
+      "sha256": "79d17cb4a0e974633eead5d16e03ab3658551dd3949198bb8ba09bde9df90b21",
+      "bytes": 150562,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-hardening.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-hardening.png",
+      "sha256": "a67baf24323a38cde8d7f5bd2830867f3d37f8a55b5eede5fe437b0ee59394e1",
+      "bytes": 155193,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-overview.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-overview.png",
+      "sha256": "5424b369c911b3c9f299845eaa63c96bd26b09f3aabbaafd15517f1c19846ec7",
+      "bytes": 167901,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-response.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-response.png",
+      "sha256": "5ed5f2b573e53dd918a98404fc4afc9088a3d859d3c6c28ec30298d808747726",
+      "bytes": 165498,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-startup.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-startup.png",
+      "sha256": "89fe2557b96a8e904c64bed046c10d0579d888d9b664c2f4902821104fbc9d29",
+      "bytes": 159678,
+      "modified": false
+    },
+    {
+      "path": "media/diagrams/security-flow-tools.png",
+      "source_root": "angerona-primary",
+      "source_path": "assets/security-flow-tools.png",
+      "sha256": "91d40bb885b03039f6c0b2d198349c827c74038ae3653bf8e9cc7798fd091482",
+      "bytes": 148746,
+      "modified": false
+    }
+  ],
+  "omitted_public_media": [
+    "Optional third-party credits screenshot and original full demo GIF omit author identities from public presentation. Required legal notices are retained."
+  ],
+  "publication_privacy": "Local identifiers and owner-specific non-legal links redacted. sha256 describes published bytes; original_sha256, when present, is the pre-redaction digest. Historical object directories retain their original-source identifier. Required legal attribution retained."
+}

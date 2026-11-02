@@ -1,0 +1,830 @@
+"""
+gui/attack_heatmap.py — Live MITRE ATT&CK heatmap dialog.
+
+Three tabs:
+  • Live Heat  — 15 tactic columns × N technique rows, coloured by heat score
+    (0 = dark/inactive → blue → amber → red at 1.0). Click a cell for details:
+    full technique info, recent event IDs (click to pivot), which Angerona
+    module covers it, and a MITRE ATT&CK link.
+  • Coverage   — the honest Detect / Simulate / Remediate matrix from
+    core.attack_coverage, with blind spots highlighted and an overall %.
+  • Top        — the currently hottest techniques, ranked.
+
+Toolbar: threat-actor filter, technique search, active-only toggle, Explain
+posture (local AI), Export to Navigator, Reset. Refresh every 5s via QTimer;
+never blocks the Qt main thread. Local-first: reads AttackTracker.snapshot()
+and attack_coverage; the only optional network call is loopback Ollama.
+"""
+from __future__ import annotations
+
+from angerona.gui.presentation_timer import PresentationTimer
+from angerona.gui.window_fit import install_window_fit
+
+import json
+import math
+import threading
+import time
+import webbrowser
+from html import escape
+from typing import Callable
+
+from PySide6.QtCore import QPointF, QRectF, Qt, Signal
+from PySide6.QtGui import (
+    QBrush, QColor, QFont, QPen, QPolygonF,
+)
+from PySide6.QtWidgets import (
+    QApplication, QCheckBox, QComboBox, QDialog, QFileDialog, QGraphicsItem,
+    QGraphicsRectItem, QGraphicsScene, QGraphicsTextItem, QGraphicsView,
+    QHBoxLayout, QHeaderView, QLabel, QLayout, QLineEdit, QPushButton, QSizePolicy,
+    QTabWidget, QTableWidget, QTableWidgetItem, QTextBrowser, QVBoxLayout,
+    QWidget,
+)
+
+from angerona.core.url_policy import (
+    OLLAMA_SERVICE_POLICY,
+    local_service_url,
+    read_bounded,
+    safe_urlopen,
+)
+
+from angerona.core.attack_tracker import (
+    ATTACK_CATALOG_SCOPE, ATTACK_DOMAIN, ATTACK_VERSION, TACTIC_ORDER,
+    THREAT_ACTOR_PLAYBOOKS, _TACTIC_TO_TECHNIQUES, _TID_TO_META, get_tracker,
+)
+from angerona.gui.animations import begin_loading, finish_loading
+
+# ── Layout constants ─────────────────────────────────────────────────────────
+_CW    = 108   # cell width  px
+_CH    = 34    # cell height px
+_GAP   = 6     # horizontal gap between tactic columns
+_HDR_H = 56    # tactic header band height
+_PAD   = 12    # scene outer padding
+
+# ── Tactic band colours ──────────────────────────────────────────────────────
+_TACTIC_CLR: dict[str, str] = {
+    "TA0043": "#374151", "TA0042": "#1e3a5f", "TA0001": "#7c2d12",
+    "TA0002": "#581c87", "TA0003": "#14532d", "TA0004": "#713f12",
+    "TA0005": "#1e1b4b", "TA0112": "#3f1d2e", "TA0006": "#7f1d1d",
+    "TA0007": "#164e63",
+    "TA0008": "#1a1a2e", "TA0009": "#3b0764", "TA0011": "#0c4a6e",
+    "TA0010": "#431407", "TA0040": "#450a0a",
+}
+
+
+def _heat_color(heat: float) -> QColor:
+    if heat <= 0.0:
+        return QColor("#0f172a")
+    if heat < 0.15:
+        return QColor("#1e3a5f")
+    if heat < 0.35:
+        return QColor("#1d4ed8")
+    if heat < 0.55:
+        return QColor("#d97706")
+    if heat < 0.75:
+        return QColor("#ea580c")
+    return QColor("#dc2626")
+
+
+def _heat_border(heat: float) -> QColor:
+    if heat <= 0:
+        return QColor("#1e293b")
+    if heat < 0.35:
+        return QColor("#3b82f6")
+    if heat < 0.55:
+        return QColor("#f59e0b")
+    return QColor("#ef4444")
+
+
+def _mitre_url(tid: str) -> str:
+    base = tid.split(".")[0]
+    sub = tid.split(".")[1] if "." in tid else None
+    return f"https://attack.mitre.org/techniques/{base}/" + (f"{sub}/" if sub else "")
+
+
+NAVIGATOR_VERSION = "5.3.2"
+NAVIGATOR_LAYER_VERSION = "4.5"
+
+
+def build_navigator_layer(snapshot: object, *, exported_at: str | None = None) -> dict:
+    """Build a deterministic Navigator 4.5 layer from a tracker snapshot.
+
+    Only active entries from Angerona's explicitly curated Enterprise endpoint
+    catalog are exported.  This is activity evidence, not a claim that the
+    layer represents complete Enterprise ATT&CK coverage.
+    """
+    root = snapshot if isinstance(snapshot, dict) else {}
+    matrix = root.get("matrix") if isinstance(root.get("matrix"), dict) else {}
+    techniques: list[dict] = []
+    for tid in sorted(matrix):
+        row = matrix.get(tid)
+        if tid not in _TID_TO_META or not isinstance(row, dict):
+            continue
+        try:
+            count = max(0, int(row.get("count", 0)))
+            raw_heat = float(row.get("heat", 0.0))
+        except (TypeError, ValueError):
+            continue
+        if not math.isfinite(raw_heat):
+            continue
+        heat = min(1.0, max(0.0, raw_heat))
+        if count == 0:
+            continue
+        last_seen = str(row.get("last_seen") or "never")[:64]
+        techniques.append({
+            "techniqueID": tid,
+            "score": int(round(heat * 100)),
+            "comment": f"hits={count} last={last_seen}",
+            "enabled": True,
+            "showSubtechniques": False,
+        })
+
+    generated = (exported_at or time.strftime("%Y-%m-%dT%H:%M:%S"))[:64]
+    return {
+        "name": "Angerona Live Heatmap",
+        "versions": {
+            "attack": ATTACK_VERSION,
+            "navigator": NAVIGATOR_VERSION,
+            "layer": NAVIGATOR_LAYER_VERSION,
+        },
+        "domain": ATTACK_DOMAIN,
+        "description": (
+            f"Exported {generated} from Angerona live ATT&CK heat tracking. "
+            "Contains active entries from a curated endpoint catalog; it is "
+            "not a complete Enterprise ATT&CK coverage statement."
+        ),
+        "filters": {"platforms": ["Windows"]},
+        "sorting": 3,
+        "layout": {
+            "layout": "side",
+            "aggregateFunction": "average",
+            "showID": True,
+            "showName": True,
+            "expandedSubtechniques": "annotated",
+        },
+        "hideDisabled": False,
+        "techniques": techniques,
+        "gradient": {
+            "colors": ["#0f172a", "#1d4ed8", "#d97706", "#dc2626"],
+            "minValue": 0,
+            "maxValue": 100,
+        },
+        "legendItems": [],
+        "metadata": [
+            {"name": "ATT&CK content", "value": ATTACK_VERSION},
+            {"name": "Catalog scope", "value": ATTACK_CATALOG_SCOPE},
+        ],
+        "showTacticRowBackground": True,
+        "tacticRowBackground": "#15202b",
+        "selectTechniquesAcrossTactics": True,
+        "selectSubtechniquesWithParent": False,
+        "selectVisibleTechniques": False,
+        "links": [],
+    }
+
+
+class _SortableItem(QTableWidgetItem):
+    """Display friendly text while sorting by its typed value."""
+
+    _SORT_ROLE = Qt.UserRole + 1
+
+    def __init__(self, text: str, sort_value=None) -> None:
+        super().__init__(text)
+        self.setData(self._SORT_ROLE, text.casefold() if sort_value is None else sort_value)
+
+    def __lt__(self, other) -> bool:
+        if isinstance(other, QTableWidgetItem):
+            left = self.data(self._SORT_ROLE)
+            right = other.data(self._SORT_ROLE)
+            try:
+                return left < right
+            except TypeError:
+                return str(left).casefold() < str(right).casefold()
+        return super().__lt__(other)
+
+
+# ── Clickable technique cell ─────────────────────────────────────────────────
+class _CellItem(QGraphicsRectItem):
+    def __init__(self, tid: str, label: str, x: float, y: float,
+                 on_click: Callable[[str], None]) -> None:
+        super().__init__(x, y, _CW, _CH)
+        self.tid      = tid
+        self._on_click = on_click
+        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.setAcceptHoverEvents(True)
+        self.setZValue(1)
+
+        self._lbl = QGraphicsTextItem(label, self)
+        self._lbl.setDefaultTextColor(QColor("#e2e8f0"))
+        self._lbl.setFont(QFont("Segoe UI", 8))
+        self._lbl.setTextWidth(_CW - 4)
+        self._lbl.setPos(x + 2, y + 2)
+        self._lbl.setZValue(2)
+
+        self._bar = QGraphicsRectItem(x, y + _CH - 3, _CW, 3, self)
+        self._bar.setPen(QPen(Qt.NoPen))
+        self._bar.setZValue(3)
+
+        self.set_heat(0.0)
+
+    def set_heat(self, heat: float, count: int = 0, dimmed: bool = False) -> None:
+        self._heat   = heat
+        self._dimmed = dimmed
+        if dimmed:
+            self.setBrush(QBrush(QColor("#0c111a")))
+            self.setPen(QPen(QColor("#1a2234"), 0.5))
+            self._bar.setBrush(QBrush(QColor("#0c111a")))
+            self.setToolTip(f"{self.tid}  [filtered out]")
+        else:
+            clr    = _heat_color(heat)
+            border = _heat_border(heat)
+            self.setBrush(QBrush(clr.darker(110)))
+            self.setPen(QPen(border, 0.8))
+            self._bar.setBrush(QBrush(_heat_color(min(1.0, heat * 1.4))))
+            self.setToolTip(f"{self.tid}  heat={heat:.2f}  hits={count}")
+
+    def mousePressEvent(self, _event) -> None:  # type: ignore[override]
+        self._on_click(self.tid)
+
+    def hoverEnterEvent(self, _event) -> None:  # type: ignore[override]
+        pen = self.pen(); pen.setWidth(2); self.setPen(pen)
+
+    def hoverLeaveEvent(self, _event) -> None:  # type: ignore[override]
+        self.set_heat(self._heat)
+
+
+def _wrap_heatmap_label(label: QLabel) -> None:
+    """Keep summaries readable without imposing their full text width."""
+    label.setMinimumWidth(0)
+    label.setWordWrap(True)
+    policy = label.sizePolicy()
+    policy.setHorizontalPolicy(QSizePolicy.Ignored)
+    policy.setHeightForWidth(True)
+    label.setSizePolicy(policy)
+
+
+# ── Heatmap window ───────────────────────────────────────────────────────────
+class AttackHeatmapWindow(QDialog):
+    event_clicked = Signal(str)
+    _posture_ready = Signal(str)
+    _REFRESH_MS   = 5_000
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setWindowTitle("🔥  MITRE ATT&CK Heatmap  — Live")
+        # The matrix already has a horizontal scrollbar, so do not force the
+        # whole window wider than common laptop and remote-session desktops.
+        # Size generously when space exists while keeping every toolbar and
+        # tab reachable on a compact display.
+        self.setMinimumSize(760, 520)
+        screen = self.screen() or QApplication.primaryScreen()
+        if screen is not None:
+            available = screen.availableGeometry()
+            self.resize(
+                max(760, min(1540, int(available.width() * 0.94))),
+                max(520, min(820, int(available.height() * 0.90))),
+            )
+        else:
+            self.resize(1180, 720)
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+
+        self._cells: dict[str, _CellItem] = {}
+        self._scene = QGraphicsScene(self)
+        self._view  = QGraphicsView(self._scene, self)
+        self._view.setRenderHints(self._view.renderHints())
+        self._view.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self._view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self._view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._view.setStyleSheet("background: #0d1117; border: none;")
+
+        # ── Toolbar ───────────────────────────────────────────────────────────
+        self._stats_lbl = QLabel("Initialising…")
+        self._stats_lbl.setStyleSheet("color:#94a3b8; font:8pt 'Segoe UI'; padding:4px 8px;")
+        self._stats_lbl.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        _wrap_heatmap_label(self._stats_lbl)
+
+        self._actor: str = "— All —"
+        self._actor_combo = QComboBox()
+        self._actor_combo.addItems(["— All —"] + list(THREAT_ACTOR_PLAYBOOKS.keys()))
+        self._actor_combo.setFixedWidth(180)
+        self._actor_combo.setToolTip("Filter by threat actor: dims techniques outside their playbook.")
+        self._actor_combo.setStyleSheet(
+            "QComboBox{background:#1e293b;color:#cbd5e1;border:1px solid #334155;"
+            "border-radius:4px;padding:2px 6px;font:8pt 'Segoe UI';}"
+            "QComboBox::drop-down{border:none;}"
+            "QComboBox QAbstractItemView{background:#1e293b;color:#cbd5e1;"
+            "selection-background-color:#334155;border:1px solid #334155;}")
+        self._actor_combo.currentTextChanged.connect(self._on_actor_changed)
+
+        self._search = QLineEdit()
+        self._search.setPlaceholderText("Search technique / id…")
+        self._search.setFixedWidth(160)
+        self._search.setStyleSheet(
+            "QLineEdit{background:#1e293b;color:#cbd5e1;border:1px solid #334155;"
+            "border-radius:4px;padding:2px 6px;font:8pt 'Segoe UI';}")
+        self._search.textChanged.connect(lambda _t: self._refresh())
+
+        self._active_only = QCheckBox("Active only")
+        self._active_only.setStyleSheet("color:#cbd5e1;font:8pt 'Segoe UI';")
+        self._active_only.stateChanged.connect(lambda _s: self._refresh())
+
+        explain_btn = QPushButton("Explain posture")
+        explain_btn.setObjectName("HeatmapExplainPosture")
+        explain_btn.setFixedWidth(120)
+        explain_btn.setToolTip("Plain-English summary of the current matrix (local AI, with a heuristic fallback).")
+        explain_btn.clicked.connect(self._explain_posture)
+
+        export_nav_btn = QPushButton("Export to Navigator")
+        export_nav_btn.setObjectName("HeatmapExportNavigator")
+        export_nav_btn.setFixedWidth(150)
+        export_nav_btn.setToolTip(
+            "Save active curated techniques as an ATT&CK Navigator 5.3.2 / "
+            "layer-format 4.5 JSON file."
+        )
+        export_nav_btn.clicked.connect(self._export_navigator)
+
+        reset_btn = QPushButton("Reset counts")
+        reset_btn.setObjectName("HeatmapResetCounts")
+        reset_btn.setFixedWidth(105)
+        reset_btn.clicked.connect(self._reset)
+
+        toolbar = QVBoxLayout()
+        toolbar.setSpacing(4)
+        filters_row = QHBoxLayout()
+        # Summary text gets its own wrapping row; fixed-width filters
+        # and actions remain reachable on compact scaled work areas.
+        filters_row.addStretch(1)
+        for widget in (self._search, self._active_only, self._actor_combo):
+            filters_row.addWidget(widget)
+        actions_row = QHBoxLayout()
+        actions_row.addStretch(1)
+        for widget in (explain_btn, export_nav_btn, reset_btn):
+            actions_row.addWidget(widget)
+        toolbar.addWidget(self._stats_lbl)
+        toolbar.addLayout(filters_row)
+        toolbar.addLayout(actions_row)
+
+        # ── Detail panel ──────────────────────────────────────────────────────
+        self._detail_hdr = QLabel("Click a technique cell for details")
+        _wrap_heatmap_label(self._detail_hdr)
+        self._detail_hdr.setStyleSheet("color:#f1f5f9; font:9pt 'Segoe UI' bold; padding:4px 8px;")
+        self._detail_txt = QTextBrowser()
+        self._detail_txt.setReadOnly(True)
+        self._detail_txt.setOpenLinks(False)
+        self._detail_txt.anchorClicked.connect(self._on_anchor)
+        self._detail_txt.setFixedHeight(120)
+        self._detail_txt.setStyleSheet(
+            "background:#1e293b; color:#cbd5e1; font:8pt 'Consolas'; border:none; padding:4px;")
+        self._detail_txt.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        detail_box = QVBoxLayout()
+        detail_box.setContentsMargins(0, 0, 0, 0); detail_box.setSpacing(0)
+        detail_box.addWidget(self._detail_hdr)
+        detail_box.addWidget(self._detail_txt)
+
+        # ── Tabs ──────────────────────────────────────────────────────────────
+        heat_tab = QWidget()
+        hl = QVBoxLayout(heat_tab); hl.setContentsMargins(0, 0, 0, 0); hl.setSpacing(0)
+        hl.addWidget(self._view, 1); hl.addLayout(detail_box)
+
+        self._tabs = QTabWidget()
+        self._tabs.addTab(heat_tab, "🔥  Live Heat")
+        self._tabs.addTab(self._build_coverage_tab(), "🛡  Coverage")
+        self._tabs.addTab(self._build_top_tab(), "📊  Top Techniques")
+        from angerona.gui.context_info import attach_context_info
+        self._context_info = attach_context_info(self._tabs, "attack-map")
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0); root.setSpacing(0)
+        root.setSizeConstraint(QLayout.SetNoConstraint)
+        root.addLayout(toolbar)
+        root.addWidget(self._tabs, 1)
+
+        self._build_scene()
+        self._posture_ready.connect(self._show_posture)
+
+        self._timer = PresentationTimer(self)
+        self._timer.timeout.connect(self._refresh)
+        self._timer.start(self._REFRESH_MS)
+        self._refresh()
+        install_window_fit(self)
+
+    # ── Coverage tab ─────────────────────────────────────────────────────────
+    def _build_coverage_tab(self) -> QWidget:
+        w = QWidget(); lay = QVBoxLayout(w)
+        self._cov_hdr = QLabel("Coverage…")
+        _wrap_heatmap_label(self._cov_hdr)
+        self._cov_hdr.setStyleSheet("color:#e2e8f0; font:9pt 'Segoe UI' bold; padding:4px 2px;")
+        lay.addWidget(self._cov_hdr)
+        explanation = QLabel(
+            "Declared capabilities stay separate from live readiness: declared → collecting → "
+            "detection-tested → response-verified. Proof expires; stopped/degraded sensors withdraw readiness. "
+            "Practice tests cover inert markers/processes only, not the real exploit or every response action.")
+        explanation.setWordWrap(True)
+        lay.addWidget(explanation)
+        self._cov_tbl = QTableWidget()
+        self._cov_tbl.setColumnCount(7)
+        self._cov_tbl.setHorizontalHeaderLabels(
+            ["Technique", "Tactic", "Declared detect", "Declared simulate", "Declared response",
+             "Live readiness", "Dated evidence / gaps"])
+        self._cov_tbl.setEditTriggers(QTableWidget.NoEditTriggers)
+        self._cov_tbl.setAlternatingRowColors(True)
+        self._cov_tbl.verticalHeader().setVisible(False)
+        self._cov_tbl.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self._cov_tbl.setStyleSheet("QTableWidget{font-size:11px;} QTableWidget::item{padding:3px 6px;}")
+        self._cov_tbl.setSortingEnabled(True)
+        self._cov_tbl.cellDoubleClicked.connect(self._on_coverage_double)
+        lay.addWidget(self._cov_tbl, 1)
+        return w
+
+    def _refresh_coverage(self) -> None:
+        try:
+            from angerona.core import attack_coverage as cov
+        except Exception:
+            return
+        # Only cached immutable evidence and bounded scalar lifecycle fields are
+        # read here. No sensor method, host scan, source read, or receipt check.
+        manager = getattr(self.parent(), "manager", None)
+        snapshot = cov.readiness_snapshot(manager)
+        readiness = {r["tid"]: r for r in snapshot["techniques"]}
+        collecting = sum(bool(r["collecting"]) for r in readiness.values())
+        tested = sum(r["stage"] in {"detection-tested", "response-verified"} for r in readiness.values())
+        responded = sum(r["stage"] == "response-verified" for r in readiness.values())
+        heading = (f"Mapped techniques: {len(cov.COVERAGE)} · Collecting {collecting} · "
+                   f"Detection-tested {tested} · Response-verified {responded} · "
+                   "Dated proof and gaps below; hover for full scope")
+        if not snapshot.get("available"):
+            heading += " · Unavailable: " + str(snapshot.get("reason", "unknown"))
+        if self._cov_hdr.text() != heading:
+            self._cov_hdr.setText(heading)
+        valid = cov._valid_action_keys()
+        rows = cov.COVERAGE
+        presentations = []
+        colors = {"declared": "#94a3b8", "collecting": "#38bdf8",
+                  "detection-tested": "#fbbf24", "response-verified": "#22c55e"}
+        for t in rows:
+            state = readiness.get(t.tid, {"stage": "declared", "gaps": [
+                str(snapshot.get("reason", "readiness unavailable"))]})
+            evidence = state.get("evidence") or {}
+            proof = (f"{evidence.get('observed_at')} → {evidence.get('expires_at')} · "
+                     f"response expires {evidence.get('response_expires_at')} · "
+                     f"{evidence.get('source_identity')} generation {evidence.get('generation')} · "
+                     f"{evidence.get('scope')} · {evidence.get('outcome')} · "
+                     f"{evidence.get('reason')}") if evidence else "No verified test"
+            gaps = "; ".join(state.get("gaps", ()))
+            details = f"{proof}\n{gaps}" if gaps else proof
+            cells = (f"{t.tid}  {t.name}", t.tactic, ", ".join(t.detect) or "·",
+                     ", ".join(t.simulate) or "·",
+                     ", ".join(k for k in t.remediate if k in valid) or "·",
+                     state["stage"], details)
+            presentations.append((t.tid, cells))
+        fingerprint = tuple(presentations)
+        if fingerprint == getattr(self, "_coverage_presentation", None):
+            return
+        header = self._cov_tbl.horizontalHeader()
+        sort_column, sort_order = header.sortIndicatorSection(), header.sortIndicatorOrder()
+        self._cov_tbl.setSortingEnabled(False)
+        self._cov_tbl.setRowCount(len(rows))
+        for i, (tid, cells) in enumerate(presentations):
+            for c, txt in enumerate(cells):
+                it = _SortableItem(txt)
+                it.setToolTip(cells[6])
+                if c == 0:
+                    it.setData(Qt.UserRole, tid)
+                if c == 5:
+                    it.setForeground(QColor(colors.get(txt, "#94a3b8")))
+                elif c in (2, 3, 4) and txt == "·":
+                    it.setForeground(QColor("#475569"))
+                self._cov_tbl.setItem(i, c, it)
+        self._cov_tbl.setSortingEnabled(True)
+        if sort_column >= 0:
+            self._cov_tbl.sortItems(sort_column, sort_order)
+        self._coverage_presentation = fingerprint
+
+    def _on_coverage_double(self, row: int, _column: int) -> None:
+        item = self._cov_tbl.item(row, 0)
+        tid = item.data(Qt.UserRole) if item is not None else None
+        if tid:
+            try:
+                webbrowser.open(_mitre_url(str(tid)))
+            except Exception:
+                pass
+
+    # ── Top techniques tab ───────────────────────────────────────────────────
+    def _build_top_tab(self) -> QWidget:
+        w = QWidget(); lay = QVBoxLayout(w)
+        description = QLabel(
+            "The currently hottest techniques (by decayed heat), most active first. "
+            "Double-click a row to open its MITRE ATT&CK page.")
+        _wrap_heatmap_label(description)
+        lay.addWidget(description)
+        self._top_tbl = QTableWidget()
+        self._top_tbl.setColumnCount(6)
+        self._top_tbl.setHorizontalHeaderLabels(
+            ["#", "Technique", "Tactic", "Hits", "Heat", "Last seen"])
+        self._top_tbl.setEditTriggers(QTableWidget.NoEditTriggers)
+        self._top_tbl.setAlternatingRowColors(True)
+        self._top_tbl.verticalHeader().setVisible(False)
+        self._top_tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self._top_tbl.setStyleSheet("QTableWidget{font-size:11px;} QTableWidget::item{padding:3px 6px;}")
+        self._top_tbl.setSortingEnabled(True)
+        self._top_tbl.cellDoubleClicked.connect(self._on_top_double)
+        lay.addWidget(self._top_tbl, 1)
+        return w
+
+    def _refresh_top(self, snap: dict) -> None:
+        matrix = snap.get("matrix", {})
+        active = [(tid, r) for tid, r in matrix.items() if r.get("count", 0) > 0]
+        active.sort(key=lambda kv: kv[1].get("heat", 0), reverse=True)
+        active = active[:25]
+        header = self._top_tbl.horizontalHeader()
+        sort_column = header.sortIndicatorSection()
+        sort_order = header.sortIndicatorOrder()
+        self._top_tbl.setSortingEnabled(False)
+        self._top_tbl.setRowCount(len(active))
+        for i, (tid, r) in enumerate(active):
+            meta = _TID_TO_META.get(tid, (tid, "?", tid))
+            vals = [str(i + 1), f"{tid}  {meta[0]}", meta[1],
+                    str(r.get("count", 0)), f"{r.get('heat', 0):.3f}",
+                    r.get("last_seen") or "—"]
+            for c, txt in enumerate(vals):
+                sort_value = (
+                    i + 1 if c == 0 else
+                    int(r.get("count", 0)) if c == 3 else
+                    float(r.get("heat", 0.0)) if c == 4 else
+                    txt.casefold()
+                )
+                it = _SortableItem(txt, sort_value)
+                if c == 0:
+                    it.setData(Qt.UserRole, tid)
+                if c == 4:
+                    it.setForeground(_heat_border(r.get("heat", 0)))
+                self._top_tbl.setItem(i, c, it)
+        self._top_tbl.setSortingEnabled(True)
+        if sort_column >= 0:
+            self._top_tbl.sortItems(sort_column, sort_order)
+
+    def _on_top_double(self, row: int, _col: int) -> None:
+        it = self._top_tbl.item(row, 0)
+        tid = it.data(Qt.UserRole) if it else None
+        if tid:
+            try:
+                webbrowser.open(_mitre_url(tid))
+            except Exception:
+                pass
+
+    # ── Scene construction ───────────────────────────────────────────────────
+    def _build_scene(self) -> None:
+        scene = self._scene
+        max_techs = max(len(_TACTIC_TO_TECHNIQUES.get(tid, [])) for tid, _ in TACTIC_ORDER)
+        scene_w = _PAD + len(TACTIC_ORDER) * (_CW + _GAP) + _PAD
+        scene_h = _PAD + _HDR_H + max_techs * (_CH + 2) + _PAD
+        scene.setSceneRect(0, 0, scene_w, scene_h)
+
+        for col_idx, (tac_id, tac_name) in enumerate(TACTIC_ORDER):
+            cx = _PAD + col_idx * (_CW + _GAP); cy = _PAD
+            tac_clr = QColor(_TACTIC_CLR.get(tac_id, "#334155"))
+            hdr = QGraphicsRectItem(cx, cy, _CW, _HDR_H)
+            hdr.setBrush(QBrush(tac_clr)); hdr.setPen(QPen(tac_clr.lighter(130), 0.5))
+            hdr.setZValue(1); scene.addItem(hdr)
+            t = QGraphicsTextItem(f"{tac_id}\n{tac_name}")
+            t.setDefaultTextColor(QColor("#f8fafc"))
+            t.setFont(QFont("Segoe UI", 7, QFont.Bold))
+            t.setTextWidth(_CW - 4); t.setPos(cx + 2, cy + 4); t.setZValue(2)
+            scene.addItem(t)
+            for row_idx, tid in enumerate(_TACTIC_TO_TECHNIQUES.get(tac_id, [])):
+                ty = cy + _HDR_H + row_idx * (_CH + 2)
+                lbl = _TID_TO_META[tid][0] if tid in _TID_TO_META else tid
+                cell = _CellItem(tid, lbl, cx, ty, self._on_cell_clicked)
+                scene.addItem(cell); scene.addItem(cell._lbl); scene.addItem(cell._bar)
+                self._cells[tid] = cell
+
+    # ── Refresh ──────────────────────────────────────────────────────────────
+    def _refresh(self) -> None:
+        tracker = get_tracker()
+        self._refresh_coverage()
+        if tracker is None:
+            self._stats_lbl.setText("No tracker — start the application first")
+            return
+        snap   = tracker.snapshot()
+        matrix = snap.get("matrix", {})
+        summ   = snap.get("summary", {})
+
+        actor = getattr(self, "_actor", "— All —")
+        playbook: set[str] | None = None
+        if actor != "— All —":
+            playbook = set(THREAT_ACTOR_PLAYBOOKS.get(actor, []))
+        query = (self._search.text() or "").strip().lower()
+        active_only = self._active_only.isChecked()
+
+        for tid, cell in self._cells.items():
+            row   = matrix.get(tid, {})
+            heat  = row.get("heat", 0.0)
+            count = row.get("count", 0)
+            dim = False
+            if playbook is not None:
+                in_pb = (tid in playbook or any(tid.startswith(p + ".") for p in playbook))
+                dim = dim or not in_pb
+            if active_only and count <= 0:
+                dim = True
+            if query:
+                meta = _TID_TO_META.get(tid, (tid, "", tid))
+                hay = f"{tid} {meta[0]} {meta[2]}".lower()
+                if query not in hay:
+                    dim = True
+            cell.set_heat(heat, count, dimmed=dim)
+
+        n_active = summ.get("techniques_active", 0)
+        n_tacs   = summ.get("tactics_active", 0)
+        top_tid  = summ.get("highest_heat_tid") or "—"
+        top_lbl  = summ.get("highest_heat_label") or "—"
+        actor_sfx = f"  |  Actor: {actor}" if actor != "— All —" else ""
+        self._stats_lbl.setText(
+            f"Active techniques: {n_active}  |  Active tactics: {n_tacs}  |  "
+            f"Hottest: {top_tid} ({top_lbl})  |  Updated: {snap.get('generated', '—')}{actor_sfx}")
+
+        self._refresh_top(snap)
+
+    # ── Cell click detail ────────────────────────────────────────────────────
+    def _on_cell_clicked(self, tid: str) -> None:
+        tracker = get_tracker()
+        if tracker is None:
+            return
+        snap = tracker.snapshot()
+        row  = snap.get("matrix", {}).get(tid)
+        if row is None:
+            return
+        meta = _TID_TO_META.get(tid, (tid, "?", tid))
+        last = row.get("last_seen") or "never"
+        ids  = row.get("event_ids", [])
+
+        self._detail_hdr.setText(
+            f"  {tid}  ·  {meta[2]}  ·  heat={row['heat']:.3f}  hits={row['count']}  last={last}")
+
+        # coverage lookup by base technique id
+        cov_line = "<span style='color:#475569'>not in coverage map</span>"
+        try:
+            from angerona.core import attack_coverage as cov
+            base = tid.split(".")[0]
+            match = next((t for t in cov.COVERAGE if t.tid == tid or t.tid == base), None)
+            if match:
+                valid = cov._valid_action_keys()
+                d = ", ".join(match.detect) or "·"
+                s = ", ".join(match.simulate) or "·"
+                r = ", ".join(k for k in match.remediate if k in valid) or "·"
+                cov_line = (f"<span style='color:#a7f3d0'>Declared detect:</span> {d} &nbsp; "
+                            f"<span style='color:#93c5fd'>Declared simulate:</span> {s} &nbsp; "
+                            f"<span style='color:#fca5a5'>Declared response:</span> {r}")
+                readiness = cov.readiness_snapshot(getattr(self.parent(), "manager", None))
+                state = next((v for v in readiness["techniques"] if v["tid"] == match.tid), {})
+                cov_line += ("<br><b>Live readiness:</b> " + escape(state.get("stage", "declared"))
+                             + "<br>" + escape("; ".join(state.get("gaps", ()))))
+                evidence = state.get("evidence")
+                if evidence:
+                    cov_line += ("<br>" + escape(f"{evidence['observed_at']} → {evidence['expires_at']}"
+                                                 f" · {evidence['scope']}"))
+        except Exception:
+            pass
+
+        id_links = "".join(
+            f'&nbsp;&nbsp;<a href="evt:{eid}" style="color:#38bdf8;text-decoration:none;">{eid}</a><br>'
+            for eid in ids
+        ) or "&nbsp;&nbsp;<span style='color:#475569'>(none recorded)</span>"
+
+        self._detail_txt.setHtml(
+            "<span style='color:#cbd5e1;font-family:Consolas;font-size:8pt;'>"
+            f"<b>Technique&nbsp;:</b> {tid} &nbsp; "
+            f"<a href='{_mitre_url(tid)}' style='color:#38bdf8;'>[MITRE ATT&CK ↗]</a><br>"
+            f"<b>Full name&nbsp;:</b> {meta[2]} &nbsp; <b>Tactic:</b> {meta[1]}<br>"
+            f"<b>Hits&nbsp;:</b> {row['count']} &nbsp; <b>Heat:</b> {row['heat']:.4f} &nbsp; "
+            f"<b>Last seen:</b> {last}<br>"
+            f"<b>Coverage&nbsp;:</b> {cov_line}<br>"
+            f"<b>Event IDs</b> (click to pivot):<br>{id_links}</span>")
+
+    def _on_anchor(self, url) -> None:
+        s = url.toString()
+        if s.startswith("http"):
+            try:
+                webbrowser.open(s)
+            except Exception:
+                pass
+        elif s.startswith("evt:"):
+            self.event_clicked.emit(s[4:])
+        else:
+            self.event_clicked.emit(s)
+
+    # ── Threat Actor filter ───────────────────────────────────────────────────
+    def _on_actor_changed(self, actor: str) -> None:
+        self._actor = actor
+        self._refresh()
+
+    # ── Explain posture (local AI, heuristic fallback) ───────────────────────
+    def _explain_posture(self) -> None:
+        tracker = get_tracker()
+        snap = tracker.snapshot() if tracker else {"matrix": {}, "summary": {}}
+        self._show_posture("⏳ Analyzing current ATT&CK posture…")
+        loading_token = begin_loading("Retrieving ATT&CK posture analysis…")
+        threading.Thread(
+            target=self._posture_worker,
+            args=(snap, loading_token),
+            daemon=True,
+        ).start()
+
+    def _posture_worker(self, snap: dict, loading_token: str) -> None:
+        try:
+            text = self._heuristic_posture(snap)
+            ai = self._ollama_posture(snap)
+            if ai:
+                text = ai + "\n\n— — —\n(heuristic) " + text
+            self._posture_ready.emit(text)
+        finally:
+            finish_loading(loading_token)
+
+    def _heuristic_posture(self, snap: dict) -> str:
+        matrix = snap.get("matrix", {}); summ = snap.get("summary", {})
+        active = sorted(((t, r) for t, r in matrix.items() if r.get("count", 0) > 0),
+                        key=lambda kv: kv[1].get("heat", 0), reverse=True)
+        try:
+            from angerona.core import attack_coverage as cov
+            cs = cov.summary(); cov_pct = cs["coverage_pct"]
+        except Exception:
+            cov_pct = None
+        lines = []
+        if not active:
+            lines.append("Posture: quiet — no techniques have fired in the current window.")
+        else:
+            top = ", ".join(f"{t} ({_TID_TO_META.get(t,(t,'',''))[0]})" for t, _ in active[:5])
+            lines.append(f"Posture: {summ.get('techniques_active',0)} active technique(s) across "
+                         f"{summ.get('tactics_active',0)} tactic(s). Hottest: {top}.")
+        if cov_pct is not None:
+            lines.append(f"Fresh, scoped detection tests exist for {cov_pct}% of mapped techniques. "
+                         "Configured declarations do not establish working coverage; see dated proof and gaps.")
+        return " ".join(lines)
+
+    def _ollama_posture(self, snap: dict) -> str | None:
+        import os, urllib.request
+        from angerona.core.ollama_lifecycle import effective_keep_alive
+        host = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
+        model = os.environ.get("ANGERONA_MODEL", "llama3")
+        matrix = snap.get("matrix", {})
+        active = sorted(((t, r) for t, r in matrix.items() if r.get("count", 0) > 0),
+                        key=lambda kv: kv[1].get("heat", 0), reverse=True)[:10]
+        facts = json.dumps({"active_techniques": [
+            {"tid": t, "name": _TID_TO_META.get(t, (t, "", ""))[0],
+             "hits": r.get("count"), "heat": round(r.get("heat", 0), 3)} for t, r in active]})
+        payload = json.dumps({
+            "model": model,
+            "stream": False,
+            "keep_alive": effective_keep_alive("30m"),
+            "options": {"temperature": 0},
+            "messages": [
+                {"role": "system", "content": "You are a SOC analyst. In 3-5 calm sentences, "
+                 "summarise this host's MITRE ATT&CK activity and what to watch. No markdown headers."},
+                {"role": "user", "content": facts}]}).encode()
+        try:
+            req = urllib.request.Request(local_service_url(host, "/api/chat"), data=payload,
+                                         headers={"Content-Type": "application/json"})
+            with safe_urlopen(req, policy=OLLAMA_SERVICE_POLICY, timeout=30) as resp:
+                data = json.loads(read_bounded(resp).decode())
+            return ((data.get("message", {}) or {}).get("content", "") or "").strip() or None
+        except Exception:
+            return None
+
+    def _show_posture(self, text: str) -> None:
+        if getattr(self, "_posture_dlg", None) is None:
+            self._posture_dlg = QDialog(self)
+            self._posture_dlg.setWindowTitle("ATT&CK posture")
+            self._posture_dlg.resize(560, 320)
+            v = QVBoxLayout(self._posture_dlg)
+            self._posture_body = QTextBrowser()
+            v.addWidget(self._posture_body)
+            b = QPushButton("Close"); b.clicked.connect(self._posture_dlg.close)
+            v.addWidget(b)
+        self._posture_body.setPlainText(text)
+        self._posture_dlg.show(); self._posture_dlg.raise_(); self._posture_dlg.activateWindow()
+
+    # ── ATT&CK Navigator export ───────────────────────────────────────────────
+    def _export_navigator(self) -> None:
+        tracker = get_tracker()
+        if tracker is None:
+            return
+        layer = build_navigator_layer(tracker.snapshot())
+        default_name = f"angerona_navigator_{time.strftime('%Y%m%d_%H%M%S')}.json"
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Export ATT&CK Navigator Layer", default_name, "JSON files (*.json)")
+        if path:
+            try:
+                with open(path, "w", encoding="utf-8") as fh:
+                    json.dump(layer, fh, indent=2)
+            except Exception:
+                pass
+
+    # ── Reset ─────────────────────────────────────────────────────────────────
+    def _reset(self) -> None:
+        tracker = get_tracker()
+        if tracker:
+            tracker.reset()
+        for cell in self._cells.values():
+            cell.set_heat(0.0)
+        self._detail_hdr.setText("Counts reset")
+        self._detail_txt.clear()

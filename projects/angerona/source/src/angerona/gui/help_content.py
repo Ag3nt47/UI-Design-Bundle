@@ -1,0 +1,256 @@
+"""Canonical, GUI-independent Help and capability content.
+
+The capability portion is rendered from :mod:`angerona.core.capability_guide`.
+Only genuinely supplementary operator topics live here, preventing Help,
+Settings, the console and ARIA from drifting into different product claims.
+"""
+from __future__ import annotations
+
+from angerona.core.capability_guide import (
+    GUIDES,
+    CapabilityGuide,
+    DestinationActionability,
+    DestinationAvailability,
+    DestinationKind,
+    search_guides,
+)
+
+
+def _getting_started_body() -> str:
+    categories = ", ".join(sorted({guide.category for guide in GUIDES}))
+    return (
+        "Angerona brings local security alerts, investigation and policy-governed response "
+        "into one desktop workbench. Start with Full Setup, then follow an alert from its "
+        "evidence to a reviewed action and verified result.\n\n"
+        "• Source runs use an ordinary user in Observe mode. A signed installed Windows "
+        "package has a separate authority boundary; source recovery does not grant Protect permissions.\n"
+        "• Angerona runs in user mode (Ring 3) and ships no production kernel driver. "
+        "Collection depends on platform, permissions and enabled providers. A stopped or "
+        "unavailable collector is a coverage gap, not a clean bill of health.\n"
+        "• The dashboard shows module health, alerts, posture, and current threat level. "
+        "An alert, imported text or AI answer alone does not authorize a host change.\n"
+        "• Use each dashboard panel's collapse control to minimize or reopen it. "
+        "Panels start open except Module health & activity. "
+        "Filters and Columns reveal table controls; open a row's details for its full text and evidence.\n"
+        "• Adaptation audits this host, establishes a reviewed golden baseline, and previews "
+        "reversible intent profiles in a no-write sandbox.\n"
+        "• The ARIA console accepts commands or plain-language questions.\n"
+        "• Run Self-Test to verify local pipelines; use only inert Red Team drills for "
+        "built-in validation.\n"
+        "• Settings > General controls automatic source-startup recovery and public GitHub "
+        "fallback downloads, both on by default. Downloads preserve edits and upload no host files. "
+        "Optional cloud analysis and messaging remain separate and off until configured.\n"
+        "• Review storage limits in System. Low-space warnings offer Block, a separately "
+        "confirmed Delete of eligible recovery copies, or Change settings; evidence is not broadly purged.\n"
+        f"• Help contains {len(GUIDES)} evidence-backed capabilities across: {categories}.\n"
+        "• Type 'guide <capability or task>' or ask ARIA for a guided explanation."
+    )
+
+
+_SUPPLEMENTARY_TOPICS: dict[str, tuple[str, str]] = {
+    "getting-started": ("Getting started", _getting_started_body()),
+    "actions": (
+        "ARIA actions (safe, confirm-first)",
+        "ARIA can explain and stage defensive actions, but a model response is never "
+        "host authority.\n"
+        "• Reads such as module status, recent alerts, posture, and diagnostics may run "
+        "without changing the host.\n"
+        "• Changes are staged behind a short-lived confirmation token. Review the exact "
+        "target and effect, then confirm or cancel.\n"
+        "• High-impact enterprise actions also pass through typed authorization and "
+        "approval controls. There is no generic remote shell.\n"
+        "• Treat every recommendation as advice until the resulting evidence and receipt "
+        "have been verified.",
+    ),
+    "adaption": (
+        "Adaptation — Adapt to Host",
+        "Adaptation learns a reviewed operational baseline for this computer; it does not "
+        "silently learn every change as trusted.\n"
+        "• Audit & Drift captures hardware, services, listening ports, adapters, connection "
+        "context, and Windows Firewall posture.\n"
+        "• Exact known-good exceptions remain visible but contribute zero drift risk. False-"
+        "positive feedback tunes only the affected local score category within fixed bounds.\n"
+        "• Profiles must be previewed, expire after ten minutes, and can be run in the no-write "
+        "sandbox before applying. Every apply requires a firewall snapshot and exact-plan approval.\n"
+        "• SSID, VPN, and Public-network rules default to proposal-only. Auto-apply is a separate "
+        "persistent authorization protected by cooldowns, rate limits, and a circuit breaker.\n"
+        "• Rollback verifies both its manifest and firewall artifact before import. Adaptation never "
+        "kills processes, stops services, edits routes, disables the firewall, or runs arbitrary "
+        "commands.",
+    ),
+    "troubleshooting": (
+        "Troubleshooting",
+        "• Threat level remains elevated: open Resolve Center and review each detection; "
+        "allow only an exact, verified false positive.\n"
+        "• A module is stopped or quarantined: inspect its detail and recovery evidence "
+        "before restarting it.\n"
+        "• ARIA is unavailable: verify the configured local model service and model. "
+        "Optional provider credentials belong only in Settings > API Keys.\n"
+        "• After sleep or resume: allow sensor freshness to recover, then run Self-Test.\n"
+        "• For a crash or freeze: use Advanced Console diagnostics and inspect the local "
+        "diagnostics directory. Do not paste unrestricted logs into a public issue.\n"
+        "• A failed source startup shows its retained diagnostic paths and attempted recovery. "
+        "The assistant can try verified runtime repair, a working local source copy, and "
+        "canonical GitHub source when allowed in General. An open dashboard proves readiness "
+        "for that session, not complete protection or sensor coverage.\n"
+        "• After source recovery, review the changed-file report. Keep the working version, "
+        "schedule preserved edits for the NEXT startup, or review later. A changed file is a "
+        "suspect, not proof of the failure cause. Edits are never hot-restored into the running app.\n"
+        "• A storage warning: Block new recovery copying, Delete eligible copies only after "
+        "separate confirmation, or Change settings. Automatic Windows shadow-copy requests "
+        "are off by default; Windows shadow-storage allocation has separate controls.\n"
+        "• Ask ARIA to explain posture or run diagnostics; do not authorize a change until "
+        "the target and rollback are clear.",
+    ),
+    "threat-level": (
+        "How the threat level works",
+        "The threat level reflects unresolved security evidence, not merely the number of "
+        "informational events. Self-health events and inert drills should not independently "
+        "raise it. Review elevated findings in Resolve Center, verify the underlying event, "
+        "and either remediate it or explicitly classify a proven false positive.",
+    ),
+    "privacy": (
+        "Privacy and data boundaries",
+        "Angerona is local-first. Local detection, local ARIA answers, evidence correlation, and "
+        "host metrics stay on the device unless a separate configured export or consultation "
+        "explicitly sends them. Automatic source-startup recovery and its canonical public "
+        "GitHub downloads are on by default; review both switches in Settings > General. "
+        "Those bounded downloads do not upload logs, source edits or credentials. "
+        "Optional online intelligence, provider-assisted "
+        "AI, messaging, or interoperability can create egress only after explicit setup. "
+        "Review each capability's privacy, limitations, and destination before enabling it. "
+        "Credentials must be stored through the protected Settings workflow, never in a "
+        "project file or diagnostic bundle.\n\n"
+        "Security checks are open to review: each capability lists its responsible code, "
+        "evidence and limitations. Authentication establishes provenance, not that every "
+        "conclusion is correct; response still needs its own typed policy and exact target. "
+        "Same-user process control, administrator access or a compromised kernel can defeat "
+        "user-mode boundaries. No hidden check, module count or local test is a certification. "
+        "Inspect storage budgets and explicit coverage gaps, and keep raw host captures private.",
+    ),
+}
+
+
+def render_capability_body(guide: CapabilityGuide) -> str:
+    """Render one canonical capability as plain text for Help, ARIA or console."""
+
+    steps = "\n".join(f"{index}. {step}" for index, step in enumerate(guide.steps, 1))
+    evidence = "\n".join(f"• {reference}" for reference in guide.evidence)
+    limitations = "\n".join(f"• {item}" for item in guide.limitations)
+    availability = guide.destination_availability.value.replace("-", " ")
+    actionability = guide.destination_actionability.value.replace("-", " ")
+    if guide.destination_kind is DestinationKind.WINDOW:
+        destination = "Main window > " + guide.name
+    elif guide.destination_kind is DestinationKind.SETTINGS:
+        destination = "Settings > " + guide.destination
+    else:
+        destination = "No in-product destination"
+    if guide.destination_actionability is DestinationActionability.CONTEXTUAL:
+        destination += " (opens the owning section; select this capability there)"
+    if guide.destination_availability is not DestinationAvailability.AVAILABLE:
+        destination += f" ({availability})"
+    return (
+        f"Maturity: {guide.maturity_label}\n"
+        f"Category: {guide.category}\n\n"
+        f"WHAT IT DOES\n{guide.definition}\n\n"
+        f"HOW TO USE IT\n{steps}\n\n"
+        f"VERIFY\n{guide.verify}\n\n"
+        f"PRIVACY AND SAFETY\n{guide.privacy}\n\n"
+        f"EVIDENCE\n{evidence}\n\n"
+        f"KNOWN LIMITATIONS\n{limitations}\n\n"
+        f"CANONICAL DESTINATION\n{destination}\n"
+        f"Navigation: {actionability}; availability: {availability}."
+    )
+
+
+def capability_topics() -> dict[str, tuple[str, str]]:
+    """Return capability Help topics in the canonical catalog order."""
+
+    return {
+        guide.key: (guide.name, render_capability_body(guide))
+        for guide in GUIDES
+    }
+
+
+CAPABILITY_TOPIC_KEYS = tuple(guide.key for guide in GUIDES)
+SUPPLEMENTARY_TOPIC_KEYS = tuple(_SUPPLEMENTARY_TOPICS)
+TOPICS: dict[str, tuple[str, str]] = {
+    **_SUPPLEMENTARY_TOPICS,
+    **capability_topics(),
+}
+
+_ALIASES = {
+    "start": "getting-started",
+    "help": "getting-started",
+    "overview": "getting-started",
+    "action": "actions",
+    "commands": "actions",
+    "fix": "troubleshooting",
+    "problem": "troubleshooting",
+    "debug": "troubleshooting",
+    "threat": "threat-level",
+    "posture": "threat-level",
+    "data": "privacy",
+    "assistant": "local-ai",
+    "aria": "local-ai",
+    "voice": "local-ai",
+    "stt": "local-ai",
+    "tts": "local-ai",
+    "mic": "local-ai",
+    "friday": "local-ai",
+    "ultron": "local-ai",
+    "persona": "local-ai",
+    "gesture": "local-ai",
+    "hand-controls": "local-ai",
+    "camera": "local-ai",
+    "conversation": "local-ai",
+    "awareness": "local-ai",
+    "phone": "mobile",
+    "signal": "mobile",
+    "trusted": "trusted-processes",
+    "trusted-apps": "trusted-processes",
+    "adapt": "adaption",
+    "adaptation": "adaption",
+    "baseline": "adaption",
+    "configuration-drift": "adaption",
+    "test": "red-team",
+    "testing": "red-team",
+    "drill": "red-team",
+}
+
+
+def topics() -> list[str]:
+    return list(TOPICS)
+
+
+def _topic_key(value: str) -> str:
+    return "-".join(str(value or "").strip().casefold().replace("_", " ").split())
+
+
+def resolve(name: str) -> str | None:
+    key = _topic_key(name)
+    if key in TOPICS:
+        return key
+    alias = _ALIASES.get(key)
+    if alias is not None:
+        return alias
+    matches = search_guides(name)
+    return matches[0].key if matches else None
+
+
+def get(name: str = "getting-started") -> str:
+    """Return a rendered Help topic, or the canonical topic index if unknown."""
+
+    key = resolve(name)
+    if key is None:
+        return (
+            "Angerona guide - available topics:\n  "
+            + " · ".join(topics())
+            + "\nType 'guide <topic>' or ask ARIA."
+        )
+    title, body = TOPICS[key]
+    return f"── {title} ──\n{body}"
+
+
+def overview() -> str:
+    return get("getting-started")
